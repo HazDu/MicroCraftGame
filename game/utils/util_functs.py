@@ -193,3 +193,60 @@ def save_world_icon():
     scr = pygame.transform.scale(main.surface, (240, 128))
     sv_img.blit(scr, (-56, 0))
     pygame.image.save(sv_img, f"{main.GAMEPATH}/saves/{main.world_name}/icon.png")
+
+def get_chunk_from_coordinates(x, y):
+    chunk = -1
+
+    if x < 0:
+        if y < 0:
+            chunk = 0
+        elif y > 0:
+            chunk = 6
+        elif y == 0:
+            chunk = 3
+    elif x > 0:
+        if y < 0:
+            chunk = 2
+        elif y > 0:
+            chunk = 8
+        elif y == 0:
+            chunk = 5
+    elif x == 0:
+        if y < 0:
+            chunk = 1
+        elif y > 0:
+            chunk = 7
+        elif y == 0:
+            chunk = 4
+
+    return chunk
+
+def get_coordinates_from_chunk(chunk):
+    coords = []
+
+    match chunk:
+        case 0:
+            coords = [-1, -1]
+        case 1:
+            coords = [0, -1]
+        case 2:
+            coords = [1, -1]
+        case 3:
+            coords = [-1, 0]
+        case 4:
+            coords = [0, 0]
+        case 5:
+            coords = [1, 0]
+        case 6:
+            coords = [-1, 1]
+        case 7:
+            coords = [0, 1]
+        case 8:
+            coords = [1, 1]
+
+    return coords
+
+
+
+def change_block_over_border():
+    pass
