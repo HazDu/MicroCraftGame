@@ -57,7 +57,6 @@ def button(x, y, width, height, sprite, tint_col, text, surface, events, x_align
 
     #draw Button and check for Clicks
     if x <= mouse_pos[0] <= x+width and y <= mouse_pos[1] <= y+height:
-        #main.cur = pygame.cursors.broken_x
         main.cur = main.cur_pointer
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:

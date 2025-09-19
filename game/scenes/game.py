@@ -1,25 +1,29 @@
 import pygame
 import random
 import ast
-from game.utils.ui import *
-from game.utils.block_interactions import *
-from game.utils.util_functs import *
-from game.utils.generator import *
+from utils.ui import *
+from utils.block_interactions import *
+from utils.util_functs import *
+from utils.generator import *
 import __main__ as main
 
 def scene_game_create():
     main.loaded_chunks = [
-                            [generate_chunk(), [-1, -1]],
-                            [generate_chunk(), [0, -1]],
-                            [generate_chunk(), [1, -1]],
-                            [generate_chunk(), [-1, 0]],
-                            [generate_chunk(), [0, 0]],
-                            [generate_chunk(), [1, 0]],
-                            [generate_chunk(), [-1, 1]],
-                            [generate_chunk(), [0, 1]],
-                            [generate_chunk(), [1, 1]]
+                            [create_chunk(), [-1, -1]],
+                            [create_chunk(), [0, -1]],
+                            [create_chunk(), [1, -1]],
+                            [create_chunk(), [-1, 0]],
+                            [create_chunk(), [0, 0]],
+                            [create_chunk(), [1, 0]],
+                            [create_chunk(), [-1, 1]],
+                            [create_chunk(), [0, 1]],
+                            [create_chunk(), [1, 1]]
     ]
 
+    for chunk in range(9):
+        generate_chunk(chunk)
+    for chunk in range(9):
+        generate_tree(main.tree_queue[chunk], chunk)
     for chunk in range(9):
         render_blocks(0, chunk)
 

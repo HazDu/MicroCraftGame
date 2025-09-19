@@ -53,6 +53,7 @@ paused = False
 loading_info = ["", ""]
 loading_timeout = 0
 img_save_timeout = 0
+tree_queue = [[],[],[],[],[],[],[],[],[]]
 
 #load texturepack
 if os.path.exists(f"{GAMEPATH}/settings.json"):
