@@ -1,0 +1,195 @@
+import pygame
+import numpy as np
+import math
+import os
+import json
+import __main__ as main
+
+def clamp(value, minimum, maximum):
+    return max(minimum, min(value, maximum))
+
+def point_distance(point1, point2):
+    x1, y1 = point1
+    x2, y2 = point2
+    return math.hypot(x2 - x1, y2 - y1)
+
+def tint_image(surface, tint_color):
+    intensity = tint_color[3] / 255.0
+
+    tinted = surface.copy()
+
+    rgb_array = pygame.surfarray.pixels3d(tinted)
+    alpha_array = pygame.surfarray.pixels_alpha(tinted)
+
+    tint_rgb = np.array(tint_color[:3], dtype=np.uint8)
+
+    mask = alpha_array > 0
+
+    for c in range(3):
+        original = rgb_array[:, :, c]
+        blended = (original * (1 - intensity) + tint_rgb[c] * intensity).astype(np.uint8)
+        original[mask] = blended[mask]
+
+    return tinted
+
+
+def button(x, y, width, height, sprite, tint_col, text, surface, events, x_align, y_align):
+    btn_pressed = False
+    mouse_pos = pygame.mouse.get_pos()
+
+    #Set minimal width / height if a text is given
+    if text != 0:
+        text = str(text)
+        font = pygame.font.SysFont('impact', 30)
+        text = font.render(text, True, (255, 255, 255))
+        width = max(width, text.get_width() + 10)
+        height = max(height, text.get_height())
+
+    sprite = pygame.transform.scale(sprite, (width, height))
+
+    #set alignment
+    match x_align: # L (left), M (middle), R (right)
+        case "M": x -= width / 2
+        case "R": x -= width
+    match y_align: # T (top), M (middle), B (bottom)
+        case "M": y -= height / 2
+        case "B": y -= height
+
+    #draw Button and check for Clicks
+    if x <= mouse_pos[0] <= x+width and y <= mouse_pos[1] <= y+height:
+        #main.cur = pygame.cursors.broken_x
+        main.cur = main.cur_pointer
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                btn_pressed = True
+        tinted_image = tint_image(sprite, tint_col)
+        surface.blit(tinted_image, (x, y))
+    else:
+        surface.blit(sprite, (x, y))
+
+    #draw Text if Text is given
+    if text != 0:
+        text_x_align = x - (text.get_width() / 2)
+        text_y_align = y - (text.get_height() / 2)
+        surface.blit(text, (text_x_align + (width / 2), text_y_align + (height / 2)))
+
+    #Return if the Button is pressed
+    return btn_pressed
+
+def background_fill_texture(sprite, scale, surface):
+    import math
+    x = 0
+    y = 0
+    spr_w = sprite.get_width()
+    spr_h = sprite.get_height()
+    sprite = pygame.transform.scale(sprite, (spr_w * scale, spr_h * scale))
+
+    for _ in range(math.ceil(surface.get_height() / (spr_h * scale))):
+        for _ in range(math.ceil(surface.get_width() / (spr_w * scale))):
+            surface.blit(sprite, (x, y))
+            x += spr_w * scale
+        y += spr_h * scale
+        x = 0
+
+def text_render_multiline(x, y, font, text, antialiasing, color, surface, x_align, y_align):
+    lines = text.split("\n")
+
+    for line in lines:
+        render_line = font.render(line, antialiasing, color)
+
+        # set alignment
+        match x_align:  # L (left), M (middle), R (right)
+            case "M": xa = x - render_line.get_width() / 2
+            case "R": xa = x - render_line.get_width()
+            case _: xa = x
+        match y_align:  # T (top), M (middle), B (bottom)
+            case "M": ya = y - render_line.get_height() / 2
+            case "B": ya = y - render_line.get_height()
+            case _: ya = y
+
+        surface.blit(render_line, (xa, ya))
+        y += render_line.get_height()
+
+def render_blocks(changed_blocks, chunk):
+    if changed_blocks == 0:
+        for y in range(64):
+            for x in range(64):
+                coords = [(x * 64), (y * 64)]
+                sprite = main.block_data[main.loaded_chunks[chunk][0][x][y]]["Texture"]
+                main.block_surface[chunk].blit(sprite, (coords[0], coords[1]))
+    else:
+        for block in changed_blocks:
+            coords = [(block[0] * 64), (block[1] * 64)]
+            sprite = main.block_data[main.loaded_chunks[chunk][0][block[0]][block[1]]]["Texture"]
+            main.block_surface[chunk].blit(sprite, (coords[0], coords[1]))
+
+def mouse_get_chunk():
+    mouse = pygame.mouse.get_pos()
+    x = mouse[0] - main.OX
+    y = mouse[1] - main.OY
+    chunk = 4
+    if x < 0:
+        if y < 0:
+            chunk = 0
+        elif y > 4096:
+            chunk = 6
+        else:
+            chunk = 3
+
+    elif x > 4096:
+        if y < 0:
+            chunk = 2
+        elif y > 4096:
+            chunk = 8
+        else:
+            chunk = 5
+    else:
+        if y < 0:
+            chunk = 1
+        elif y > 4096:
+            chunk = 7
+
+    return chunk
+
+def save_world():
+    path = os.path.join(main.GAMEPATH, "saves", main.world_name, "chunkdata")
+    for chunk in main.loaded_chunks:
+        with open(f"{path}/{chunk[1]}.chunk", "w") as file:
+            file.write(str(chunk[0]))
+    path = os.path.join(main.GAMEPATH, "saves", main.world_name)
+    with open(f"{path}/infos.json", "r") as file:
+        read_data = json.load(file)
+    read_data["PlayerX"] = main.OX
+    read_data["PlayerY"] = main.OY
+    read_data["CurrentChunk"] = main.loaded_chunks[4][1]
+    with open(f"{path}/infos.json", "w") as file:
+        json.dump(read_data, file, indent=2)
+
+def texturepack_load(path):
+    blocks_path = f"{path}/assets/minecraft/textures/block"
+    for i in range(1, len(main.block_data)):
+        if os.path.exists(f"{blocks_path}/{main.block_data[i]["filename"]}.png"):
+            main.block_data[i]["Texture"] = pygame.image.load(f"{blocks_path}/{main.block_data[i]["filename"]}.png").convert_alpha()
+            width, height = main.block_data[i]["Texture"].get_size()
+            if height > width:
+                cropped = pygame.Surface((width, width), pygame.SRCALPHA)
+                cropped.blit(main.block_data[i]["Texture"], (0,0))
+                main.block_data[i]["Texture"] = cropped
+            if i == 11:
+                main.block_data[i]["Texture"] = tint_image(main.block_data[i]["Texture"], (34, 118, 0, 200))
+            elif i == 2 or i == 13:
+                main.block_data[i]["Texture"] = tint_image(main.block_data[i]["Texture"], (34, 117, 0, 130))
+
+            main.block_data[i]["Texture"] = pygame.transform.scale(main.block_data[i]["Texture"], (64, 64))
+
+    with open(f"{main.GAMEPATH}/settings.json", "r") as file:
+        read_data = json.load(file)
+    read_data["CurrentTexturepack"] = path
+    with open(f"{main.GAMEPATH}/settings.json", "w") as file:
+        json.dump(read_data, file, indent=2)
+
+def save_world_icon():
+    sv_img = pygame.Surface((128, 128))
+    scr = pygame.transform.scale(main.surface, (240, 128))
+    sv_img.blit(scr, (-56, 0))
+    pygame.image.save(sv_img, f"{main.GAMEPATH}/saves/{main.world_name}/icon.png")
