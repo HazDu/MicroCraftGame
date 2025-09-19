@@ -248,5 +248,38 @@ def get_coordinates_from_chunk(chunk):
 
 
 
-def change_block_over_border():
-    pass
+def change_block_over_border(chunk, _x, _y):
+    chunk_checked = get_coordinates_from_chunk(chunk)
+    if _x < 0:
+        _x = 64 + _x
+        if _y < 0:
+            _y = 64 + _y
+            chunk_checked[0] = chunk_checked[0] - 1
+            chunk_checked[1] = chunk_checked[1] - 1
+        elif _y > 63:
+            _y = _y - 64
+            chunk_checked[0] = chunk_checked[0] - 1
+            chunk_checked[1] = chunk_checked[1] + 1
+        else:
+            chunk_checked[0] = chunk_checked[0] - 1
+    elif _x > 63:
+        _x = _x - 64
+        if _y < 0:
+            _y = 64 + _y
+            chunk_checked[0] = chunk_checked[0] + 1
+            chunk_checked[1] = chunk_checked[1] - 1
+        elif _y > 63:
+            _y = _y - 64
+            chunk_checked[0] = chunk_checked[0] + 1
+            chunk_checked[1] = chunk_checked[1] + 1
+        else:
+            chunk_checked[0] = chunk_checked[0] + 1
+    else:
+        if _y < 0:
+            _y = 64 + _y
+            chunk_checked[1] = chunk_checked[1] - 1
+        elif _y > 63:
+            _y = _y - 64
+            chunk_checked[1] = chunk_checked[1] + 1
+
+    return [get_chunk_from_coordinates(chunk_checked[0], chunk_checked[1]), _x, _y]
