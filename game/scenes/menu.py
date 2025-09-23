@@ -77,6 +77,9 @@ def scene_menu_select(events):
     if button(1260, 100, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), "Main Menu", main.surface, events, "M", "T"):
         main.current_scene = 0
 
+    if button(380, 90, 64, 64, main.explorer, (255, 255, 255, 100), 0, main.surface, events,"M", "T"):
+        os.startfile(f"{main.GAMEPATH}/saves")
+
     y = 0
     dirs = [dir for dir in os.listdir(f"{main.GAMEPATH}/saves") if os.path.isdir(os.path.join(main.GAMEPATH, "saves", dir))]
     texture = pygame.Surface((1, 1), pygame.SRCALPHA)
@@ -136,8 +139,11 @@ def scene_menu_texturepacks(events):
     if button(1260, 100, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), "Main Menu", main.surface, events, "M", "T"):
         main.current_scene = 0
 
-    y = 0
     texturepack_folder = f"{os.getenv('APPDATA')}/.minecraft/resourcepacks"
+    if button(380, 90, 64, 64, main.explorer, (255, 255, 255, 100), 0, main.surface, events,"M", "T"):
+        os.startfile(texturepack_folder)
+
+    y = 0
     dirs = [dir for dir in os.listdir(texturepack_folder) if os.path.isdir(os.path.join(texturepack_folder, dir))]
     texture = pygame.Surface((1, 1), pygame.SRCALPHA)
     texture.fill((20, 20, 20, 150))

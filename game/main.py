@@ -15,6 +15,7 @@ sys.setrecursionlimit(100000)
 pygame.display.set_icon(surface)
 logo = pygame.image.load('game/assets/ui/Microcraft.png')
 trashbin = pygame.image.load('game/assets/ui/trashbin.png')
+explorer = pygame.image.load('game/assets/ui/explorer.png')
 
 #custom cursors
 cur_square = []
@@ -35,6 +36,10 @@ clock = pygame.time.Clock()
 block_surface = [pygame.Surface((4096, 4096), pygame.SRCALPHA) for _ in range(9)]
 GAMEPATH = os.path.join(os.path.expanduser("~"), "Documents", "MicroCraft") #game files path
 os.makedirs(GAMEPATH, exist_ok=True)
+subdir = f"{GAMEPATH}/saves"
+os.makedirs(subdir, exist_ok=True)
+subdir = f"{GAMEPATH}/mods"
+os.makedirs(subdir, exist_ok=True)
 main_font = pygame.font.SysFont('impact', 30)
 OX = 0 #origin
 OY = 0
@@ -79,6 +84,7 @@ while RUNNING:
 
     cur = cur_square
     surface.fill((200, 250, 255))
+    #exec("print(\"test\")")
     match current_scene:
         case 0:
             scene_menu(events)
