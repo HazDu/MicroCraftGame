@@ -116,10 +116,10 @@ def load_blocks():
         12: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/bedrock.png'), (64, 64)),
             "Collidable": True,
-            "Minable": True, #False,
+            "Minable": False,
             "Replacable": False,
             "Interactable": False,
-            "InvShow": True, #False,
+            "InvShow": False,
             "filename": "bedrock"
         },
         13: {

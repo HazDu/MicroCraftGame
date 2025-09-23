@@ -82,7 +82,14 @@ def ui(events, surf, scale):
 
     #Debug Infos
     if main.show_debug:
-        debug_txt = f"FPS: {main.clock.get_fps():.2f}\nMouseX: {mouse[0]}\nMoseY: {mouse[1]}\nPlayerX: {main.OX}\nPlayerY: {main.OY}\nMC: {mouse_get_chunk()}"
+        mx = ((mouse[0] - main.OX) % 4096) // 64
+        my = ((mouse[1] - main.OY) % 4096) // 64
+        debug_txt = (f"FPS: {main.clock.get_fps():.2f}\n"
+                     f"MouseX: {mouse[0]}\nMoseY: {mouse[1]}\n"
+                     f"BlockHover: {main.loaded_chunks[mouse_get_chunk()][0][mx][my]}\n"
+                     f"MouseChunk: {mouse_get_chunk()}\n"
+                     f"MainChunk: {main.loaded_chunks[4][1]}\n"
+                     f"PlayerXY: {main.OX - main.surface.get_width() / 2}, {main.OY - main.surface.get_height() / 2}\n")
         text_render_multiline(10, 10, main.main_font, debug_txt, True, (255, 255, 255), surf, "L", "T")
         pygame.draw.rect(main.surface, (250, 1, 209), (main.OX, main.OY, 4096, 4096), 3)
 

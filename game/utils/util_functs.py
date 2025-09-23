@@ -111,6 +111,7 @@ def text_render_multiline(x, y, font, text, antialiasing, color, surface, x_alig
 
 def render_blocks(changed_blocks, chunk):
     if changed_blocks == 0:
+        main.block_surface[chunk].fill((200, 250, 255))
         for y in range(64):
             for x in range(64):
                 coords = [(x * 64), (y * 64)]
