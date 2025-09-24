@@ -123,6 +123,31 @@ def render_blocks(changed_blocks, chunk):
             sprite = main.block_data[main.loaded_chunks[chunk][0][block[0]][block[1]]]["Texture"]
             main.block_surface[chunk].blit(sprite, (coords[0], coords[1]))
 
+def render_chunk_clear(chunk):
+    main.block_surface[chunk].fill((200, 250, 255))
+
+def chunk_add_render_queue(chunk):
+    coords = [[x, y] for x in range(64) for y in range(64)]
+    main.chunk_render_queue.append([chunk, coords])
+
+def render_chunk(queue, render_speed): #queue = [[chunk, [[0, 0],[0, 1]]], [chunk, [[0, 0],[0, 1]]]]
+        size = clamp(render_speed, 1, 4096)
+        chunk = queue[0][0]
+        blocks = queue[0][1][:size]
+        queue[0][1] = queue[0][1][size:]
+
+        render_blocks(blocks, chunk)
+
+        if queue[0][1] == []:
+            queue.pop(0)
+
+        return queue
+
+def re_render_loaded_chunks():
+    for i in [4, 3, 5, 1, 7, 0, 2, 6, 8]:
+        render_chunk_clear(i)
+        chunk_add_render_queue(i)
+
 def mouse_get_chunk():
     mouse = pygame.mouse.get_pos()
     x = mouse[0] - main.OX

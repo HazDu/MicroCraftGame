@@ -91,14 +91,18 @@ def ui(events, surf, scale):
 
     #Debug Infos
     if main.show_debug:
+        pygame.draw.rect(main.surface, (250, 1, 209), (main.OX, main.OY, 4096, 4096), 3)
         mx = ((mouse[0] - main.OX) % 4096) // 64
         my = ((mouse[1] - main.OY) % 4096) // 64
         debug_txt = (f"FPS: {main.clock.get_fps():.2f}\n"
+                     f"PlayerXY: {main.OX - main.surface.get_width() / 2}, {main.OY - main.surface.get_height() / 2}\n"
                      f"MouseX: {mouse[0]}\nMoseY: {mouse[1]}\n"
-                     f"BlockHover ID: {main.loaded_chunks[mouse_get_chunk()][0][mx][my]}, X: {mx}, Y: {my}\n"
                      f"MouseChunk: {mouse_get_chunk()}\n"
+                     f"BlockHover ID: {main.loaded_chunks[mouse_get_chunk()][0][mx][my]},  X: {mx},  Y: {my}\n"
                      f"MainChunk: {main.loaded_chunks[4][1]}\n"
-                     f"PlayerXY: {main.OX - main.surface.get_width() / 2}, {main.OY - main.surface.get_height() / 2}\n")
+                     f"Rendering Chunks: {len(main.chunk_render_queue) > 0} "
+                     f"({', '.join(str(chunk) for chunk, *_ in main.chunk_render_queue)})\n"
+                     f"{f"Rendering Chunk: {main.chunk_render_queue[0][0]} - {((4096 - len(main.chunk_render_queue[0][1])) * 100) / 4096:.0f}%\n" if main.chunk_render_queue else ""}"
+                     )
         text_render_multiline(10, 10, main.main_font, debug_txt, True, (255, 255, 255), surf, "L", "T")
-        pygame.draw.rect(main.surface, (250, 1, 209), (main.OX, main.OY, 4096, 4096), 3)
 

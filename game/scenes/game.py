@@ -56,7 +56,7 @@ def scene_game_load(path):
 def scene_game(events):
     class Player:
         def __init__(self):
-            self.speed = 8
+            self.speed = 6
             self.x = 0
             self.y = 0
             self.sprite = pygame.transform.scale(pygame.image.load("game/assets/entities/T-Player.png"), (64, 64))
@@ -109,9 +109,20 @@ def scene_game(events):
                         main.loaded_chunks[mouse_chunk][0][x][y] = int(main.block_in_hand)
                         render_blocks([[x, y]], mouse_chunk)
                         #main.cur = main.cur_hammer
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_F3] and keys[pygame.K_a]:
+            re_render_loaded_chunks()
 
     if player.x > 0:
         main.OX = int(-4095 + main.surface.get_width() / 2)
+
+        if len(main.chunk_render_queue) > 0:
+            for index in reversed(range(len(main.chunk_render_queue))):
+                i = main.chunk_render_queue[index]
+                if i[0] in [0, 1, 6, 7]:
+                    i[0] += 1
+                elif i[0] in [2, 8]:
+                    main.chunk_render_queue.pop(index)
 
         for i in [2, 5, 8]:
             with open(f"{main.GAMEPATH}/saves/{main.world_name}/chunkdata/{main.loaded_chunks[i][1]}.chunk", "w") as file:
@@ -131,10 +142,19 @@ def scene_game(events):
             else:
                 generate_chunk(i)
                 main.loaded_chunks[i][1][0] = main.loaded_chunks[i + 1][1][0]-1
-            render_blocks(0, i)
+            render_chunk_clear(i)
+            chunk_add_render_queue(i)
 
     elif player.x < -4095:
         main.OX = int(0 + main.surface.get_width() / 2)
+
+        if len(main.chunk_render_queue) > 0:
+            for index in reversed(range(len(main.chunk_render_queue))):
+                i = main.chunk_render_queue[index]
+                if i[0] in [2, 1, 8, 7]:
+                    i[0] -= 1
+                elif i[0] in [0, 6]:
+                    main.chunk_render_queue.pop(index)
 
         for i in [0, 3, 6]:
             with open(f"{main.GAMEPATH}/saves/{main.world_name}/chunkdata/{main.loaded_chunks[i][1]}.chunk", "w") as file:
@@ -154,10 +174,19 @@ def scene_game(events):
             else:
                 generate_chunk(i)
                 main.loaded_chunks[i][1][0] = main.loaded_chunks[i - 1][1][0] + 1
-            render_blocks(0, i)
+            render_chunk_clear(i)
+            chunk_add_render_queue(i)
 
     elif player.y > 0:
         main.OY = int(-4095 + main.surface.get_height() / 2)
+
+        if len(main.chunk_render_queue) > 0:
+            for index in reversed(range(len(main.chunk_render_queue))):
+                i = main.chunk_render_queue[index]
+                if i[0] in [2, 0, 3, 5]:
+                    i[0] += 3
+                elif i[0] in [8, 6]:
+                    main.chunk_render_queue.pop(index)
 
         for i in [6, 7, 8]:
             with open(f"{main.GAMEPATH}/saves/{main.world_name}/chunkdata/{main.loaded_chunks[i][1]}.chunk",
@@ -181,9 +210,19 @@ def scene_game(events):
             else:
                 generate_chunk(i)
                 main.loaded_chunks[i][1][1] = main.loaded_chunks[i + 3][1][1] - 1
-            render_blocks(0, i)
+            render_chunk_clear(i)
+            chunk_add_render_queue(i)
+
     elif player.y < -4095:
         main.OY = int(0 + main.surface.get_height() / 2)
+
+        if len(main.chunk_render_queue) > 0:
+            for index in reversed(range(len(main.chunk_render_queue))):
+                i = main.chunk_render_queue[index]
+                if i[0] in [8, 6, 3, 5]:
+                    i[0] -= 3
+                elif i[0] in [0, 2]:
+                    main.chunk_render_queue.pop(index)
 
         for i in [0, 1, 2]:
             with open(f"{main.GAMEPATH}/saves/{main.world_name}/chunkdata/{main.loaded_chunks[i][1]}.chunk",
@@ -207,7 +246,8 @@ def scene_game(events):
             else:
                 generate_chunk(i)
                 main.loaded_chunks[i][1][1] = main.loaded_chunks[i - 3][1][1] + 1
-            render_blocks(0, i)
+            render_chunk_clear(i)
+            chunk_add_render_queue(i)
 
     if main.mods_active:
         for mod in main.loaded_mods:
@@ -215,6 +255,11 @@ def scene_game(events):
                 if "scripts/game_loop.py" in zip_ref.namelist():
                     with zip_ref.open("scripts/game_loop.py") as file:
                         exec(file.read())
+
+    if len(main.chunk_render_queue) > 0:
+        main.chunk_render_queue = render_chunk(main.chunk_render_queue, 15)
+        if len(main.chunk_render_queue) > 9:
+            main.chunk_render_queue.pop(0)
 
 
     ui(events, main.surface, main.SCALE)

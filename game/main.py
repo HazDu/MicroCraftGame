@@ -67,6 +67,7 @@ loading_info = ["", ""]
 loading_timeout = 0
 img_save_timeout = 0
 tree_queue = [[],[],[],[],[],[],[],[],[]]
+chunk_render_queue = []
 
 #load settings
 if os.path.exists(f"{GAMEPATH}/settings.json"):
@@ -137,7 +138,7 @@ while RUNNING:
 
     pygame.mouse.set_cursor(cur[0], cur[1], cur[2], cur[3])
     #pygame.mouse.set_cursor(cur)
-    clock.tick(40)
+    clock.tick(60)
     pygame.display.update()
 
 
