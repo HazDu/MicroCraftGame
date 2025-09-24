@@ -13,9 +13,14 @@ surface = pygame.display.set_mode((1920, 1080), pygame.SRCALPHA, 32, 0)
 pygame.display.set_caption("Microcraft")
 sys.setrecursionlimit(100000)
 pygame.display.set_icon(surface)
+
+#load images
 logo = pygame.image.load('game/assets/ui/Microcraft.png')
 trashbin = pygame.image.load('game/assets/ui/trashbin.png')
 explorer = pygame.image.load('game/assets/ui/explorer.png')
+def_img = pygame.image.load("game/assets/ui/pack.png")
+img_mod_loaded = pygame.image.load("game/assets/ui/mod_loaded.png")
+img_mod_unloaded = pygame.image.load("game/assets/ui/mod_unloaded.png")
 
 #custom cursors
 cur_square = []
@@ -32,9 +37,10 @@ block_data = load_blocks()
 pygame.display.set_icon(block_data[18]["Texture"])
 
 #Variables
+GAMEPATH = os.path.join(os.path.expanduser("~"), "Documents", "MicroCraft") #game files path
+MODPATH = f"{GAMEPATH}/mods"
 clock = pygame.time.Clock()
 block_surface = [pygame.Surface((4096, 4096), pygame.SRCALPHA) for _ in range(9)]
-GAMEPATH = os.path.join(os.path.expanduser("~"), "Documents", "MicroCraft") #game files path
 os.makedirs(GAMEPATH, exist_ok=True)
 subdir = f"{GAMEPATH}/saves"
 os.makedirs(subdir, exist_ok=True)
@@ -55,23 +61,36 @@ show_esc = False
 show_inv = False
 show_debug = False
 paused = False
+loaded_mods = []
+mods_active = False
 loading_info = ["", ""]
 loading_timeout = 0
 img_save_timeout = 0
 tree_queue = [[],[],[],[],[],[],[],[],[]]
 
-#load texturepack
+#load settings
 if os.path.exists(f"{GAMEPATH}/settings.json"):
     with open(f"{GAMEPATH}/settings.json", "r") as file:
         read_data = json.load(file)
     if read_data["CurrentTexturepack"] != "none":
         texturepack_load(read_data["CurrentTexturepack"])
+    if len(read_data["LoadedMods"]) > 0:
+        loaded_mods = read_data["LoadedMods"]
+        mods_active = True
 else:
     with open(f"{GAMEPATH}/settings.json", "w") as file:
-        read_data = {"CurrentTexturepack": "none"}
-        json.dump(read_data, file, indent=2)
+        data = {
+            "CurrentTexturepack": "none",
+            "LoadedMods": []
+        }
+        json.dump(data, file, indent=2)
 
-
+if mods_active:
+    for mod in loaded_mods:
+        with zipfile.ZipFile(f"{main.MODPATH}/{mod}", 'r') as zip_ref:
+            if "scripts/init.py" in zip_ref.namelist():
+                with zip_ref.open("scripts/init.py") as file:
+                    exec(file.read())
 RUNNING = True
 while RUNNING:
     events = pygame.event.get()
@@ -84,7 +103,14 @@ while RUNNING:
 
     cur = cur_square
     surface.fill((200, 250, 255))
-    #exec("print(\"test\")")
+
+    if mods_active:
+        for mod in loaded_mods:
+            with zipfile.ZipFile(f"{main.MODPATH}/{mod}", 'r') as zip_ref:
+                if "scripts/main_loop.py" in zip_ref.namelist():
+                    with zip_ref.open("scripts/main_loop.py") as file:
+                        exec(file.read())
+
     match current_scene:
         case 0:
             scene_menu(events)
@@ -101,6 +127,8 @@ while RUNNING:
             scene_menu_texturepacks(events)
         case 6:
             scene_loading(loading_info[0], loading_info[1])
+        case 7:
+            scene_menu_mods(events)
 
     if show_esc or show_inv:
         paused = True

@@ -1,5 +1,5 @@
 import os.path
-
+import zipfile
 import pygame
 import random
 import copy
@@ -208,6 +208,13 @@ def scene_game(events):
                 generate_chunk(i)
                 main.loaded_chunks[i][1][1] = main.loaded_chunks[i - 3][1][1] + 1
             render_blocks(0, i)
+
+    if main.mods_active:
+        for mod in main.loaded_mods:
+            with zipfile.ZipFile(f"{main.MODPATH}/{mod}", 'r') as zip_ref:
+                if "scripts/game_loop.py" in zip_ref.namelist():
+                    with zip_ref.open("scripts/game_loop.py") as file:
+                        exec(file.read())
 
 
     ui(events, main.surface, main.SCALE)

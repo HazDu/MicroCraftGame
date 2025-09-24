@@ -1,5 +1,7 @@
 import random
 import json
+import zipfile
+import io
 import pygame
 import math
 import os
@@ -28,9 +30,11 @@ def scene_menu(events):
     if button(main.surface.get_width() / 2, 600, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), "Texturepacks", main.surface, events, "M", "T"):
         main.current_scene = 5
 
-    if button(main.surface.get_width() / 2, 700, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), "Exit", main.surface, events, "M", "T"):
-        main.RUNNING = False
+    if button(main.surface.get_width() / 2, 700, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), "Mods", main.surface, events, "M", "T"):
+        main.current_scene = 7
 
+    if button(main.surface.get_width() / 2, 800, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), "Exit", main.surface, events, "M", "T"):
+        main.RUNNING = False
 
 def scene_menu_select(events):
     background_fill_texture(main.block_data[1]["Texture"], 2, main.surface)
@@ -99,7 +103,7 @@ def scene_menu_select(events):
         if os.path.exists(f"{main.GAMEPATH}/saves/{i}/icon.png"):
             icon = pygame.image.load(f"{main.GAMEPATH}/saves/{i}/icon.png")
         else:
-            icon = pygame.image.load("game/assets/ui/pack.png")
+            icon = main.def_img
         icon = pygame.transform.scale(icon, (128, 128))
         main.surface.blit(icon, (200, 200 + y))
 
@@ -151,8 +155,11 @@ def scene_menu_texturepacks(events):
         if button(200, 200 + y, 1200, 128, texture, (160, 160, 160, 100), 0, main.surface, events, "L", "T"):
             texturepack_load(f"{texturepack_folder}/{i}")
 
-        icon = pygame.image.load(f"{texturepack_folder}/{i}/pack.png")
-        icon = pygame.transform.scale(icon, (128, 128))
+        if os.path.exists(f"{texturepack_folder}/{i}/pack.png"):
+            icon = pygame.image.load(f"{texturepack_folder}/{i}/pack.png")
+            icon = pygame.transform.scale(icon, (128, 128))
+        else:
+            icon = main.def_img
         main.surface.blit(icon, (200, 200 + y))
 
         with open(f"{texturepack_folder}/{i}/pack.mcmeta", "r") as file:
@@ -160,5 +167,58 @@ def scene_menu_texturepacks(events):
 
         details = f"{i}\n{contents["pack"]["description"]}"
         text_render_multiline(340, 200 + y, main.main_font, details, True, (255, 255, 255), main.surface, "L", "T")
+
+        y += 150
+
+def scene_menu_mods(events):
+    background_fill_texture(main.block_data[1]["Texture"], 2, main.surface)
+
+    if button(1260, 100, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), "Main Menu", main.surface, events, "M", "T"):
+        main.current_scene = 0
+
+    if button(380, 90, 64, 64, main.explorer, (255, 255, 255, 100), 0, main.surface, events, "M", "T"):
+        os.startfile(main.MODPATH)
+
+    y = 0
+    dirs = [file for file in os.listdir(main.MODPATH) if file.endswith('.zip') and os.path.isfile(os.path.join(main.MODPATH, file))]
+
+    texture = pygame.Surface((1, 1), pygame.SRCALPHA)
+    texture.fill((20, 20, 20, 150))
+    for i in dirs:
+        if button(200, 200 + y, 1200, 128, texture, (160, 160, 160, 100), 0, main.surface, events, "L", "T"):
+            if str(i) in main.loaded_mods:
+                main.loaded_mods.remove(str(i))
+            else:
+                main.loaded_mods.append(str(i))
+
+            with open(f"{main.GAMEPATH}/settings.json", "r") as file:
+                read_data = json.load(file)
+            read_data["LoadedMods"] = main.loaded_mods
+            with open(f"{main.GAMEPATH}/settings.json", "w") as file:
+                json.dump(read_data, file, indent=2)
+
+
+
+        if str(i) in main.loaded_mods:
+            status_img = main.img_mod_loaded
+        else:
+            status_img = main.img_mod_unloaded
+        status_img = pygame.transform.scale(status_img, (64, 64))
+        main.surface.blit(status_img, (100, 232 + y))
+
+        with zipfile.ZipFile(f"{main.MODPATH}/{i}", 'r') as zip_ref:
+            if "icon.png" in zip_ref.namelist():
+                with zip_ref.open("icon.png") as img_file:
+                    icon = pygame.image.load(io.BytesIO(img_file.read()))
+                    icon = pygame.transform.scale(icon, (128, 128))
+            else:
+                icon = main.def_img
+            main.surface.blit(icon, (200, 200 + y))
+
+            with zip_ref.open("info.json") as file:
+                contents = json.load(file)
+
+            details = f"{contents["Name"]}\n{contents["Description"]}\nBy: {contents["Author"]}"
+            text_render_multiline(340, 200 + y, main.main_font, details, True, (255, 255, 255), main.surface, "L", "T")
 
         y += 150

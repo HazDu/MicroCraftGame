@@ -1,6 +1,7 @@
 import pygame
 import os
 import json
+import zipfile
 from pygame import SRCALPHA
 from game.utils.util_functs import *
 import __main__ as main
@@ -79,6 +80,14 @@ def ui(events, surf, scale):
                     if block_id == main.block_in_hand:
                         pygame.draw.rect(main.surface, (21, 128, 210), (500 + (x * 80), 230 + (y * 80), 64, 64), 3)
 
+    #ui elements added by mods
+    if main.mods_active:
+        for mod in main.loaded_mods:
+            with zipfile.ZipFile(f"{main.MODPATH}/{mod}", 'r') as zip_ref:
+                if "scripts/ui.py" in zip_ref.namelist():
+                    with zip_ref.open("scripts/ui.py") as file:
+                        exec(file.read())
+
 
     #Debug Infos
     if main.show_debug:
@@ -86,7 +95,7 @@ def ui(events, surf, scale):
         my = ((mouse[1] - main.OY) % 4096) // 64
         debug_txt = (f"FPS: {main.clock.get_fps():.2f}\n"
                      f"MouseX: {mouse[0]}\nMoseY: {mouse[1]}\n"
-                     f"BlockHover: {main.loaded_chunks[mouse_get_chunk()][0][mx][my]}\n"
+                     f"BlockHover ID: {main.loaded_chunks[mouse_get_chunk()][0][mx][my]}, X: {mx}, Y: {my}\n"
                      f"MouseChunk: {mouse_get_chunk()}\n"
                      f"MainChunk: {main.loaded_chunks[4][1]}\n"
                      f"PlayerXY: {main.OX - main.surface.get_width() / 2}, {main.OY - main.surface.get_height() / 2}\n")
