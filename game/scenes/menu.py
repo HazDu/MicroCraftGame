@@ -197,6 +197,13 @@ def scene_menu_mods(events):
             with open(f"{main.GAMEPATH}/settings.json", "w") as file:
                 json.dump(read_data, file, indent=2)
 
+            if str(i) in main.loaded_mods:
+                for mod in main.loaded_mods:
+                    with zipfile.ZipFile(f"{main.MODPATH}/{mod}", 'r') as zip_ref:
+                        if "scripts/load.py" in zip_ref.namelist():
+                            with zip_ref.open("scripts/load.py") as file:
+                                exec(file.read())
+
 
 
         if str(i) in main.loaded_mods:

@@ -52,7 +52,7 @@ OY = 0
 SCALE = 4
 current_scene = 0
 world_name = "Err"
-chunk = []
+#chunk = []
 loaded_chunks = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
 block_in_reach = False
 selected_block = (0, 0)
@@ -77,7 +77,17 @@ if os.path.exists(f"{GAMEPATH}/settings.json"):
         texturepack_load(read_data["CurrentTexturepack"])
     if len(read_data["LoadedMods"]) > 0:
         loaded_mods = read_data["LoadedMods"]
-        mods_active = True
+        for mod in loaded_mods:
+            if not os.path.exists(f"{MODPATH}/{mod}"):
+                loaded_mods.remove(mod)
+                with open(f"{GAMEPATH}/settings.json", "r") as f:
+                    rd = json.load(f)
+                    rd["LoadedMods"] = loaded_mods
+                with open(f"{GAMEPATH}/settings.json", "w")  as f:
+                    json.dump(rd, f, indent=2)
+
+        if len(read_data["LoadedMods"]) > 0:
+            mods_active = True
 else:
     with open(f"{GAMEPATH}/settings.json", "w") as file:
         data = {
@@ -88,14 +98,14 @@ else:
 
 if mods_active:
     for mod in loaded_mods:
-        with zipfile.ZipFile(f"{main.MODPATH}/{mod}", 'r') as zip_ref:
+        with zipfile.ZipFile(f"{MODPATH}/{mod}", 'r') as zip_ref:
             if "scripts/init.py" in zip_ref.namelist():
                 with zip_ref.open("scripts/init.py") as file:
                     exec(file.read())
 RUNNING = True
 while RUNNING:
-    events = pygame.event.get()
-    for event in events:
+    EVENTS = pygame.event.get()
+    for event in EVENTS:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_F4:
                 RUNNING = False
@@ -114,22 +124,22 @@ while RUNNING:
 
     match current_scene:
         case 0:
-            scene_menu(events)
+            scene_menu(EVENTS)
         case 1:
-            scene_menu_select(events)
+            scene_menu_select(EVENTS)
         case 2:
             scene_game_create()
         case 3:
             #scene_game_load()
             print("ERR: Scene can not be accessed.")
         case 4:
-            scene_game(events)
+            scene_game(EVENTS)
         case 5:
-            scene_menu_texturepacks(events)
+            scene_menu_texturepacks(EVENTS)
         case 6:
             scene_loading(loading_info[0], loading_info[1])
         case 7:
-            scene_menu_mods(events)
+            scene_menu_mods(EVENTS)
 
     if show_esc or show_inv:
         paused = True
@@ -137,7 +147,6 @@ while RUNNING:
         paused = False
 
     pygame.mouse.set_cursor(cur[0], cur[1], cur[2], cur[3])
-    #pygame.mouse.set_cursor(cur)
     clock.tick(60)
     pygame.display.update()
 

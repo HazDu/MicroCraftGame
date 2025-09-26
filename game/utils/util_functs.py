@@ -3,6 +3,7 @@ import numpy as np
 import math
 import os
 import json
+import zipfile
 import __main__ as main
 
 def clamp(value, minimum, maximum):
@@ -308,3 +309,9 @@ def change_block_over_border(chunk, _x, _y):
             chunk_checked[1] = chunk_checked[1] + 1
 
     return [get_chunk_from_coordinates(chunk_checked[0], chunk_checked[1]), _x, _y]
+
+#functions for modders
+def mod_init_trigger(mod):
+    with zipfile.ZipFile(f"{main.MODPATH}/{mod}", 'r') as zip_ref:
+        with zip_ref.open("scripts/init.py") as file:
+            exec(file.read())
