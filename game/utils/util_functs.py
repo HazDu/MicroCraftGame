@@ -175,7 +175,7 @@ def mouse_get_chunk():
         elif y > 4096:
             chunk = 7
 
-    return chunk
+    return int(chunk)
 
 def save_world():
     path = os.path.join(main.GAMEPATH, "saves", main.world_name, "chunkdata")

@@ -92,6 +92,8 @@ def scene_menu_select(events):
         if button(200, 200 + y, 1250, 128, texture, (160, 160, 160, 100), 0, main.surface, events, "L", "T"):
             if os.path.exists(f"{main.GAMEPATH}/saves/{i}/infos.json"):
                 main.world_name = i
+                main.OX = 0
+                main.OY = 0
                 main.current_scene = 6
                 main.loading_timeout = 0
                 main.loading_info = [os.path.join(main.GAMEPATH, "saves", i), "load"]

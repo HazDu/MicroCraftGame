@@ -28,7 +28,7 @@ cur_hammer = []
 cur_pointer = []
 cur_star = []
 cur_circle = []
-cur_loading= []
+cur_loading = []
 cursor_custom()
 cur = cur_square
 

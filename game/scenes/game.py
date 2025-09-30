@@ -2,6 +2,7 @@ import os.path
 import zipfile
 import pygame
 import random
+import math
 import copy
 import ast
 from utils.ui import *
@@ -9,6 +10,66 @@ from utils.block_interactions import *
 from utils.util_functs import *
 from utils.generator import *
 import __main__ as main
+
+#classes
+class Player:
+    def __init__(self):
+        self.speed = 6
+        self.x = 0
+        self.y = 0
+        self.jump_vel = -0.5
+        self.jump_max_vel = -25
+        self.sprite = pygame.transform.scale(pygame.image.load("game/assets/entities/T-Player.png"), (64, 64))
+
+    def player_default(self):
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_a]:
+            main.OX += self.speed
+        if keys[pygame.K_d]:
+            main.OX -= self.speed
+
+        standing_x = clamp(int((self.x // 64) * -1), 0, 63)
+        standing_y = clamp(int((self.y // 64) * -1), 0, 63)
+
+        for event in main.EVENTS:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    self.jump_vel = 10
+        if self.jump_vel > 1:
+            main.OY += self.jump_vel
+            self.jump_vel = self.jump_vel / 1.2
+        if -0.5 < self.jump_vel < 1:
+            self.jump_vel = -0.5
+
+        self.x = main.OX - (main.surface.get_width() / 2 - 64)
+        self.y = main.OY - (main.surface.get_height() / 2 - 32)
+
+        if not main.block_data[main.loaded_chunks[4][0][standing_x][standing_y]]["Collidable"]:
+             if self.jump_max_vel < self.jump_vel < 0:
+                self.jump_vel = self.jump_vel * 1.2
+
+        if main.block_data[main.loaded_chunks[4][0][standing_x][standing_y+1]]["Collidable"]:
+            if self.y + self.jump_vel < (standing_y * 64)*-1:
+                self.jump_vel = math.floor(self.jump_vel)
+                main.OY += (standing_y * 64) * -1 - self.y
+            elif not main.block_data[main.loaded_chunks[4][0][standing_x][standing_y]]["Collidable"]:
+                main.OY += self.jump_vel
+            if ((standing_y) * 64) * -1 - self.y == 0:
+                self.jump_vel = -1
+        else:
+            main.OY += self.jump_vel
+
+
+
+        # if keys[pygame.K_w]:
+        #     main.OY += self.speed
+        # if keys[pygame.K_s]:
+        #     main.OY -= self.speed
+
+
+
+        main.surface.blit(self.sprite, (main.surface.get_width() / 2 - 32, main.surface.get_height() / 2 - 32))
 
 def scene_game_create():
     main.loaded_chunks = [
@@ -53,34 +114,9 @@ def scene_game_load(path):
 
     main.current_scene = 4
 
+
+player = Player()
 def scene_game(events):
-    class Player:
-        def __init__(self):
-            self.speed = 6
-            self.x = 0
-            self.y = 0
-            self.sprite = pygame.transform.scale(pygame.image.load("game/assets/entities/T-Player.png"), (64, 64))
-
-        def player_default(self):
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_a]:
-                main.OX += self.speed
-            if keys[pygame.K_d]:
-                main.OX -= self.speed
-            if keys[pygame.K_w]:
-                main.OY += self.speed
-            if keys[pygame.K_s]:
-                main.OY -= self.speed
-
-            self.x = main.OX - main.surface.get_width() / 2
-            self.y = main.OY - main.surface.get_height() / 2
-
-            #text_render_multiline(10, 500, main.main_font, f"x:{self.x}\ny:{self.y}", True, (255, 255, 255), main.surface, "L", "T")
-
-            main.surface.blit(self.sprite, (main.surface.get_width()/2 - 32, main.surface.get_height()/2 - 32))
-
-    player = Player()
-
     chunk_draw_count = 0
     for y in range(-1, 2):
         for x in range(-1, 2):
@@ -88,13 +124,12 @@ def scene_game(events):
                 main.surface.blit(main.block_surface[chunk_draw_count], (main.OX + (x * 4096), main.OY + (y * 4096)))
             chunk_draw_count += 1
 
-    player.player_default()
-
+    #block interacting
     mouse = pygame.mouse.get_pos()
     for event in events:
         if main.block_in_reach and not main.paused:
-            x = ((mouse[0] - main.OX) % 4096) // 64
-            y = ((mouse[1] - main.OY) % 4096) // 64
+            x = int(((mouse[0] - main.OX) % 4096) // 64)
+            y = int(((mouse[1] - main.OY) % 4096) // 64)
             main.selected_block = (x, y)
             mouse_chunk = mouse_get_chunk()
 
@@ -113,8 +148,9 @@ def scene_game(events):
         if keys[pygame.K_F3] and keys[pygame.K_a]:
             re_render_loaded_chunks()
 
+    #Player chunk teleport
     if player.x > 0:
-        main.OX = int(-4095 + main.surface.get_width() / 2)
+        main.OX = int(-4095 + main.surface.get_width() / 2 - 64)
 
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
@@ -146,7 +182,7 @@ def scene_game(events):
             chunk_add_render_queue(i)
 
     elif player.x < -4095:
-        main.OX = int(0 + main.surface.get_width() / 2)
+        main.OX = int(0 + main.surface.get_width() / 2 - 64)
 
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
@@ -178,7 +214,7 @@ def scene_game(events):
             chunk_add_render_queue(i)
 
     elif player.y > 0:
-        main.OY = int(-4095 + main.surface.get_height() / 2)
+        main.OY = int(-4095 + main.surface.get_height() / 2 - 32)
 
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
@@ -214,7 +250,7 @@ def scene_game(events):
             chunk_add_render_queue(i)
 
     elif player.y < -4095:
-        main.OY = int(0 + main.surface.get_height() / 2)
+        main.OY = int(0 + main.surface.get_height() / 2 - 32)
 
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
@@ -248,6 +284,8 @@ def scene_game(events):
                 main.loaded_chunks[i][1][1] = main.loaded_chunks[i - 3][1][1] + 1
             render_chunk_clear(i)
             chunk_add_render_queue(i)
+
+    player.player_default()
 
     if main.mods_active:
         for mod in main.loaded_mods:

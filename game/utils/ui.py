@@ -37,8 +37,8 @@ def ui(events, surf, scale):
     surf.blit(surface, (0,0))
 
     #change cursor
-    x = ((mouse[0] - main.OX) % 4096) // 64
-    y = ((mouse[1] - main.OY) % 4096) // 64
+    x = int(((mouse[0] - main.OX) % 4096) // 64)
+    y = int(((mouse[1] - main.OY) % 4096) // 64)
     mouse_chunk = mouse_get_chunk()
     if main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Interactable"]:
         main.cur = main.cur_circle
@@ -92,10 +92,10 @@ def ui(events, surf, scale):
     #Debug Infos
     if main.show_debug:
         pygame.draw.rect(main.surface, (250, 1, 209), (main.OX, main.OY, 4096, 4096), 3)
-        mx = ((mouse[0] - main.OX) % 4096) // 64
-        my = ((mouse[1] - main.OY) % 4096) // 64
+        mx = int(((mouse[0] - main.OX) % 4096) // 64)
+        my = int(((mouse[1] - main.OY) % 4096) // 64)
         debug_txt = (f"FPS: {main.clock.get_fps():.2f}\n"
-                     f"PlayerXY: {main.OX - main.surface.get_width() / 2}, {main.OY - main.surface.get_height() / 2}\n"
+                     f"PlayerXY: {main.OX - main.surface.get_width() / 2 - 64}, {main.OY - main.surface.get_height() / 2 - 32}\n"
                      f"MouseX: {mouse[0]}\nMoseY: {mouse[1]}\n"
                      f"MouseChunk: {mouse_get_chunk()}\n"
                      f"BlockHover ID: {main.loaded_chunks[mouse_get_chunk()][0][mx][my]},  X: {mx},  Y: {my}\n"
