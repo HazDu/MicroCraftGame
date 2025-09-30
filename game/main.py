@@ -55,6 +55,7 @@ world_name = "Err"
 #chunk = []
 loaded_chunks = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
 block_in_reach = False
+main.reach = 300
 selected_block = (0, 0)
 block_in_hand = 1
 show_esc = False

@@ -26,7 +26,7 @@ def ui(events, surf, scale):
     block_x = grid_size * ((mouse[0] - main.OX) // grid_size) + main.OX
     block_y = grid_size * ((mouse[1] - main.OY) // grid_size) + main.OY
 
-    if point_distance((surf.get_width() / 2, surf.get_height() / 2), (mouse[0], mouse[1])) < 300:
+    if point_distance((surf.get_width() / 2, surf.get_height() / 2), (mouse[0], mouse[1])) < main.reach:
         main.block_in_reach = True
         sel_col = (255,255,0)
     else:
