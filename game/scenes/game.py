@@ -4,6 +4,7 @@ import pygame
 import random
 import math
 import copy
+import globals
 import ast
 from utils.ui import *
 from utils.block_interactions import *
@@ -31,6 +32,9 @@ class Player:
 
         standing_x = clamp(int((self.x // 64) * -1), 0, 63)
         standing_y = clamp(int((self.y // 64) * -1), 0, 63)
+        text_render_multiline(500, 10, main.main_font, f"{standing_x}, {standing_y}", True, (255, 255, 255), main.surface, "x", "x")
+        is_collidable = []
+
 
         for event in main.EVENTS:
             if event.type == pygame.KEYDOWN:
@@ -59,13 +63,6 @@ class Player:
                 self.jump_vel = -1
         else:
             main.OY += self.jump_vel
-
-
-
-        # if keys[pygame.K_w]:
-        #     main.OY += self.speed
-        # if keys[pygame.K_s]:
-        #     main.OY -= self.speed
 
 
 

@@ -1,4 +1,5 @@
 import pygame
+import globals
 from utils.ui import *
 import sys
 from utils.block_ids import *

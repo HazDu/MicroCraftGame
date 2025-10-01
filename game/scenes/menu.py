@@ -2,6 +2,7 @@ import random
 import json
 import zipfile
 import io
+import globals
 import pygame
 import math
 import os
