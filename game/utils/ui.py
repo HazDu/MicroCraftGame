@@ -2,7 +2,6 @@ import pygame
 import os
 import json
 import zipfile
-import globals
 from pygame import SRCALPHA
 from game.utils.util_functs import *
 import __main__ as main

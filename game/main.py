@@ -1,5 +1,4 @@
 import pygame
-import globals
 from utils.ui import *
 import sys
 from utils.block_ids import *
@@ -70,6 +69,7 @@ loading_timeout = 0
 img_save_timeout = 0
 tree_queue = [[],[],[],[],[],[],[],[],[]]
 chunk_render_queue = []
+mod_reinit = [False, ""]
 
 #load settings
 if os.path.exists(f"{GAMEPATH}/settings.json"):
@@ -123,6 +123,17 @@ while RUNNING:
                 if "scripts/main_loop.py" in zip_ref.namelist():
                     with zip_ref.open("scripts/main_loop.py") as file:
                         exec(file.read())
+
+    if len(loaded_mods) > 0:
+        mods_active = True
+    else:
+        mods_active = False
+
+    if mod_reinit[0]:
+        with zipfile.ZipFile(f"{main.MODPATH}/{mod_reinit[1]}", 'r') as zip_ref:
+            with zip_ref.open("scripts/init.py") as file:
+                exec(file.read())
+        mod_reinit[0] = False
 
     match current_scene:
         case 0:

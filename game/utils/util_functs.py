@@ -312,6 +312,4 @@ def change_block_over_border(chunk, _x, _y):
 
 #functions for modders
 def mod_init_trigger(mod):
-    with zipfile.ZipFile(f"{main.MODPATH}/{mod}", 'r') as zip_ref:
-        with zip_ref.open("scripts/init.py") as file:
-            exec(file.read())
+    main.mod_reinit = [True, mod]

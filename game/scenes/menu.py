@@ -2,7 +2,6 @@ import random
 import json
 import zipfile
 import io
-import globals
 import pygame
 import math
 import os
@@ -199,7 +198,6 @@ def scene_menu_mods(events):
             read_data["LoadedMods"] = main.loaded_mods
             with open(f"{main.GAMEPATH}/settings.json", "w") as file:
                 json.dump(read_data, file, indent=2)
-
             if str(i) in main.loaded_mods:
                 for mod in main.loaded_mods:
                     with zipfile.ZipFile(f"{main.MODPATH}/{mod}", 'r') as zip_ref:

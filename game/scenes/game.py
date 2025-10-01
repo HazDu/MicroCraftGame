@@ -4,7 +4,6 @@ import pygame
 import random
 import math
 import copy
-import globals
 import ast
 from utils.ui import *
 from utils.block_interactions import *
