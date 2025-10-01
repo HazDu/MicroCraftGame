@@ -70,6 +70,7 @@ img_save_timeout = 0
 tree_queue = [[],[],[],[],[],[],[],[],[]]
 chunk_render_queue = []
 mod_reinit = [False, ""]
+menu_scroll = 0
 
 #load settings
 if os.path.exists(f"{GAMEPATH}/settings.json"):
@@ -111,6 +112,8 @@ while RUNNING:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_F4:
                 RUNNING = False
+        if event.type == pygame.MOUSEWHEEL:
+            menu_scroll += event.y*30
         if event.type == pygame.QUIT:
             RUNNING = False
 
