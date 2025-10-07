@@ -28,40 +28,91 @@ class Player:
             main.OX += self.speed
         if keys[pygame.K_d]:
             main.OX -= self.speed
+        if keys[pygame.K_w]:
+            main.OY += self.speed
+        if keys[pygame.K_s]:
+            main.OY -= self.speed
 
-        standing_x = clamp(int((self.x // 64) * -1), 0, 63)
-        standing_y = clamp(int((self.y // 64) * -1), 0, 63)
+        self.x = main.OX - (main.surface.get_width() / 2)
+        self.y = main.OY - (main.surface.get_height() / 2)
+
+        standing_x = clamp(int((self.x // 64) * -1) -1 , 0, 63)
+        standing_y = clamp(int((self.y // 64) * -1) -1 , 0, 63)
         text_render_multiline(500, 10, main.main_font, f"{standing_x}, {standing_y}", True, (255, 255, 255), main.surface, "x", "x")
-        is_collidable = []
+        is_collidable = {
+            "North": False,
+            "South": False,
+            "East": False,
+            "West": False,
+        }
 
-
-        for event in main.EVENTS:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    self.jump_vel = 10
-        if self.jump_vel > 1:
-            main.OY += self.jump_vel
-            self.jump_vel = self.jump_vel / 1.2
-        if -0.5 < self.jump_vel < 1:
-            self.jump_vel = -0.5
-
-        self.x = main.OX - (main.surface.get_width() / 2 - 64)
-        self.y = main.OY - (main.surface.get_height() / 2 - 32)
-
-        if not main.block_data[main.loaded_chunks[4][0][standing_x][standing_y]]["Collidable"]:
-             if self.jump_max_vel < self.jump_vel < 0:
-                self.jump_vel = self.jump_vel * 1.2
-
-        if main.block_data[main.loaded_chunks[4][0][standing_x][standing_y+1]]["Collidable"]:
-            if self.y + self.jump_vel < (standing_y * 64)*-1:
-                self.jump_vel = math.floor(self.jump_vel)
-                main.OY += (standing_y * 64) * -1 - self.y
-            elif not main.block_data[main.loaded_chunks[4][0][standing_x][standing_y]]["Collidable"]:
-                main.OY += self.jump_vel
-            if ((standing_y) * 64) * -1 - self.y == 0:
-                self.jump_vel = -1
+        if standing_x - 1 < 0:
+            check_chunk = 3
+            standing_xx = 63
         else:
-            main.OY += self.jump_vel
+            check_chunk = 4
+            standing_xx = standing_x - 1
+        if main.block_data[main.loaded_chunks[check_chunk][0][standing_xx][standing_y]]["Collidable"]:
+            is_collidable["West"] = True
+
+        if standing_x + 1 > 63:
+            check_chunk = 5
+            standing_xx = 0
+        else:
+            check_chunk = 4
+            standing_xx = standing_x + 1
+        if main.block_data[main.loaded_chunks[check_chunk][0][standing_xx][standing_y]]["Collidable"]:
+            is_collidable["East"] = True
+
+        if standing_y - 1 < 0:
+            check_chunk = 1
+            standing_yy = 63
+        else:
+            check_chunk = 4
+            standing_yy = standing_y - 1
+        if main.block_data[main.loaded_chunks[check_chunk][0][standing_x][standing_yy]]["Collidable"]:
+            is_collidable["North"] = True
+
+        if standing_y + 1 > 63:
+            check_chunk = 7
+            standing_yy = 0
+        else:
+            check_chunk = 4
+            standing_yy = standing_y + 1
+        if main.block_data[main.loaded_chunks[check_chunk][0][standing_x][standing_yy]]["Collidable"]:
+            is_collidable["South"] = True
+
+        text_render_multiline(500, 50, main.main_font, f"N: {is_collidable["North"]}\ns: {is_collidable["South"]}\nE: {is_collidable["East"]}\nW: {is_collidable["West"]}\n", True, (255, 255, 255), main.surface, "x", "x")
+
+
+
+
+        # for event in main.EVENTS:
+        #     if event.type == pygame.KEYDOWN:
+        #         if event.key == pygame.K_SPACE:
+        #             self.jump_vel = 10
+        # if self.jump_vel > 1:
+        #     main.OY += self.jump_vel
+        #     self.jump_vel = self.jump_vel / 1.2
+        # if -0.5 < self.jump_vel < 1:
+        #     self.jump_vel = -0.5
+        #
+        #
+        #
+        # if not main.block_data[main.loaded_chunks[4][0][standing_x][standing_y]]["Collidable"]:
+        #      if self.jump_max_vel < self.jump_vel < 0:
+        #         self.jump_vel = self.jump_vel * 1.2
+        #
+        # if main.block_data[main.loaded_chunks[4][0][standing_x][standing_y+1]]["Collidable"]:
+        #     if self.y + self.jump_vel < (standing_y * 64)*-1:
+        #         self.jump_vel = math.floor(self.jump_vel)
+        #         main.OY += (standing_y * 64) * -1 - self.y
+        #     elif not main.block_data[main.loaded_chunks[4][0][standing_x][standing_y]]["Collidable"]:
+        #         main.OY += self.jump_vel
+        #     if ((standing_y) * 64) * -1 - self.y == 0:
+        #         self.jump_vel = -1
+        # else:
+        #     main.OY += self.jump_vel
 
 
 
@@ -87,6 +138,8 @@ def scene_game_create():
     for chunk in range(9):
         render_blocks(0, chunk)
 
+    main.OX = 0
+    main.OY = 0
     main.current_scene = 4
 
 def scene_game_load(path):
@@ -146,7 +199,7 @@ def scene_game(events):
 
     #Player chunk teleport
     if player.x > 0:
-        main.OX = int(-4095 + main.surface.get_width() / 2 - 64)
+        main.OX = int(-4095 + main.surface.get_width() / 2)
 
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
@@ -178,7 +231,7 @@ def scene_game(events):
             chunk_add_render_queue(i)
 
     elif player.x < -4095:
-        main.OX = int(0 + main.surface.get_width() / 2 - 64)
+        main.OX = int(0 + main.surface.get_width() / 2)
 
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
@@ -210,7 +263,7 @@ def scene_game(events):
             chunk_add_render_queue(i)
 
     elif player.y > 0:
-        main.OY = int(-4095 + main.surface.get_height() / 2 - 32)
+        main.OY = int(-4095 + main.surface.get_height() / 2)
 
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
@@ -246,7 +299,7 @@ def scene_game(events):
             chunk_add_render_queue(i)
 
     elif player.y < -4095:
-        main.OY = int(0 + main.surface.get_height() / 2 - 32)
+        main.OY = int(0 + main.surface.get_height() / 2)
 
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
