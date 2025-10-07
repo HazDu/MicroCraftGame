@@ -30,15 +30,6 @@ class Player:
     def player_default(self):
         keys = pygame.key.get_pressed()
 
-        # if keys[pygame.K_a]:
-        #     main.OX += self.speed
-        # if keys[pygame.K_d]:
-        #     main.OX -= self.speed
-        if keys[pygame.K_w]:
-            main.OY += self.speed
-        if keys[pygame.K_s]:
-            main.OY -= self.speed
-
         self.x = main.OX - (main.surface.get_width() / 2)
         self.y = main.OY - (main.surface.get_height() / 2)
 
@@ -129,7 +120,6 @@ class Player:
 
         moving_space = (self.y + self.hitbox["top"])*-1 - standing_y*64
         if is_collidable["North"] and self.jump_vel > 1 and moving_space < self.jump_vel:
-            print(f"moving vel: {self.jump_vel}\nspace: {moving_space}")
             main.OY += moving_space
             self.jump_vel = 0
 
