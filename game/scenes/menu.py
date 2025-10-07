@@ -64,20 +64,6 @@ def scene_menu_select(events):
                 }
                 file.write(json.dumps(infos))
 
-
-
-            sv_img = pygame.Surface((128, 128))
-            random_id = random.choice(list(main.block_data.keys()))
-            sv_img.blit(main.block_data[random_id]["Texture"], (0, 0))
-            random_id = random.choice(list(main.block_data.keys()))
-            sv_img.blit(main.block_data[random_id]["Texture"], (64, 0))
-            random_id = random.choice(list(main.block_data.keys()))
-            sv_img.blit(main.block_data[random_id]["Texture"], (0, 64))
-            random_id = random.choice(list(main.block_data.keys()))
-            sv_img.blit(main.block_data[random_id]["Texture"], (64, 64))
-            sv_img = pygame.transform.scale(sv_img, (32, 32))
-            pygame.image.save(sv_img, f"{path}/icon.png")
-
             main.world_name = world_name_input
             main.current_scene = 6
             main.loading_timeout = 0
@@ -141,6 +127,18 @@ def scene_menu_select(events):
 
         y += 150
         main.menu_scroll = clamp(main.menu_scroll, (len(dirs)-1)*150*-1, 0)
+
+def scene_menu_create():
+    if button(660, 100, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), f"{"Enter Name..." if not main.menu_create_worldname_input else ""}{main.menu_create_worldname_input}", main.surface, main.EVENTS, "L", "T"):
+        main.menu_create_worldname_input_box = True
+
+    if main.menu_create_worldname_input_box:
+        for event in main.EVENTS:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    main.menu_create_worldname_input = main.menu_create_worldname_input[:-1]
+                elif event.unicode.isdigit():
+                    main.menu_create_worldname_input += event.unicode
 
 def scene_menu_texturepacks(events):
     background_fill_texture(main.block_data[1]["Texture"], 2, main.surface)

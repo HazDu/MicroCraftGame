@@ -71,6 +71,9 @@ block_in_hand = 1
 show_esc = False
 show_inv = False
 show_debug = False
+menu_create_worldname_input_box = False
+menu_create_seed_input_box = False
+menu_create_worldname_input = ""
 paused = False
 loaded_mods = []
 mods_active = False
@@ -167,6 +170,8 @@ while RUNNING:
             scene_loading(loading_info[0], loading_info[1])
         case 7:
             scene_menu_mods(EVENTS)
+        case 8:
+            scene_menu_create()
 
     if show_esc or show_inv:
         paused = True

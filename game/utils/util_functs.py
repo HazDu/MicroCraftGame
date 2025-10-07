@@ -126,13 +126,13 @@ def render_blocks(changed_blocks, chunk):
             coords = [(block[0] * 64), (block[1] * 64)]
             sprite = main.block_data[main.loaded_chunks[chunk][0][block[0]][block[1]]]["Texture"]
             if image_is_transparent(sprite):
-                clear = pygame.Surface((64, 64))
-                clear.fill(main.sky_color)
-                main.block_surface[chunk].blit(clear, (coords[0], coords[1]))
+                clear = pygame.Surface((64, 64), pygame.SRCALPHA)
+                clear.fill((0, 0, 0, 0))
+                main.block_surface[chunk].blit(clear, (coords[0], coords[1]), special_flags=pygame.BLEND_RGBA_MULT)
             main.block_surface[chunk].blit(sprite, (coords[0], coords[1]))
 
 def render_chunk_clear(chunk):
-    main.block_surface[chunk].fill((200, 250, 255))
+    main.block_surface[chunk].fill((0, 0, 0, 0))
 
 def chunk_add_render_queue(chunk):
     coords = [[x, y] for x in range(64) for y in range(64)]
