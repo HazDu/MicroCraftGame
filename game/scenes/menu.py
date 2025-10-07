@@ -9,6 +9,7 @@ import glob
 import shutil
 from utils.block_ids import *
 import datetime
+import subprocess
 from game.scenes.game import *
 from game.scenes.loading import *
 from game.utils.util_functs import *
@@ -85,7 +86,11 @@ def scene_menu_select(events):
         main.current_scene = 0
 
     if button(380, 90, 64, 64, main.explorer, (255, 255, 255, 100), 0, main.surface, events,"M", "T"):
-        os.startfile(f"{main.GAMEPATH}/saves")
+        if main.SYSTEM == "Windows":
+            os.startfile(f"{main.GAMEPATH}/saves")
+        else:
+            subprocess.Popen(['xdg-open', f"{main.GAMEPATH}/saves"])
+
 
     y = main.menu_scroll
     dirs = [dir for dir in os.listdir(f"{main.GAMEPATH}/saves") if os.path.isdir(os.path.join(main.GAMEPATH, "saves", dir))]
@@ -152,7 +157,10 @@ def scene_menu_texturepacks(events):
 
     texturepack_folder = f"{os.getenv('APPDATA')}/.minecraft/resourcepacks"
     if button(380, 90, 64, 64, main.explorer, (255, 255, 255, 100), 0, main.surface, events,"M", "T"):
-        os.startfile(texturepack_folder)
+        if main.SYSTEM == "Windows":
+            os.startfile(texturepack_folder)
+        else:
+            subprocess.Popen(['xdg-open', texturepack_folder])
 
     y = main.menu_scroll
     dirs = [dir for dir in os.listdir(texturepack_folder) if os.path.isdir(os.path.join(texturepack_folder, dir))]
@@ -186,7 +194,10 @@ def scene_menu_mods(events):
         main.current_scene = 0
 
     if button(380, 90, 64, 64, main.explorer, (255, 255, 255, 100), 0, main.surface, events, "M", "T"):
-        os.startfile(main.MODPATH)
+        if main.SYSTEM == "Windows":
+            os.startfile(main.MODPATH)
+        else:
+            subprocess.Popen(['xdg-open', main.MODPATH])
 
     y = main.menu_scroll
     dirs = [file for file in os.listdir(main.MODPATH) if file.endswith('.zip') and os.path.isfile(os.path.join(main.MODPATH, file))]

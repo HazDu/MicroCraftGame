@@ -1,6 +1,9 @@
+from tkinter import messagebox
+
 import pygame
 from utils.ui import *
 import sys
+import platform
 from utils.block_ids import *
 from utils.cursor import *
 from scenes.menu import *
@@ -37,7 +40,14 @@ block_data = load_blocks()
 pygame.display.set_icon(block_data[18]["Texture"])
 
 #Variables
-GAMEPATH = os.path.join(os.path.expanduser("~"), "Documents", "MicroCraft") #game files path
+SYSTEM = platform.system()
+if SYSTEM == "Windows":
+    GAMEPATH = os.path.join(os.path.expanduser("~"), "Documents", "MicroCraft")  # game files path
+elif SYSTEM == "Linux":
+    GAMEPATH = os.path.join(os.path.expanduser("~"), "MicroCraft")
+else:
+    messagebox.showerror("Error", "Your OS is not compatible with this game! (Imagine using Mac eew.)")
+    pygame.quit()
 MODPATH = f"{GAMEPATH}/mods"
 clock = pygame.time.Clock()
 block_surface = [pygame.Surface((4096, 4096), pygame.SRCALPHA) for _ in range(9)]
