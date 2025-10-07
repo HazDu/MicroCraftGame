@@ -20,14 +20,20 @@ class Player:
         self.jump_vel = -0.5
         self.jump_max_vel = -25
         self.sprite = pygame.transform.scale(pygame.image.load("game/assets/entities/T-Player.png"), (64, 64))
+        self.hitbox = {
+            "top": 20,
+            "left": 12,
+            "bottom": -32,
+            "right": -12,
+        }
 
     def player_default(self):
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_a]:
-            main.OX += self.speed
-        if keys[pygame.K_d]:
-            main.OX -= self.speed
+        # if keys[pygame.K_a]:
+        #     main.OX += self.speed
+        # if keys[pygame.K_d]:
+        #     main.OX -= self.speed
         if keys[pygame.K_w]:
             main.OY += self.speed
         if keys[pygame.K_s]:
@@ -84,7 +90,18 @@ class Player:
 
         text_render_multiline(500, 50, main.main_font, f"N: {is_collidable["North"]}\ns: {is_collidable["South"]}\nE: {is_collidable["East"]}\nW: {is_collidable["West"]}\n", True, (255, 255, 255), main.surface, "x", "x")
 
-
+        if keys[pygame.K_a]:
+            moving_space = (self.x + self.hitbox["left"])*-1 - standing_x*64
+            if not is_collidable["West"] or moving_space >= self.speed:
+                main.OX += self.speed
+            elif moving_space > 0:
+                main.OX += moving_space
+        if keys[pygame.K_d]:
+            moving_space = (standing_x+1)*64 + (self.x + self.hitbox["right"])
+            if not is_collidable["East"] or moving_space >= self.speed:
+                main.OX -= self.speed
+            elif moving_space > 0:
+                main.OX -= moving_space
 
 
         # for event in main.EVENTS:
