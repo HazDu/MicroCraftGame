@@ -81,6 +81,7 @@ tree_queue = [[],[],[],[],[],[],[],[],[]]
 chunk_render_queue = []
 mod_reinit = [False, ""]
 menu_scroll = 0
+sky_color = (200, 250, 255)
 
 #load settings
 if os.path.exists(f"{GAMEPATH}/settings.json"):
@@ -128,7 +129,7 @@ while RUNNING:
             RUNNING = False
 
     cur = cur_square
-    surface.fill((200, 250, 255))
+    surface.fill(sky_color)
 
     if mods_active:
         for mod in loaded_mods:

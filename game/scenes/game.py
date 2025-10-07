@@ -360,6 +360,9 @@ def scene_game(events):
                     with zip_ref.open("scripts/game_loop.py") as file:
                         exec(file.read())
 
+    if len(main.chunk_render_queue) > 2:
+        while main.chunk_render_queue[0] in main.chunk_render_queue[1:]:
+            main.chunk_render_queue.pop(0)
     if len(main.chunk_render_queue) > 0:
         main.chunk_render_queue = render_chunk(main.chunk_render_queue, 15)
         if len(main.chunk_render_queue) > 9:

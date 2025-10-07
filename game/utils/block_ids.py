@@ -220,7 +220,97 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "iron_bars"
-        }
+        },
+        24: {
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/iron_block.png'), (64, 64)),
+            "Collidable": True,
+            "Minable": True,
+            "Replacable": False,
+            "Interactable": False,
+            "InvShow": True,
+            "filename": "iron_block"
+        },
+        25: {
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/gold_block.png'), (64, 64)),
+            "Collidable": True,
+            "Minable": True,
+            "Replacable": False,
+            "Interactable": False,
+            "InvShow": True,
+            "filename": "gold_block"
+        },
+        26: {
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/diamond_block.png'), (64, 64)),
+            "Collidable": True,
+            "Minable": True,
+            "Replacable": False,
+            "Interactable": False,
+            "InvShow": True,
+            "filename": "diamond_block"
+        },
+        27: {
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/emerald_block.png'), (64, 64)),
+            "Collidable": True,
+            "Minable": True,
+            "Replacable": False,
+            "Interactable": False,
+            "InvShow": True,
+            "filename": "emerald_block"
+        },
+        28: {
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/coal_block.png'), (64, 64)),
+            "Collidable": True,
+            "Minable": True,
+            "Replacable": False,
+            "Interactable": False,
+            "InvShow": True,
+            "filename": "coal_block"
+        },
+        29: {
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/coal_ore.png'), (64, 64)),
+            "Collidable": True,
+            "Minable": True,
+            "Replacable": False,
+            "Interactable": False,
+            "InvShow": True,
+            "filename": "coal_ore"
+        },
+        30: {
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/iron_ore.png'), (64, 64)),
+            "Collidable": True,
+            "Minable": True,
+            "Replacable": False,
+            "Interactable": False,
+            "InvShow": True,
+            "filename": "iron_ore"
+        },
+        31: {
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/gold_ore.png'), (64, 64)),
+            "Collidable": True,
+            "Minable": True,
+            "Replacable": False,
+            "Interactable": False,
+            "InvShow": True,
+            "filename": "gold_ore"
+        },
+        32: {
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/diamond_ore.png'), (64, 64)),
+            "Collidable": True,
+            "Minable": True,
+            "Replacable": False,
+            "Interactable": False,
+            "InvShow": True,
+            "filename": "diamond_ore"
+        },
+        33: {
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/emerald_ore.png'), (64, 64)),
+            "Collidable": True,
+            "Minable": True,
+            "Replacable": False,
+            "Interactable": False,
+            "InvShow": True,
+            "filename": "emerald_ore"
+        },
     }
 
     return block_data

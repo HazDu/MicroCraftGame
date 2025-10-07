@@ -33,6 +33,9 @@ def tint_image(surface, tint_color):
 
     return tinted
 
+def image_is_transparent(surface):
+    alpha_array = pygame.surfarray.pixels_alpha(surface)
+    return (alpha_array < 255).any()
 
 def button(x, y, width, height, sprite, tint_col, text, surface, events, x_align, y_align):
     btn_pressed = False
@@ -122,6 +125,10 @@ def render_blocks(changed_blocks, chunk):
         for block in changed_blocks:
             coords = [(block[0] * 64), (block[1] * 64)]
             sprite = main.block_data[main.loaded_chunks[chunk][0][block[0]][block[1]]]["Texture"]
+            if image_is_transparent(sprite):
+                clear = pygame.Surface((64, 64))
+                clear.fill(main.sky_color)
+                main.block_surface[chunk].blit(clear, (coords[0], coords[1]))
             main.block_surface[chunk].blit(sprite, (coords[0], coords[1]))
 
 def render_chunk_clear(chunk):

@@ -63,8 +63,8 @@ def ui(events, surf, scale):
     if main.show_inv:
         pygame.draw.rect(main.surface, (64, 64, 64), (460, 190, 1000, 700))
         block_id = 0
-        for y in range(3):
-            for x in range(8):
+        for y in range(5):
+            for x in range(10):
 
                 block_id += 1
                 if block_id < len(main.block_data):
