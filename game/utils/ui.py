@@ -61,6 +61,17 @@ def ui(events, surf, scale):
             main.show_esc = False
             main.img_save_timeout = 1
 
+    #hotbar
+    surf.blit(main.img_hotbar, (704, 1016))
+    surf.blit(main.img_hotbar_sel, (704+(64*main.hotbar_slot), 1016))
+
+    for event in events:
+        if event.type == pygame.MOUSEWHEEL:
+            main.hotbar_slot -= event.y
+            if main.hotbar_slot < 0:
+                main.hotbar_slot = 7
+            elif main.hotbar_slot > 7:
+                main.hotbar_slot = 0
 
     #Inventory
     if main.show_inv:

@@ -35,7 +35,7 @@ class Player:
 
         standing_x = clamp(int((self.x // 64) * -1) -1 , 0, 63)
         standing_y = clamp(int((self.y // 64) * -1) -1 , 0, 63)
-        text_render_multiline(500, 10, main.main_font, f"{standing_x}, {standing_y}", True, (255, 255, 255), main.surface, "x", "x")
+        # text_render_multiline(500, 10, main.main_font, f"{standing_x}, {standing_y}", True, (255, 255, 255), main.surface, "x", "x")
 
         #collision check
         is_collidable = {
@@ -81,7 +81,7 @@ class Player:
         if main.block_data[main.loaded_chunks[check_chunk][0][standing_x][standing_yy]]["Collidable"]:
             is_collidable["South"] = True
 
-        text_render_multiline(500, 50, main.main_font, f"N: {is_collidable["North"]}\ns: {is_collidable["South"]}\nE: {is_collidable["East"]}\nW: {is_collidable["West"]}\n", True, (255, 255, 255), main.surface, "x", "x")
+       # text_render_multiline(500, 50, main.main_font, f"N: {is_collidable["North"]}\ns: {is_collidable["South"]}\nE: {is_collidable["East"]}\nW: {is_collidable["West"]}\n", True, (255, 255, 255), main.surface, "x", "x")
 
         #movement left/right
         if keys[pygame.K_a]:

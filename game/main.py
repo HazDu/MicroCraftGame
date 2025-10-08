@@ -23,6 +23,8 @@ explorer = pygame.image.load('game/assets/ui/explorer.png')
 def_img = pygame.image.load("game/assets/ui/pack.png")
 img_mod_loaded = pygame.image.load("game/assets/ui/mod_loaded.png")
 img_mod_unloaded = pygame.image.load("game/assets/ui/mod_unloaded.png")
+img_hotbar = pygame.transform.scale(pygame.image.load("game/assets/ui/hotbar.png"), (512, 64))
+img_hotbar_sel = pygame.transform.scale(pygame.image.load("game/assets/ui/hotbar_selector.png"), (64, 64))
 
 #custom cursors
 cur_square = []
@@ -87,6 +89,7 @@ mod_reinit = [False, ""]
 menu_scroll = 0
 break_progress = 0
 break_speed = 1
+hotbar_slot = 0
 sky_color = (200, 250, 255)
 
 #load settings
