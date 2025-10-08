@@ -40,3 +40,31 @@ def generate_chunk(chunk):
             row.append(random.randint(2, 2))
         contents.append(row)
     main.loaded_chunks[chunk][0] = contents
+
+def generate_chunk_2d_flat(chunk):
+    if main.loaded_chunks[chunk][1][1] == 0:
+        contents = []
+        for y in range(64):
+            row = []
+            for x in range(64):
+                if x == 32:
+                    row.append(2)
+                elif 58 > x > 32:
+                    row.append(1)
+                elif x >= 58:
+                    row.append(random.choice([1, 4]))
+                elif x < 32:
+                    row.append(0)
+            contents.append(row)
+        main.loaded_chunks[chunk][0] = contents
+    if main.loaded_chunks[chunk][1][1] >= 1:
+        contents = []
+        for y in range(64):
+            row = []
+            for x in range(64):
+                if random.randint(0, 100) <= 5:
+                    row.append(random.randint(29, 33))
+                else:
+                    row.append(4)
+            contents.append(row)
+        main.loaded_chunks[chunk][0] = contents

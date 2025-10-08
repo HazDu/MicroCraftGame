@@ -142,14 +142,14 @@ def scene_game_create():
     ]
 
     for chunk in range(9):
-        generate_chunk(chunk)
-    for chunk in range(9):
-        generate_tree(main.tree_queue[chunk], chunk)
+        if main.menu_create_worldtype == 0:
+            generate_chunk_2d_flat(chunk)
+            #generate_chunk(chunk)
     for chunk in range(9):
         render_blocks(0, chunk)
 
     main.OX = -2048
-    main.OY = -2048
+    main.OY = -1450
     main.current_scene = 4
 
 def scene_game_load(path):
