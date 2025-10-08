@@ -33,6 +33,9 @@ def ui(events, surf, scale):
         main.block_in_reach = False
         sel_col = (255, 0, 0)
 
+    if main.break_progress > 0:
+        break_sprite = pygame.transform.scale(pygame.image.load(f"game/assets/blocks/destroy/destroy_stage_{clamp(round((10*main.break_progress)/100)-1, 0, 9)}.png"), (64, 64))
+        surface.blit(break_sprite, (block_x, block_y))
     pygame.draw.rect(surface, sel_col, (block_x, block_y, (16 * scale), (16 * scale)), 3)
     surf.blit(surface, (0,0))
 

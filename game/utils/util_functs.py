@@ -119,7 +119,6 @@ def render_blocks(changed_blocks, chunk):
         for y in range(64):
             for x in range(64):
                 coords = [(x * 64), (y * 64)]
-                print(y)
                 sprite = main.block_data[main.loaded_chunks[chunk][0][x][y]]["Texture"]
                 main.block_surface[chunk].blit(sprite, (coords[0], coords[1]))
     else:

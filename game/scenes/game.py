@@ -144,12 +144,15 @@ def scene_game_create():
     for chunk in range(9):
         if main.menu_create_worldtype == 0:
             generate_chunk_2d_flat(chunk)
-            #generate_chunk(chunk)
+
+    for chunk in range(9):
+        generate_trees(main.tree_queue[chunk], chunk)
+
     for chunk in range(9):
         render_blocks(0, chunk)
 
-    main.OX = -2048
-    main.OY = -1450
+    main.OX = -1120
+    main.OY = -1476
     main.current_scene = 4
 
 def scene_game_load(path):
@@ -185,27 +188,49 @@ def scene_game(events):
 
     #block interacting
     mouse = pygame.mouse.get_pos()
-    for event in events:
-        if main.block_in_reach and not main.paused:
-            x = int(((mouse[0] - main.OX) % 4096) // 64)
-            y = int(((mouse[1] - main.OY) % 4096) // 64)
-            main.selected_block = (x, y)
-            mouse_chunk = mouse_get_chunk()
+    mouse_buttons = pygame.mouse.get_pressed()
+    mouse_chunk = mouse_get_chunk()
 
+    if main.block_in_reach and not main.paused:
+        x = int(((mouse[0] - main.OX) % 4096) // 64)
+        y = int(((mouse[1] - main.OY) % 4096) // 64)
+        main.selected_block = (x, y)
+
+        if mouse_buttons[0] and main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Hardness"] > 0:
+            main.break_progress += 100 / (main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Hardness"])* main.break_speed
+            if main.break_progress >= 100 and main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Minable"]:
+                main.loaded_chunks[mouse_chunk][0][x][y] = int(0)
+                render_blocks([[x, y]], mouse_chunk)
+                main.break_progress = 0
+        else:
+            main.break_progress = 0
+
+        for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1 and main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Minable"]:
-                    main.loaded_chunks[mouse_chunk][0][x][y] = int(0)
-                    render_blocks([[x, y]], mouse_chunk)
-                elif event.button == 3:
+                if event.button == 3:
                     if main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Interactable"]:
                         block_interact(main.loaded_chunks[mouse_chunk][0][x][y], x, y, mouse_chunk)
                     elif main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Replacable"]:
                         main.loaded_chunks[mouse_chunk][0][x][y] = int(main.block_in_hand)
                         render_blocks([[x, y]], mouse_chunk)
-                        #main.cur = main.cur_hammer
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_F3] and keys[pygame.K_a]:
-            re_render_loaded_chunks()
+                main.break_progress = 0
+            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                main.break_progress = 0
+
+            # if event.type == pygame.MOUSEBUTTONDOWN:
+            #     if event.button == 1 and main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Minable"]:
+            #         main.loaded_chunks[mouse_chunk][0][x][y] = int(0)
+            #         render_blocks([[x, y]], mouse_chunk)
+            #     elif event.button == 3:
+            #         if main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Interactable"]:
+            #             block_interact(main.loaded_chunks[mouse_chunk][0][x][y], x, y, mouse_chunk)
+            #         elif main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Replacable"]:
+            #             main.loaded_chunks[mouse_chunk][0][x][y] = int(main.block_in_hand)
+            #             render_blocks([[x, y]], mouse_chunk)
+            #             #main.cur = main.cur_hammer
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_F3] and keys[pygame.K_a]:
+                re_render_loaded_chunks()
 
     #Player chunk teleport
     if player.x > 0:

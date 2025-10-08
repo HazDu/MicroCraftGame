@@ -133,7 +133,7 @@ def load_blocks():
             "Interactable": False,
             "InvShow": False,
             "filename": "bedrock",
-            "Hardness": 99999
+            "Hardness": 0
         },
         13: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/grass.png'), (64, 64)),

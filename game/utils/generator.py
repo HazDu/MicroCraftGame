@@ -4,7 +4,7 @@ import __main__ as main
 from utils.util_functs import *
 
 
-def generate_tree(queue, chunk):
+def generate_trees(queue, chunk):
     blocks = [
         [[-1, -4], 11], [[0, -4], 11], [[1, -4], 11],
         [[-2, -3], 11], [[-1, -3], 11], [[0, -3], 10], [[1, -3], 11], [[2, -3], 11],
@@ -23,15 +23,14 @@ def generate_tree(queue, chunk):
             chunk_checked = chunk_checked[0]
 
             if chunk_checked != -1:
-                main.loaded_chunks[chunk_checked][0][_x][_y] = block[1]
-
+                if (block[1] == 11 and main.loaded_chunks[chunk_checked][0][_x][_y] == 0) or block[1] == 10:
+                    main.loaded_chunks[chunk_checked][0][_x][_y] = block[1]
 
 def create_chunk():
     return [[0 for _ in range(64)] for _ in range(64)]
 
 def generate_chunk(chunk):
     contents = []
-    tree_queue = []
     for y in range(64):
         row = []
         for x in range(64):
@@ -44,24 +43,26 @@ def generate_chunk(chunk):
 def generate_chunk_2d_flat(chunk):
     if main.loaded_chunks[chunk][1][1] == 0:
         contents = []
-        for y in range(64):
+        for x in range(64):
             row = []
-            for x in range(64):
-                if x == 32:
+            for y in range(64):
+                if y == 32:
                     row.append(2)
-                elif 58 > x > 32:
+                    if random.randint(0, 16) == 0:
+                        main.tree_queue[chunk].append([x, y-1])
+                elif 58 > y > 32:
                     row.append(1)
-                elif x >= 58:
+                elif y >= 58:
                     row.append(random.choice([1, 4]))
-                elif x < 32:
+                elif y < 32:
                     row.append(0)
             contents.append(row)
         main.loaded_chunks[chunk][0] = contents
     if main.loaded_chunks[chunk][1][1] >= 1:
         contents = []
-        for y in range(64):
+        for x in range(64):
             row = []
-            for x in range(64):
+            for y in range(64):
                 if random.randint(0, 100) <= 5:
                     row.append(random.randint(29, 33))
                 else:

@@ -85,6 +85,8 @@ tree_queue = [[],[],[],[],[],[],[],[],[]]
 chunk_render_queue = []
 mod_reinit = [False, ""]
 menu_scroll = 0
+break_progress = 0
+break_speed = 1
 sky_color = (200, 250, 255)
 
 #load settings
