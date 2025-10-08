@@ -1,5 +1,4 @@
 from tkinter import messagebox
-
 import pygame
 from utils.ui import *
 import sys
@@ -68,6 +67,7 @@ block_in_reach = False
 main.reach = 300
 selected_block = (0, 0)
 block_in_hand = 1
+gamemode = 0
 show_esc = False
 show_inv = False
 show_debug = False

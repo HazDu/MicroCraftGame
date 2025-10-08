@@ -98,30 +98,33 @@ class Player:
                 main.OX -= moving_space
 
         #movement jump
-        for event in main.EVENTS:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    self.jump_vel = 10
-        if self.jump_vel > 1:
-            main.OY += self.jump_vel
-            self.jump_vel = self.jump_vel / 1.2
-        if -1 < self.jump_vel < 1:
-            self.jump_vel = -1
+        if main.loaded_chunks[4][0][standing_x][standing_y] == 34 and keys[pygame.K_SPACE] and not is_collidable["North"]  :
+            main.OY += self.speed
+        else:
+            for event in main.EVENTS:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        self.jump_vel = 10
+            if self.jump_vel > 1:
+                main.OY += self.jump_vel
+                self.jump_vel = self.jump_vel / 1.2
+            if -1 < self.jump_vel < 1:
+                self.jump_vel = -1
 
-        moving_space = (standing_y + 1)*64 + (self.y + self.hitbox["bottom"])
-        if not is_collidable["South"] or moving_space >= self.jump_vel*-1:
-            main.OY += self.jump_vel
-            if self.jump_max_vel < self.jump_vel < 0:
-                self.jump_vel = self.jump_vel * 1.2
-        elif moving_space > 0:
-            main.OY += moving_space*-1
-        if moving_space == 0 and self.jump_vel <= 0:
-            self.jump_vel = 0
+            moving_space = (standing_y + 1)*64 + (self.y + self.hitbox["bottom"])
+            if not is_collidable["South"] or moving_space >= self.jump_vel*-1:
+                main.OY += self.jump_vel
+                if self.jump_max_vel < self.jump_vel < 0:
+                    self.jump_vel = self.jump_vel * 1.2
+            elif moving_space > 0:
+                main.OY += moving_space*-1
+            if moving_space == 0 and self.jump_vel <= 0:
+                self.jump_vel = 0
 
-        moving_space = (self.y + self.hitbox["top"])*-1 - standing_y*64
-        if is_collidable["North"] and self.jump_vel > 1 and moving_space < self.jump_vel:
-            main.OY += moving_space
-            self.jump_vel = 0
+            moving_space = (self.y + self.hitbox["top"])*-1 - standing_y*64
+            if is_collidable["North"] and self.jump_vel > 1 and moving_space < self.jump_vel:
+                main.OY += moving_space
+                self.jump_vel = 0
 
         main.surface.blit(self.sprite, (main.surface.get_width() / 2 - 32, main.surface.get_height() / 2 - 32))
 
