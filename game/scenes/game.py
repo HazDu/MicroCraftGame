@@ -148,8 +148,8 @@ def scene_game_create():
     for chunk in range(9):
         render_blocks(0, chunk)
 
-    main.OX = 2048
-    main.OY = 2048
+    main.OX = -2048
+    main.OY = -2048
     main.current_scene = 4
 
 def scene_game_load(path):

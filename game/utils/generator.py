@@ -25,23 +25,6 @@ def generate_tree(queue, chunk):
             if chunk_checked != -1:
                 main.loaded_chunks[chunk_checked][0][_x][_y] = block[1]
 
-        # if 0 < coords[0] - 2 < coords[0] + 2 < 64 and 0 < coords[1] - 4:
-        #     chunk[coords[0]][coords[1]] = int(10)
-        #     chunk[coords[0]][coords[1] - 1] = int(10)
-        #     chunk[coords[0]][coords[1] - 2] = int(10)
-        #     chunk[coords[0]][coords[1] - 3] = int(10)
-        #     chunk[coords[0]][coords[1] - 4] = int(11)
-        #     chunk[coords[0] - 1][coords[1] - 2] = int(11)
-        #     chunk[coords[0] - 1][coords[1] - 3] = int(11)
-        #     chunk[coords[0] - 1][coords[1] - 4] = int(11)
-        #     chunk[coords[0] + 1][coords[1] - 2] = int(11)
-        #     chunk[coords[0] + 1][coords[1] - 3] = int(11)
-        #     chunk[coords[0] + 1][coords[1] - 4] = int(11)
-        #     chunk[coords[0] + 2][coords[1] - 2] = int(11)
-        #     chunk[coords[0] + 2][coords[1] - 3] = int(11)
-        #     chunk[coords[0] - 2][coords[1] - 2] = int(11)
-        #     chunk[coords[0] - 2][coords[1] - 3] = int(11)
-
 
 def create_chunk():
     return [[0 for _ in range(64)] for _ in range(64)]

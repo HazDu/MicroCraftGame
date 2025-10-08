@@ -52,22 +52,23 @@ def scene_menu_select(events):
             elif event.key == pygame.K_BACKSPACE:
                 world_name_input = world_name_input[:-1]
 
-    if button(660, 100, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), f"{world_name_input}", main.surface, events, "M","T"):
-        if world_name_input != "":
-            path = os.path.join(main.GAMEPATH,"saves", world_name_input)
-            os.makedirs(path, exist_ok=True)
-            os.makedirs(os.path.join(path, "chunkdata"), exist_ok=True)
-            with open(f"{path}/infos.json", "w") as file:
-                infos = {
-                    "Name": world_name_input,
-                    "SaveDate": datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
-                }
-                file.write(json.dumps(infos))
-
-            main.world_name = world_name_input
-            main.current_scene = 6
-            main.loading_timeout = 0
-            main.loading_info = ["", "create"]
+    if button(660, 100, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), f"Create World", main.surface, events, "M","T"):
+        main.current_scene = 8
+        # if world_name_input != "":
+        #     path = os.path.join(main.GAMEPATH,"saves", world_name_input)
+        #     os.makedirs(path, exist_ok=True)
+        #     os.makedirs(os.path.join(path, "chunkdata"), exist_ok=True)
+        #     with open(f"{path}/infos.json", "w") as file:
+        #         infos = {
+        #             "Name": world_name_input,
+        #             "SaveDate": datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
+        #         }
+        #         file.write(json.dumps(infos))
+        #
+        #     main.world_name = world_name_input
+        #     main.current_scene = 6
+        #     main.loading_timeout = 0
+        #     main.loading_info = ["", "create"]
     if button(1260, 100, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), "Main Menu", main.surface, events, "M", "T"):
         main.current_scene = 0
 
@@ -129,16 +130,55 @@ def scene_menu_select(events):
         main.menu_scroll = clamp(main.menu_scroll, (len(dirs)-1)*150*-1, 0)
 
 def scene_menu_create():
-    if button(660, 100, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), f"{"Enter Name..." if not main.menu_create_worldname_input else ""}{main.menu_create_worldname_input}", main.surface, main.EVENTS, "L", "T"):
-        main.menu_create_worldname_input_box = True
+    background_fill_texture(main.block_data[1]["Texture"], 2, main.surface)
 
-    if main.menu_create_worldname_input_box:
-        for event in main.EVENTS:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_BACKSPACE:
-                    main.menu_create_worldname_input = main.menu_create_worldname_input[:-1]
-                elif event.unicode.isdigit():
-                    main.menu_create_worldname_input += event.unicode
+    if button(660, 100, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), f"{"Enter Name..." if not main.menu_create_worldname_input else ""}{main.menu_create_worldname_input}", main.surface, main.EVENTS, "L", "T"):
+        main.menu_create_input_box[0] = 1
+        main.menu_create_input_box[1] = ""
+
+    for event in main.EVENTS:
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_BACKSPACE:
+                main.menu_create_input_box[1] = main.menu_create_input_box[1][:-1]
+            elif event.unicode.isalnum():
+                main.menu_create_input_box[1] += event.unicode
+
+    if main.menu_create_input_box[0] == 1:
+        main.menu_create_worldname_input = main.menu_create_input_box[1]
+    elif main.menu_create_input_box[0] == 2:
+        main.menu_create_seed_input = main.menu_create_input_box[1]
+
+    if button(660, 200, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), f"Gamemode: {main.gamemode} (in progress)", main.surface, main.EVENTS, "L", "T"):
+        main.gamemode += 1
+        if main.gamemode >= 2:
+            main.gamemode = 0
+
+    if button(660, 300, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), f"{"Enter Seed..." if not main.menu_create_seed_input else ""}{main.menu_create_seed_input}", main.surface, main.EVENTS, "L", "T"):
+        main.menu_create_input_box[0] = 2
+        main.menu_create_input_box[1] = ""
+
+    if button(660, 400, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), f"Worldtype: {main.menu_create_worldtype} (in progress)", main.surface, main.EVENTS, "L", "T"):
+        main.menu_create_worldtype += 1
+        if main.menu_create_worldtype >= 2:
+            main.menu_create_worldtype = 0
+
+    if button(660, 500, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), "Create World", main.surface, main.EVENTS, "L", "T"):
+        if main.menu_create_worldname_input != "":
+            path = os.path.join(main.GAMEPATH,"saves", main.menu_create_worldname_input)
+            os.makedirs(path, exist_ok=True)
+            os.makedirs(os.path.join(path, "chunkdata"), exist_ok=True)
+            with open(f"{path}/infos.json", "w") as file:
+                infos = {
+                    "Name": main.menu_create_worldname_input,
+                    "SaveDate": datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
+                }
+                file.write(json.dumps(infos))
+
+            main.world_name = main.menu_create_worldname_input
+            main.current_scene = 6
+            main.loading_timeout = 0
+            main.loading_info = ["", "create"]
+            random.seed(main.menu_create_seed_input)
 
 def scene_menu_texturepacks(events):
     background_fill_texture(main.block_data[1]["Texture"], 2, main.surface)
