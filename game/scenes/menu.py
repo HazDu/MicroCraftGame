@@ -167,11 +167,13 @@ def scene_menu_create():
             path = os.path.join(main.GAMEPATH,"saves", main.menu_create_worldname_input)
             os.makedirs(path, exist_ok=True)
             os.makedirs(os.path.join(path, "chunkdata"), exist_ok=True)
+            inventory = [0 for _ in range(40)]
             with open(f"{path}/infos.json", "w") as file:
                 infos = {
                     "Name": main.menu_create_worldname_input,
                     "SaveDate": datetime.datetime.now().strftime("%d.%m.%Y %H:%M"),
-                    "GameMode": main.gamemode
+                    "GameMode": main.gamemode,
+                    "Inventory": main.inventory
                 }
                 file.write(json.dumps(infos))
 

@@ -128,6 +128,15 @@ class Player:
 
         main.surface.blit(self.sprite, (main.surface.get_width() / 2 - 32, main.surface.get_height() / 2 - 32))
 
+class Item:
+    def __init__(self):
+        self.item_id = 0
+        self.x = 0
+        self.y = 0
+    def item_default(self):
+        main.surface.blit(main.item_data[self.item_id]["Texture"], (self.x, self.y))
+
+
 def scene_game_create():
     main.loaded_chunks = [
                             [create_chunk(), [-1, -1]],
@@ -162,6 +171,7 @@ def scene_game_load(path):
     main.OX = read["PlayerX"]
     main.OY = read["PlayerY"]
     main.gamemode = read["GameMode"]
+    main.inventory = read["Inventory"]
 
     i = 0
     for y in range(main_chunk[1] -1, main_chunk[1] +2):
@@ -200,6 +210,12 @@ def scene_game(events):
         if mouse_buttons[0] and main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Hardness"] > 0:
             main.break_progress += 100 / (main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Hardness"])* main.break_speed
             if main.break_progress >= 100 and main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Minable"]:
+                if main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][0] != -1 and main.gamemode == 0:
+                    new_item = Item()
+                    new_item.item_id = main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][0]
+                    new_item.x = 100
+                    new_item.y = 100
+                    main.item_entities.append(new_item)
                 main.loaded_chunks[mouse_chunk][0][x][y] = int(0)
                 render_blocks([[x, y]], mouse_chunk)
                 main.break_progress = 0
@@ -218,17 +234,6 @@ def scene_game(events):
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 main.break_progress = 0
 
-            # if event.type == pygame.MOUSEBUTTONDOWN:
-            #     if event.button == 1 and main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Minable"]:
-            #         main.loaded_chunks[mouse_chunk][0][x][y] = int(0)
-            #         render_blocks([[x, y]], mouse_chunk)
-            #     elif event.button == 3:
-            #         if main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Interactable"]:
-            #             block_interact(main.loaded_chunks[mouse_chunk][0][x][y], x, y, mouse_chunk)
-            #         elif main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Replacable"]:
-            #             main.loaded_chunks[mouse_chunk][0][x][y] = int(main.block_in_hand)
-            #             render_blocks([[x, y]], mouse_chunk)
-            #             #main.cur = main.cur_hammer
             keys = pygame.key.get_pressed()
             if keys[pygame.K_F3] and keys[pygame.K_a]:
                 re_render_loaded_chunks()
@@ -371,6 +376,8 @@ def scene_game(events):
             chunk_add_render_queue(i)
 
     player.player_default()
+    for item in main.item_entities:
+        item.item_default()
 
     if main.mods_active:
         for mod in main.loaded_mods:

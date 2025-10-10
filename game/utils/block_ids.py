@@ -13,7 +13,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "air_block",
-            "Hardness": 0
+            "Hardness": 0,
+            "Drop": [-1, 0]
         },
         1: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/dirt.png'), (64, 64)),
@@ -23,7 +24,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "dirt",
-            "Hardness": 10
+            "Hardness": 10,
+            "Drop": [1, 1]
         },
         2: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/grass_block_top.png'), (64, 64)),
@@ -33,7 +35,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "grass_block_top",
-            "Hardness": 10
+            "Hardness": 10,
+            "Drop": [2, 1]
         },
         3: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/dirt_path_top.png'), (64, 64)),
@@ -43,7 +46,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "dirt_path_top",
-            "Hardness": 10
+            "Hardness": 10,
+            "Drop": [3, 1]
         },
         4: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/stone.png'), (64, 64)),
@@ -53,7 +57,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "stone",
-            "Hardness": 30
+            "Hardness": 30,
+            "Drop": [5, 1]
         },
         5: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/cobblestone.png'), (64, 64)),
@@ -63,7 +68,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "cobblestone",
-            "Hardness": 30
+            "Hardness": 30,
+            "Drop": [5, 1]
         },
         6: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/stone_bricks.png'), (64, 64)),
@@ -73,7 +79,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "stone_bricks",
-            "Hardness": 30
+            "Hardness": 30,
+            "Drop": [6, 1]
         },
         7: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/bricks.png'), (64, 64)),
@@ -83,7 +90,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "bricks",
-            "Hardness": 30
+            "Hardness": 30,
+            "Drop": [7, 1]
         },
         8: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/sand.png'), (64, 64)),
@@ -93,7 +101,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "sand",
-            "Hardness": 10
+            "Hardness": 10,
+            "Drop": [8, 1]
         },
         9: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/oak_planks.png'), (64, 64)),
@@ -103,7 +112,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "oak_planks",
-            "Hardness": 20
+            "Hardness": 20,
+            "Drop": [9, 1]
         },
         10: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/oak_log.png'), (64, 64)),
@@ -113,7 +123,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "oak_log",
-            "Hardness": 20
+            "Hardness": 20,
+            "Drop": [10, 1]
         },
         11: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/oak_leaves.png'), (64, 64)),
@@ -123,7 +134,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "oak_leaves",
-            "Hardness": 5
+            "Hardness": 5,
+            "Drop": [-1, 0]
         },
         12: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/bedrock.png'), (64, 64)),
@@ -133,7 +145,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": False,
             "filename": "bedrock",
-            "Hardness": 0
+            "Hardness": 0,
+            "Drop": [-1, 0]
         },
         13: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/grass.png'), (64, 64)),
@@ -143,7 +156,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": False,
             "filename": "grass",
-            "Hardness": 5
+            "Hardness": 5,
+            "Drop": [-1, 0]
         },
         14: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/tnt_side.png'), (64, 64)),
@@ -153,7 +167,8 @@ def load_blocks():
             "Interactable": True,
             "InvShow": True,
             "filename": "tnt_side",
-            "Hardness": 5
+            "Hardness": 5,
+            "Drop": [14, 1]
         },
         15: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/crafting_table_front.png'), (64, 64)),
@@ -163,7 +178,8 @@ def load_blocks():
             "Interactable": True,
             "InvShow": True,
             "filename": "crafting_table_front",
-            "Hardness": 20
+            "Hardness": 20,
+            "Drop": [15, 1]
         },
         16: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/furnace_front_on.png'), (64, 64)),
@@ -173,7 +189,8 @@ def load_blocks():
             "Interactable": True,
             "InvShow": True,
             "filename": "furnace_front_on",
-            "Hardness": 30
+            "Hardness": 30,
+            "Drop": [16, 1]
         },
         17: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/barrel_top.png'), (64, 64)),
@@ -183,7 +200,8 @@ def load_blocks():
             "Interactable": True,
             "InvShow": True,
             "filename": "barrel_top",
-            "Hardness": 20
+            "Hardness": 20,
+            "Drop": [17, 1]
         },
         18: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/magma.png'), (64, 64)),
@@ -193,7 +211,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "magma",
-            "Hardness": 30
+            "Hardness": 30,
+            "Drop": [18, 1]
         },
         19: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/jack_o_lantern.png'), (64, 64)),
@@ -203,7 +222,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "jack_o_lantern",
-            "Hardness": 20
+            "Hardness": 20,
+            "Drop": [19, 1]
         },
         20: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/glowstone.png'), (64, 64)),
@@ -213,7 +233,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "glowstone",
-            "Hardness": 10
+            "Hardness": 10,
+            "Drop": [20, 1]
         },
         21: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/glass.png'), (64, 64)),
@@ -223,7 +244,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "glass",
-            "Hardness": 10
+            "Hardness": 10,
+            "Drop": [-1, 0]
         },
         22: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/fence.png'), (64, 64)),
@@ -233,7 +255,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "fence",
-            "Hardness": 20
+            "Hardness": 20,
+            "Drop": [22, 1]
         },
         23: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/iron_bars.png'), (64, 64)),
@@ -243,7 +266,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "iron_bars",
-            "Hardness": 30
+            "Hardness": 30,
+            "Drop": [1001, 1]
         },
         24: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/iron_block.png'), (64, 64)),
@@ -253,7 +277,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "iron_block",
-            "Hardness": 30
+            "Hardness": 30,
+            "Drop": [1001, 9]
         },
         25: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/gold_block.png'), (64, 64)),
@@ -263,7 +288,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "gold_block",
-            "Hardness": 40
+            "Hardness": 40,
+            "Drop": [25, 1]
         },
         26: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/diamond_block.png'), (64, 64)),
@@ -273,7 +299,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "diamond_block",
-            "Hardness": 50
+            "Hardness": 50,
+            "Drop": [26, 1]
         },
         27: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/emerald_block.png'), (64, 64)),
@@ -283,7 +310,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "emerald_block",
-            "Hardness": 60
+            "Hardness": 60,
+            "Drop": [27, 1]
         },
         28: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/coal_block.png'), (64, 64)),
@@ -293,7 +321,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "coal_block",
-            "Hardness": 30
+            "Hardness": 30,
+            "Drop": [28, 1]
         },
         29: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/coal_ore.png'), (64, 64)),
@@ -303,7 +332,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "coal_ore",
-            "Hardness": 50
+            "Hardness": 50,
+            "Drop": [29, 3]
         },
         30: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/iron_ore.png'), (64, 64)),
@@ -313,7 +343,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "iron_ore",
-            "Hardness": 50
+            "Hardness": 50,
+            "Drop": [30, 1]
         },
         31: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/gold_ore.png'), (64, 64)),
@@ -323,7 +354,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "gold_ore",
-            "Hardness": 50
+            "Hardness": 50,
+            "Drop": [31, 1]
         },
         32: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/diamond_ore.png'), (64, 64)),
@@ -333,7 +365,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "diamond_ore",
-            "Hardness": 50
+            "Hardness": 50,
+            "Drop": [32, 1]
         },
         33: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/emerald_ore.png'), (64, 64)),
@@ -343,7 +376,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "emerald_ore",
-            "Hardness": 50
+            "Hardness": 50,
+            "Drop": [33, 1]
         },
         34: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/ladder.png'), (64, 64)),
@@ -353,7 +387,8 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "ladder",
-            "Hardness": 20
+            "Hardness": 20,
+            "Drop": [34, 1]
         },
         35: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/poppy.png'), (64, 64)),
@@ -363,7 +398,63 @@ def load_blocks():
             "Interactable": False,
             "InvShow": True,
             "filename": "poppy",
-            "Hardness": 5
+            "Hardness": 5,
+            "Drop": [35, 1]
+        },
+        36: {
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate.png'), (64, 64)),
+            "Collidable": True,
+            "Minable": True,
+            "Replacable": False,
+            "Interactable": False,
+            "InvShow": True,
+            "filename": "deepslate",
+            "Hardness": 40,
+            "Drop": [36, 1]
+        },
+        37: {
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate_iron_ore.png'), (64, 64)),
+            "Collidable": True,
+            "Minable": True,
+            "Replacable": False,
+            "Interactable": False,
+            "InvShow": True,
+            "filename": "deepslate_iron_ore",
+            "Hardness": 60,
+            "Drop": [37, 2]
+        },
+        38: {
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate_gold_ore.png'), (64, 64)),
+            "Collidable": True,
+            "Minable": True,
+            "Replacable": False,
+            "Interactable": False,
+            "InvShow": True,
+            "filename": "deepslate_gold_ore",
+            "Hardness": 60,
+            "Drop": [38, 2]
+        },
+        39: {
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate_diamond_ore.png'), (64, 64)),
+            "Collidable": True,
+            "Minable": True,
+            "Replacable": False,
+            "Interactable": False,
+            "InvShow": True,
+            "filename": "deepslate_diamond_ore",
+            "Hardness": 60,
+            "Drop": [39, 2]
+        },
+        40: {
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate_emerald_ore.png'), (64, 64)),
+            "Collidable": True,
+            "Minable": True,
+            "Replacable": False,
+            "Interactable": False,
+            "InvShow": True,
+            "filename": "deepslate_emerald_ore",
+            "Hardness": 60,
+            "Drop": [40, 1]
         },
     }
 

@@ -21,23 +21,24 @@ def ui(events, surf, scale):
 
     #Block selector
     mouse = pygame.mouse.get_pos()
-    grid_size = 16 * scale
+    if not main.show_inv and not main.show_esc:
+        grid_size = 16 * scale
 
-    block_x = grid_size * ((mouse[0] - main.OX) // grid_size) + main.OX
-    block_y = grid_size * ((mouse[1] - main.OY) // grid_size) + main.OY
+        block_x = grid_size * ((mouse[0] - main.OX) // grid_size) + main.OX
+        block_y = grid_size * ((mouse[1] - main.OY) // grid_size) + main.OY
 
-    if point_distance((surf.get_width() / 2, surf.get_height() / 2), (mouse[0], mouse[1])) < main.reach:
-        main.block_in_reach = True
-        sel_col = (255,255,0)
-    else:
-        main.block_in_reach = False
-        sel_col = (255, 0, 0)
+        if point_distance((surf.get_width() / 2, surf.get_height() / 2), (mouse[0], mouse[1])) < main.reach:
+            main.block_in_reach = True
+            sel_col = (255,255,0)
+        else:
+            main.block_in_reach = False
+            sel_col = (255, 0, 0)
 
-    if main.break_progress > 0:
-        break_sprite = pygame.transform.scale(pygame.image.load(f"game/assets/blocks/destroy/destroy_stage_{clamp(round((10*main.break_progress)/100)-1, 0, 9)}.png"), (64, 64))
-        surface.blit(break_sprite, (block_x, block_y))
-    pygame.draw.rect(surface, sel_col, (block_x, block_y, (16 * scale), (16 * scale)), 3)
-    surf.blit(surface, (0,0))
+        if main.break_progress > 0:
+            break_sprite = pygame.transform.scale(pygame.image.load(f"game/assets/blocks/destroy/destroy_stage_{clamp(round((10*main.break_progress)/100)-1, 0, 9)}.png"), (64, 64))
+            surface.blit(break_sprite, (block_x, block_y))
+        pygame.draw.rect(surface, sel_col, (block_x, block_y, (16 * scale), (16 * scale)), 3)
+        surf.blit(surface, (0,0))
 
     #change cursor
     x = int(((mouse[0] - main.OX) % 4096) // 64)
@@ -95,8 +96,8 @@ def ui(events, surf, scale):
                         if block_id == main.block_in_hand:
                             pygame.draw.rect(main.surface, (21, 128, 210), (500 + (x * 80), 230 + (y * 80), 64, 64), 3)
         elif main.gamemode == 0:
-            inv_x = 500
-            inv_y = 200
+            inv_x = 632
+            inv_y = 600
             pygame.draw.rect(main.surface, (64, 64, 64), (inv_x, inv_y, 656, 336))
             for y in range(4):
                 for x in range(8):

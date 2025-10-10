@@ -12,6 +12,8 @@ def scene_loading(path, typee):
     y = main.surface.get_height() / 2 - txt.get_height() / 2
     main.surface.blit(txt, (x, y))
     main.loading_timeout += 1
+    if main.gamemode == 1:
+        main.break_speed = 99999
 
     if main.loading_timeout >= 2:
         if typee == "create":

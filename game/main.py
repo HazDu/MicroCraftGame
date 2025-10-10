@@ -4,6 +4,7 @@ from utils.ui import *
 import sys
 import platform
 from utils.block_ids import *
+from utils.item_ids import *
 from utils.cursor import *
 from scenes.menu import *
 from scenes.game import *
@@ -37,8 +38,9 @@ cur_loading = []
 cursor_custom()
 cur = cur_square
 
-#load block sprites
+#load block and item data
 block_data = load_blocks()
+item_data = load_items()
 pygame.display.set_icon(block_data[18]["Texture"])
 
 #Variables
@@ -92,6 +94,8 @@ break_progress = 0
 break_speed = 1
 hotbar_slot = 0
 sky_color = (200, 250, 255)
+item_entities = []
+inventory = [0 for _ in range(40)]
 
 #load settings
 if os.path.exists(f"{GAMEPATH}/settings.json"):
