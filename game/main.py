@@ -25,6 +25,7 @@ img_mod_loaded = pygame.image.load("game/assets/ui/mod_loaded.png")
 img_mod_unloaded = pygame.image.load("game/assets/ui/mod_unloaded.png")
 img_hotbar = pygame.transform.scale(pygame.image.load("game/assets/ui/hotbar.png"), (512, 64))
 img_hotbar_sel = pygame.transform.scale(pygame.image.load("game/assets/ui/hotbar_selector.png"), (64, 64))
+img_slot = pygame.transform.scale(pygame.image.load("game/assets/ui/slot.png"), (64, 64))
 
 #custom cursors
 cur_square = []

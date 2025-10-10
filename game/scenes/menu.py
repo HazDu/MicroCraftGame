@@ -170,7 +170,8 @@ def scene_menu_create():
             with open(f"{path}/infos.json", "w") as file:
                 infos = {
                     "Name": main.menu_create_worldname_input,
-                    "SaveDate": datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
+                    "SaveDate": datetime.datetime.now().strftime("%d.%m.%Y %H:%M"),
+                    "GameMode": main.gamemode
                 }
                 file.write(json.dumps(infos))
 

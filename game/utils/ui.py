@@ -75,24 +75,33 @@ def ui(events, surf, scale):
 
     #Inventory
     if main.show_inv:
-        pygame.draw.rect(main.surface, (64, 64, 64), (460, 190, 1000, 700))
-        block_id = 0
-        for y in range(5):
-            for x in range(10):
+        if main.gamemode == 1:
+            pygame.draw.rect(main.surface, (64, 64, 64), (460, 190, 1000, 700))
+            block_id = 0
+            for y in range(5):
+                for x in range(10):
 
-                block_id += 1
-                if block_id < len(main.block_data):
-                    showable = False
-                    while not showable:
-                        if not main.block_data[block_id]["InvShow"]:
-                            block_id += 1
-                        else:
-                            showable = True
-                    if button(500 + (x * 80), 230 + (y * 80), 64, 64, main.block_data[block_id]["Texture"], (255, 255, 255, 60), 0, main.surface, events, "L", "T"):
-                        main.block_in_hand = block_id
-                        main.show_inv = False
-                    if block_id == main.block_in_hand:
-                        pygame.draw.rect(main.surface, (21, 128, 210), (500 + (x * 80), 230 + (y * 80), 64, 64), 3)
+                    block_id += 1
+                    if block_id < len(main.block_data):
+                        showable = False
+                        while not showable:
+                            if not main.block_data[block_id]["InvShow"]:
+                                block_id += 1
+                            else:
+                                showable = True
+                        if button(500 + (x * 80), 230 + (y * 80), 64, 64, main.block_data[block_id]["Texture"], (255, 255, 255, 60), 0, main.surface, events, "L", "T"):
+                            main.block_in_hand = block_id
+                            main.show_inv = False
+                        if block_id == main.block_in_hand:
+                            pygame.draw.rect(main.surface, (21, 128, 210), (500 + (x * 80), 230 + (y * 80), 64, 64), 3)
+        elif main.gamemode == 0:
+            inv_x = 500
+            inv_y = 200
+            pygame.draw.rect(main.surface, (64, 64, 64), (inv_x, inv_y, 656, 336))
+            for y in range(4):
+                for x in range(8):
+                    if button(inv_x + (x*80)+16, inv_y + (y*80)+16, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "L", "T"):
+                        pass
 
     #ui elements added by mods
     if main.mods_active:

@@ -161,6 +161,7 @@ def scene_game_load(path):
     main_chunk = read["CurrentChunk"]
     main.OX = read["PlayerX"]
     main.OY = read["PlayerY"]
+    main.gamemode = read["GameMode"]
 
     i = 0
     for y in range(main_chunk[1] -1, main_chunk[1] +2):
