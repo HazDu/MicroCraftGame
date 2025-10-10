@@ -333,7 +333,7 @@ def load_blocks():
             "InvShow": True,
             "filename": "coal_ore",
             "Hardness": 50,
-            "Drop": [29, 3]
+            "Drop": [1005, [2, 5]]
         },
         30: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/iron_ore.png'), (64, 64)),
