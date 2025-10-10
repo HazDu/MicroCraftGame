@@ -57,7 +57,42 @@ def load_items():
             "Name": "Iron Ingot",
             "filename": "iron_ingot",
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/items/iron_ingot.png'), (32, 32)),
-        }
+        },
+        1002: {
+            "Name": "Gold Ingot",
+            "filename": "gold_ingot",
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/items/gold_ingot.png'), (32, 32)),
+        },
+        1003: {
+            "Name": "Diamond",
+            "filename": "diamond",
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/items/diamond.png'), (32, 32)),
+        },
+        1004: {
+            "Name": "Emerald",
+            "filename": "emerald",
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/items/emerald.png'), (32, 32)),
+        },
+        1005: {
+            "Name": "Coal",
+            "filename": "coal",
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/items/coal.png'), (32, 32)),
+        },
+        1006: {
+            "Name": "Raw Iron",
+            "filename": "raw_iron",
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/items/raw_iron.png'), (32, 32)),
+        },
+        1007: {
+            "Name": "Raw Gold",
+            "filename": "raw_gold",
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/items/raw_gold.png'), (32, 32)),
+        },
+        1008: {
+            "Name": "Stick",
+            "filename": "stick",
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/items/stick.png'), (32, 32)),
+        },
     }
 
     return item_data

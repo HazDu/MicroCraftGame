@@ -135,7 +135,7 @@ def load_blocks():
             "InvShow": True,
             "filename": "oak_leaves",
             "Hardness": 5,
-            "Drop": [-1, 0]
+            "Drop": [1008, [0, 2]]
         },
         12: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/bedrock.png'), (64, 64)),
@@ -289,7 +289,7 @@ def load_blocks():
             "InvShow": True,
             "filename": "gold_block",
             "Hardness": 40,
-            "Drop": [25, 1]
+            "Drop": [1002, 9]
         },
         26: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/diamond_block.png'), (64, 64)),
@@ -300,7 +300,7 @@ def load_blocks():
             "InvShow": True,
             "filename": "diamond_block",
             "Hardness": 50,
-            "Drop": [26, 1]
+            "Drop": [1003, 9]
         },
         27: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/emerald_block.png'), (64, 64)),
@@ -311,7 +311,7 @@ def load_blocks():
             "InvShow": True,
             "filename": "emerald_block",
             "Hardness": 60,
-            "Drop": [27, 1]
+            "Drop": [1004, 9]
         },
         28: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/coal_block.png'), (64, 64)),
@@ -322,7 +322,7 @@ def load_blocks():
             "InvShow": True,
             "filename": "coal_block",
             "Hardness": 30,
-            "Drop": [28, 1]
+            "Drop": [1005, 9]
         },
         29: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/coal_ore.png'), (64, 64)),
@@ -344,7 +344,7 @@ def load_blocks():
             "InvShow": True,
             "filename": "iron_ore",
             "Hardness": 50,
-            "Drop": [30, 1]
+            "Drop": [1006, [1, 2]]
         },
         31: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/gold_ore.png'), (64, 64)),
@@ -355,7 +355,7 @@ def load_blocks():
             "InvShow": True,
             "filename": "gold_ore",
             "Hardness": 50,
-            "Drop": [31, 1]
+            "Drop": [1007, 1]
         },
         32: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/diamond_ore.png'), (64, 64)),
@@ -366,7 +366,7 @@ def load_blocks():
             "InvShow": True,
             "filename": "diamond_ore",
             "Hardness": 50,
-            "Drop": [32, 1]
+            "Drop": [1003, 1]
         },
         33: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/emerald_ore.png'), (64, 64)),
@@ -377,7 +377,7 @@ def load_blocks():
             "InvShow": True,
             "filename": "emerald_ore",
             "Hardness": 50,
-            "Drop": [33, 1]
+            "Drop": [1004, [0, 1]]
         },
         34: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/ladder.png'), (64, 64)),
@@ -421,7 +421,7 @@ def load_blocks():
             "InvShow": True,
             "filename": "deepslate_iron_ore",
             "Hardness": 60,
-            "Drop": [37, 2]
+            "Drop": [1006, [4, 6]]
         },
         38: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate_gold_ore.png'), (64, 64)),
@@ -432,7 +432,7 @@ def load_blocks():
             "InvShow": True,
             "filename": "deepslate_gold_ore",
             "Hardness": 60,
-            "Drop": [38, 2]
+            "Drop": [1007, [1, 3]]
         },
         39: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate_diamond_ore.png'), (64, 64)),
@@ -443,7 +443,7 @@ def load_blocks():
             "InvShow": True,
             "filename": "deepslate_diamond_ore",
             "Hardness": 60,
-            "Drop": [39, 2]
+            "Drop": [1003, [2, 4]]
         },
         40: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate_emerald_ore.png'), (64, 64)),
@@ -454,7 +454,7 @@ def load_blocks():
             "InvShow": True,
             "filename": "deepslate_emerald_ore",
             "Hardness": 60,
-            "Drop": [40, 1]
+            "Drop": [1004, 1]
         },
     }
 

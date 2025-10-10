@@ -131,6 +131,7 @@ class Player:
 class Item:
     def __init__(self):
         self.item_id = 0
+        self.amount = 0
         self.x = 0
         self.y = 0
         self.lifetime = 0
@@ -227,11 +228,17 @@ def scene_game(events):
             main.break_progress += 100 / (main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Hardness"])* main.break_speed
             if main.break_progress >= 100 and main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Minable"]:
                 if main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][0] != -1 and main.gamemode == 0:
-                    new_item = Item()
-                    new_item.item_id = main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][0]
-                    new_item.x = mouse[0] - main.OX
-                    new_item.y = mouse[1] - main.OY
-                    main.item_entities.append(new_item)
+                    if isinstance(main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][1], int):
+                        amount = main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][1]
+                    else:
+                        amount = random.randint(main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][1][0], main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][1][1])
+                    if amount > 0:
+                        new_item = Item()
+                        new_item.item_id = main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][0]
+                        new_item.x = mouse[0] - main.OX
+                        new_item.y = mouse[1] - main.OY
+                        new_item.amount = amount
+                        main.item_entities.append(new_item)
                 main.loaded_chunks[mouse_chunk][0][x][y] = int(0)
                 render_blocks([[x, y]], mouse_chunk)
                 main.break_progress = 0
