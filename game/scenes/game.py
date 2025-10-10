@@ -138,19 +138,16 @@ class Item:
         self.rot = 0
     def item_default(self):
         draw_coords = world_coords_to_screen_coords(self.x, self.y)
-        img = pygame.transform.rotozoom(main.item_data[self.item_id]["Texture"], round(self.rot), 0.66666)
-        if self.lifetime > 1500:
-            img = tint_image(img, (255, 0, 0, 50))
+        if -32 < draw_coords[0] < 1952 and -32 < draw_coords[1] < 1112:
+            img = pygame.transform.rotozoom(main.item_data[self.item_id]["Texture"], round(self.rot), 0.66666)
+            if self.lifetime > 1500:
+                img = tint_image(img, (255, 0, 0, 50))
 
-        rect = img.get_rect()
-        rect.center = draw_coords[0], draw_coords[1]
-        main.surface.blit(img, rect)
-        self.lifetime += 1
-        self.rot += 0.5
-
-
-
-        #text_render_multiline(100, 100, main.main_font, f"{draw_coords}", True, (255, 255, 255), main.surface, "", "")
+            rect = img.get_rect()
+            rect.center = draw_coords[0], draw_coords[1]
+            main.surface.blit(img, rect)
+            self.lifetime += 1
+            self.rot += 0.5
 
 
 
@@ -264,6 +261,8 @@ def scene_game(events):
     #Player chunk teleport
     if player.x > 0:
         main.OX = int(-4095 + main.surface.get_width() / 2)
+        for item in main.item_entities:
+            item.x += 4095
 
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
@@ -295,7 +294,9 @@ def scene_game(events):
             chunk_add_render_queue(i)
 
     elif player.x < -4095:
-        main.OX = int(0 + main.surface.get_width() / 2)
+        main.OX = int(main.surface.get_width() / 2)
+        for item in main.item_entities:
+            item.x -= 4095
 
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
@@ -328,6 +329,8 @@ def scene_game(events):
 
     elif player.y > 0:
         main.OY = int(-4095 + main.surface.get_height() / 2)
+        for item in main.item_entities:
+            item.y += 4095
 
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
@@ -363,7 +366,9 @@ def scene_game(events):
             chunk_add_render_queue(i)
 
     elif player.y < -4095:
-        main.OY = int(0 + main.surface.get_height() / 2)
+        main.OY = int(main.surface.get_height() / 2)
+        for item in main.item_entities:
+            item.y -= 4095
 
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
