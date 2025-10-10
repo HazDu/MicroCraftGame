@@ -317,6 +317,19 @@ def change_block_over_border(chunk, _x, _y):
 
     return [get_chunk_from_coordinates(chunk_checked[0], chunk_checked[1]), _x, _y]
 
+def world_coords_to_screen_coords(wx, wy):
+    screen_curr_x = main.OX*-1
+    screen_curr_y = main.OY*-1
+
+    if wx < 0:
+        wx *= -1
+    if wy < 0:
+        wy *= -1
+
+    sx, sy = wx - screen_curr_x, wy - screen_curr_y
+
+    return [sx, sy]
+
 #functions for modders
 def mod_init_trigger(mod):
     main.mod_reinit = [True, mod]

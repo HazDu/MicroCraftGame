@@ -133,8 +133,24 @@ class Item:
         self.item_id = 0
         self.x = 0
         self.y = 0
+        self.lifetime = 0
+        self.rot = 0
     def item_default(self):
-        main.surface.blit(main.item_data[self.item_id]["Texture"], (self.x, self.y))
+        draw_coords = world_coords_to_screen_coords(self.x, self.y)
+        img = pygame.transform.rotozoom(main.item_data[self.item_id]["Texture"], round(self.rot), 0.66666)
+        if self.lifetime > 1500:
+            img = tint_image(img, (255, 0, 0, 50))
+
+        rect = img.get_rect()
+        rect.center = draw_coords[0], draw_coords[1]
+        main.surface.blit(img, rect)
+        self.lifetime += 1
+        self.rot += 0.5
+
+
+
+        #text_render_multiline(100, 100, main.main_font, f"{draw_coords}", True, (255, 255, 255), main.surface, "", "")
+
 
 
 def scene_game_create():
@@ -213,8 +229,8 @@ def scene_game(events):
                 if main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][0] != -1 and main.gamemode == 0:
                     new_item = Item()
                     new_item.item_id = main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][0]
-                    new_item.x = 100
-                    new_item.y = 100
+                    new_item.x = mouse[0] - main.OX
+                    new_item.y = mouse[1] - main.OY
                     main.item_entities.append(new_item)
                 main.loaded_chunks[mouse_chunk][0][x][y] = int(0)
                 render_blocks([[x, y]], mouse_chunk)
@@ -378,6 +394,8 @@ def scene_game(events):
     player.player_default()
     for item in main.item_entities:
         item.item_default()
+        if item.lifetime > 1800:
+            main.item_entities.remove(item)
 
     if main.mods_active:
         for mod in main.loaded_mods:
