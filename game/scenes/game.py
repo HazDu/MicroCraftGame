@@ -259,6 +259,7 @@ def scene_game(events):
                         block_interact(main.loaded_chunks[mouse_chunk][0][x][y], x, y, mouse_chunk)
                     elif main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Replacable"]:
                         main.loaded_chunks[mouse_chunk][0][x][y] = int(main.block_in_hand)
+                        main.inventory[main.hotbar_slot][1] -= 1
                         render_blocks([[x, y]], mouse_chunk)
                 main.break_progress = 0
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
@@ -267,6 +268,12 @@ def scene_game(events):
             keys = pygame.key.get_pressed()
             if keys[pygame.K_F3] and keys[pygame.K_a]:
                 re_render_loaded_chunks()
+
+    for i in range(8):
+        if main.inventory[i][1] <= 0:
+            main.inventory[i][0] = 0
+            if main.hotbar_slot == i:
+                main.block_in_hand = 0
 
     #Player chunk teleport
     if player.x > 0:
@@ -298,8 +305,8 @@ def scene_game(events):
                     main.loaded_chunks[i][0] = ast.literal_eval(file.read())
                     main.loaded_chunks[i][1] = chunk_coords
             else:
-                generate_chunk_type(i, 0)
                 main.loaded_chunks[i][1][0] = main.loaded_chunks[i + 1][1][0]-1
+                generate_chunk_type(i, 0)
             render_chunk_clear(i)
             chunk_add_render_queue(i)
 
@@ -332,8 +339,8 @@ def scene_game(events):
                     main.loaded_chunks[i][0] = ast.literal_eval(file.read())
                     main.loaded_chunks[i][1] = chunk_coords
             else:
-                generate_chunk_type(i, 0)
                 main.loaded_chunks[i][1][0] = main.loaded_chunks[i - 1][1][0] + 1
+                generate_chunk_type(i, 0)
             render_chunk_clear(i)
             chunk_add_render_queue(i)
 
@@ -370,8 +377,8 @@ def scene_game(events):
                     main.loaded_chunks[i][0] = ast.literal_eval(file.read())
                     main.loaded_chunks[i][1] = chunk_coords
             else:
-                generate_chunk_type(i, 0)
                 main.loaded_chunks[i][1][1] = main.loaded_chunks[i + 3][1][1] - 1
+                generate_chunk_type(i, 0)
             render_chunk_clear(i)
             chunk_add_render_queue(i)
 
@@ -408,8 +415,8 @@ def scene_game(events):
                     main.loaded_chunks[i][0] = ast.literal_eval(file.read())
                     main.loaded_chunks[i][1] = chunk_coords
             else:
-                generate_chunk_type(i, 0)
                 main.loaded_chunks[i][1][1] = main.loaded_chunks[i - 3][1][1] + 1
+                generate_chunk_type(i, 0)
             render_chunk_clear(i)
             chunk_add_render_queue(i)
 
