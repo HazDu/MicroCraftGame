@@ -17,7 +17,7 @@ def load_blocks():
             "Drop": [-1, 0]
         },
         1: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/dirt.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/dirt.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -28,7 +28,7 @@ def load_blocks():
             "Drop": [1, 1]
         },
         2: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/grass_block_top.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/grass_block_top.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -39,7 +39,7 @@ def load_blocks():
             "Drop": [2, 1]
         },
         3: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/dirt_path_top.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/dirt_path_top.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -50,7 +50,7 @@ def load_blocks():
             "Drop": [3, 1]
         },
         4: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/stone.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/stone.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -61,7 +61,7 @@ def load_blocks():
             "Drop": [5, 1]
         },
         5: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/cobblestone.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/cobblestone.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -72,7 +72,7 @@ def load_blocks():
             "Drop": [5, 1]
         },
         6: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/stone_bricks.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/stone_bricks.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -83,7 +83,7 @@ def load_blocks():
             "Drop": [6, 1]
         },
         7: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/bricks.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/bricks.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -94,7 +94,7 @@ def load_blocks():
             "Drop": [7, 1]
         },
         8: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/sand.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/sand.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -105,7 +105,7 @@ def load_blocks():
             "Drop": [8, 1]
         },
         9: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/oak_planks.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/oak_planks.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -116,7 +116,7 @@ def load_blocks():
             "Drop": [9, 1]
         },
         10: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/oak_log.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/oak_log.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -127,7 +127,7 @@ def load_blocks():
             "Drop": [10, 1]
         },
         11: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/oak_leaves.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/oak_leaves.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": True,
@@ -138,7 +138,7 @@ def load_blocks():
             "Drop": [1008, [0, 2]]
         },
         12: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/bedrock.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/bedrock.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": False,
             "Replacable": False,
@@ -149,7 +149,7 @@ def load_blocks():
             "Drop": [-1, 0]
         },
         13: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/grass.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/grass.png').convert_alpha(), (64, 64)),
             "Collidable": False,
             "Minable": True,
             "Replacable": True,
@@ -160,7 +160,7 @@ def load_blocks():
             "Drop": [-1, 0]
         },
         14: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/tnt_side.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/tnt_side.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -171,7 +171,7 @@ def load_blocks():
             "Drop": [14, 1]
         },
         15: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/crafting_table_front.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/crafting_table_front.png').convert_alpha(), (64, 64)),
             "Collidable": False,
             "Minable": True,
             "Replacable": False,
@@ -182,7 +182,7 @@ def load_blocks():
             "Drop": [15, 1]
         },
         16: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/furnace_front_on.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/furnace_front_on.png').convert_alpha(), (64, 64)),
             "Collidable": False,
             "Minable": True,
             "Replacable": False,
@@ -193,7 +193,7 @@ def load_blocks():
             "Drop": [16, 1]
         },
         17: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/barrel_top.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/barrel_top.png').convert_alpha(), (64, 64)),
             "Collidable": False,
             "Minable": True,
             "Replacable": False,
@@ -204,7 +204,7 @@ def load_blocks():
             "Drop": [17, 1]
         },
         18: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/magma.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/magma.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -215,7 +215,7 @@ def load_blocks():
             "Drop": [18, 1]
         },
         19: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/jack_o_lantern.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/jack_o_lantern.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -226,7 +226,7 @@ def load_blocks():
             "Drop": [19, 1]
         },
         20: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/glowstone.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/glowstone.png').convert_alpha(), (64, 64)),
             "Collidable": False,
             "Minable": True,
             "Replacable": False,
@@ -237,7 +237,7 @@ def load_blocks():
             "Drop": [20, 1]
         },
         21: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/glass.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/glass.png').convert_alpha(), (64, 64)),
             "Collidable": False,
             "Minable": True,
             "Replacable": False,
@@ -248,7 +248,7 @@ def load_blocks():
             "Drop": [-1, 0]
         },
         22: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/fence.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/fence.png').convert_alpha(), (64, 64)),
             "Collidable": False,
             "Minable": True,
             "Replacable": False,
@@ -259,7 +259,7 @@ def load_blocks():
             "Drop": [22, 1]
         },
         23: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/iron_bars.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/iron_bars.png').convert_alpha(), (64, 64)),
             "Collidable": False,
             "Minable": True,
             "Replacable": False,
@@ -270,7 +270,7 @@ def load_blocks():
             "Drop": [1001, 1]
         },
         24: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/iron_block.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/iron_block.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -281,7 +281,7 @@ def load_blocks():
             "Drop": [1001, 9]
         },
         25: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/gold_block.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/gold_block.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -292,7 +292,7 @@ def load_blocks():
             "Drop": [1002, 9]
         },
         26: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/diamond_block.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/diamond_block.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -303,7 +303,7 @@ def load_blocks():
             "Drop": [1003, 9]
         },
         27: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/emerald_block.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/emerald_block.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -314,7 +314,7 @@ def load_blocks():
             "Drop": [1004, 9]
         },
         28: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/coal_block.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/coal_block.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -325,7 +325,7 @@ def load_blocks():
             "Drop": [1005, 9]
         },
         29: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/coal_ore.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/coal_ore.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -336,7 +336,7 @@ def load_blocks():
             "Drop": [1005, [2, 5]]
         },
         30: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/iron_ore.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/iron_ore.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -347,7 +347,7 @@ def load_blocks():
             "Drop": [1006, [1, 2]]
         },
         31: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/gold_ore.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/gold_ore.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -358,7 +358,7 @@ def load_blocks():
             "Drop": [1007, 1]
         },
         32: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/diamond_ore.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/diamond_ore.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -369,7 +369,7 @@ def load_blocks():
             "Drop": [1003, 1]
         },
         33: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/emerald_ore.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/emerald_ore.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -380,7 +380,7 @@ def load_blocks():
             "Drop": [1004, [0, 1]]
         },
         34: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/ladder.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/ladder.png').convert_alpha(), (64, 64)),
             "Collidable": False,
             "Minable": True,
             "Replacable": False,
@@ -391,7 +391,7 @@ def load_blocks():
             "Drop": [34, 1]
         },
         35: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/poppy.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/poppy.png').convert_alpha(), (64, 64)),
             "Collidable": False,
             "Minable": True,
             "Replacable": True,
@@ -402,7 +402,7 @@ def load_blocks():
             "Drop": [35, 1]
         },
         36: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -413,7 +413,7 @@ def load_blocks():
             "Drop": [36, 1]
         },
         37: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate_iron_ore.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate_iron_ore.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -424,7 +424,7 @@ def load_blocks():
             "Drop": [1006, [4, 6]]
         },
         38: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate_gold_ore.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate_gold_ore.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -435,7 +435,7 @@ def load_blocks():
             "Drop": [1007, [1, 3]]
         },
         39: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate_diamond_ore.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate_diamond_ore.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
@@ -446,7 +446,7 @@ def load_blocks():
             "Drop": [1003, [2, 4]]
         },
         40: {
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate_emerald_ore.png'), (64, 64)),
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate_emerald_ore.png').convert_alpha(), (64, 64)),
             "Collidable": True,
             "Minable": True,
             "Replacable": False,

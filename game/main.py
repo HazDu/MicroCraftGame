@@ -17,15 +17,15 @@ sys.setrecursionlimit(100000)
 pygame.display.set_icon(surface)
 
 #load images
-logo = pygame.image.load('game/assets/ui/Microcraft.png')
-trashbin = pygame.image.load('game/assets/ui/trashbin.png')
-explorer = pygame.image.load('game/assets/ui/explorer.png')
-def_img = pygame.image.load("game/assets/ui/pack.png")
-img_mod_loaded = pygame.image.load("game/assets/ui/mod_loaded.png")
-img_mod_unloaded = pygame.image.load("game/assets/ui/mod_unloaded.png")
-img_hotbar = pygame.transform.scale(pygame.image.load("game/assets/ui/hotbar.png"), (512, 64))
-img_hotbar_sel = pygame.transform.scale(pygame.image.load("game/assets/ui/hotbar_selector.png"), (64, 64))
-img_slot = pygame.transform.scale(pygame.image.load("game/assets/ui/slot.png"), (64, 64))
+logo = pygame.image.load('game/assets/ui/Microcraft.png').convert_alpha()
+trashbin = pygame.image.load('game/assets/ui/trashbin.png').convert_alpha()
+explorer = pygame.image.load('game/assets/ui/explorer.png').convert_alpha()
+def_img = pygame.image.load("game/assets/ui/pack.png").convert_alpha()
+img_mod_loaded = pygame.image.load("game/assets/ui/mod_loaded.png").convert_alpha()
+img_mod_unloaded = pygame.image.load("game/assets/ui/mod_unloaded.png").convert_alpha()
+img_hotbar = pygame.transform.scale(pygame.image.load("game/assets/ui/hotbar.png"), (512, 64)).convert_alpha()
+img_hotbar_sel = pygame.transform.scale(pygame.image.load("game/assets/ui/hotbar_selector.png"), (64, 64)).convert_alpha()
+img_slot = pygame.transform.scale(pygame.image.load("game/assets/ui/slot.png"), (64, 64)).convert_alpha()
 
 #custom cursors
 cur_square = []
@@ -192,7 +192,7 @@ while RUNNING:
 
     pygame.mouse.set_cursor(cur[0], cur[1], cur[2], cur[3])
     clock.tick(60)
-    pygame.display.update()
+    pygame.display.flip()
 
 
 
