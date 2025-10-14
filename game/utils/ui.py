@@ -73,6 +73,7 @@ def ui(events, surf, scale):
                 main.hotbar_slot = 7
             elif main.hotbar_slot > 7:
                 main.hotbar_slot = 0
+            main.block_in_hand = main.inventory[main.hotbar_slot][0]
 
     #Inventory
     if main.show_inv:

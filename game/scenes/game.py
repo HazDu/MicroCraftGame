@@ -149,6 +149,10 @@ class Item:
             self.lifetime += 1
             self.rot += 0.5
 
+        #print(f"self: {self.x} {self.y} player: {player.x} {player.y}")
+        if point_distance((self.x, self.y), (player.x*-1, player.y*-1)) < 120:
+            self.x, self.y = move_towarts((player.x*-1, player.y*-1), (self.x, self.y), 12)
+
 
 
 def scene_game_create():
@@ -244,7 +248,7 @@ def scene_game(events):
 
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 3:
+                if event.button == 3 and main.block_in_hand != 0:
                     if main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Interactable"]:
                         block_interact(main.loaded_chunks[mouse_chunk][0][x][y], x, y, mouse_chunk)
                     elif main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Replacable"]:

@@ -95,7 +95,9 @@ break_speed = 1
 hotbar_slot = 0
 sky_color = (200, 250, 255)
 item_entities = []
-inventory = [0 for _ in range(40)]
+inventory = [[0,0] for _ in range(40)]
+inventory[0][0] = 1
+inventory[1][0] = 4
 
 #load settings
 if os.path.exists(f"{GAMEPATH}/settings.json"):

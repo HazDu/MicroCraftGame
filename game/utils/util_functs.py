@@ -14,6 +14,24 @@ def point_distance(point1, point2):
     x2, y2 = point2
     return math.hypot(x2 - x1, y2 - y1)
 
+def move_towarts(pos_goal, pos_at, distance):
+    goal_vec = pygame.math.Vector2(pos_goal)
+    at_vec = pygame.math.Vector2(pos_at)
+
+
+    direction = goal_vec - at_vec
+    length = direction.length()
+
+    if length == 0:
+        return at_vec.x, at_vec.y
+    if distance >= length:
+        return goal_vec.x, goal_vec.y
+
+    direction = direction.normalize()
+    new_pos = at_vec + direction * distance
+
+    return new_pos.x, new_pos.y
+
 def tint_image(surface, tint_color):
     intensity = tint_color[3] / 255.0
 
@@ -320,11 +338,6 @@ def change_block_over_border(chunk, _x, _y):
 def world_coords_to_screen_coords(wx, wy):
     screen_curr_x = main.OX*-1
     screen_curr_y = main.OY*-1
-
-    # if wx < 0:
-    #     wx *= -1
-    # if wy < 0:
-    #     wy *= -1
 
     sx, sy = wx - screen_curr_x, wy - screen_curr_y
 

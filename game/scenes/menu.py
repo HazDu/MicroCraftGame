@@ -54,21 +54,7 @@ def scene_menu_select(events):
 
     if button(660, 100, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), f"Create World", main.surface, events, "M","T"):
         main.current_scene = 8
-        # if world_name_input != "":
-        #     path = os.path.join(main.GAMEPATH,"saves", world_name_input)
-        #     os.makedirs(path, exist_ok=True)
-        #     os.makedirs(os.path.join(path, "chunkdata"), exist_ok=True)
-        #     with open(f"{path}/infos.json", "w") as file:
-        #         infos = {
-        #             "Name": world_name_input,
-        #             "SaveDate": datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
-        #         }
-        #         file.write(json.dumps(infos))
-        #
-        #     main.world_name = world_name_input
-        #     main.current_scene = 6
-        #     main.loading_timeout = 0
-        #     main.loading_info = ["", "create"]
+        inventory = [[0,0] for _ in range(40)]
     if button(1260, 100, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), "Main Menu", main.surface, events, "M", "T"):
         main.current_scene = 0
 
