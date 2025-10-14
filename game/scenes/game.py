@@ -3,6 +3,7 @@ import zipfile
 import pygame
 import random
 import math
+import numpy as np
 import copy
 import ast
 from utils.ui import *
@@ -150,9 +151,15 @@ class Item:
             self.rot += 0.5
 
         #print(f"self: {self.x} {self.y} player: {player.x} {player.y}")
-        if point_distance((self.x, self.y), (player.x*-1, player.y*-1)) < 120:
+        if 10 < point_distance((self.x, self.y), (player.x*-1, player.y*-1)) < 120 and any(sub[0] == 0 for sub in main.inventory):
             self.x, self.y = move_towarts((player.x*-1, player.y*-1), (self.x, self.y), 12)
-
+        elif point_distance((self.x, self.y), (player.x*-1, player.y*-1)) <= 10:
+            for i in range(len(main.inventory)):
+                if main.inventory[i][0] == 0 or (main.inventory[i][0] == self.item_id and main.inventory[i][1]+self.amount <= 256):
+                    main.inventory[i][0] = self.item_id
+                    main.inventory[i][1] += self.amount
+                    self.lifetime = 99999
+                    break
 
 
 def scene_game_create():
