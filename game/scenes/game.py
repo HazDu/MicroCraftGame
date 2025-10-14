@@ -154,12 +154,21 @@ class Item:
         if 10 < point_distance((self.x, self.y), (player.x*-1, player.y*-1)) < 120 and any(sub[0] == 0 for sub in main.inventory):
             self.x, self.y = move_towarts((player.x*-1, player.y*-1), (self.x, self.y), 12)
         elif point_distance((self.x, self.y), (player.x*-1, player.y*-1)) <= 10:
+            item_stored = False
             for i in range(len(main.inventory)):
-                if main.inventory[i][0] == 0 or (main.inventory[i][0] == self.item_id and main.inventory[i][1]+self.amount <= 256):
-                    main.inventory[i][0] = self.item_id
+                if main.inventory[i][0] == self.item_id and main.inventory[i][1]+self.amount <= 256:
                     main.inventory[i][1] += self.amount
                     self.lifetime = 99999
+                    item_stored = True
                     break
+            if not item_stored:
+                for i in range(len(main.inventory)):
+                    if main.inventory[i][0] == 0:
+                        main.inventory[i][0] = self.item_id
+                        main.inventory[i][1] += self.amount
+                        self.lifetime = 99999
+                        item_stored = True
+                        break
 
 
 def scene_game_create():
@@ -277,10 +286,12 @@ def scene_game(events):
 
     #Player chunk teleport
     if player.x > 0:
+        #tp player / item
         main.OX = int(-4095 + main.surface.get_width() / 2)
         for item in main.item_entities:
             item.x += 4095
 
+        #add chunks to render queue
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
                 i = main.chunk_render_queue[index]
@@ -289,15 +300,19 @@ def scene_game(events):
                 elif i[0] in [2, 8]:
                     main.chunk_render_queue.pop(index)
 
+        #save old chunks
         for i in [2, 5, 8]:
+            #main.chunk_buffer.append(main.loaded_chunks[i])
             with open(f"{main.GAMEPATH}/saves/{main.world_name}/chunkdata/{main.loaded_chunks[i][1]}.chunk", "w") as file:
                 file.write(str(main.loaded_chunks[i][0]))
 
+        #move chunks
         for column in [2, 1]:
             for row in [0, 3, 6]:
                 main.loaded_chunks[column + row] = copy.deepcopy(main.loaded_chunks[column + row - 1])
                 main.block_surface[column + row] = copy.copy(main.block_surface[column + row - 1])
 
+        #load and or generate chunks
         for i in [0, 3, 6]:
             chunk_coords = [main.loaded_chunks[i + 1][1][0] - 1, main.loaded_chunks[i + 1][1][1]]
             if os.path.exists(f"{main.GAMEPATH}/saves/{main.world_name}/chunkdata/{chunk_coords}.chunk"):

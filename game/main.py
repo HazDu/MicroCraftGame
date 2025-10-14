@@ -96,6 +96,7 @@ hotbar_slot = 0
 sky_color = (200, 250, 255)
 item_entities = []
 inventory = [[0,0] for _ in range(40)]
+chunk_buffer = []
 
 #load settings
 if os.path.exists(f"{GAMEPATH}/settings.json"):

@@ -39,9 +39,6 @@ def generate_chunk(chunk):
     main.loaded_chunks[chunk][0] = [[4 for _ in range(64)] for _ in range(64)]
 
 def generate_chunk_2d_flat(chunk):
-    print(f"generating chunk at y level: {main.loaded_chunks[chunk][1][1]}")
-    for i in range(9):
-        print(f"{i}: {main.loaded_chunks[i][1]}")
     if main.loaded_chunks[chunk][1][1] == 0:
         contents = []
         for x in range(64):

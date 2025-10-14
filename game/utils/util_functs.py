@@ -207,6 +207,10 @@ def save_world():
     for chunk in main.loaded_chunks:
         with open(f"{path}/{chunk[1]}.chunk", "w") as file:
             file.write(str(chunk[0]))
+    for chunk in main.chunk_buffer:
+        with open(f"{path}/{chunk[1]}.chunk", "w") as file:
+            file.write(str(chunk[0]))
+
     path = os.path.join(main.GAMEPATH, "saves", main.world_name)
     with open(f"{path}/infos.json", "r") as file:
         read_data = json.load(file)
