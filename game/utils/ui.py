@@ -66,6 +66,12 @@ def ui(events, surf, scale):
     surf.blit(main.img_hotbar, (704, 1016))
     surf.blit(main.img_hotbar_sel, (704+(64*main.hotbar_slot), 1016))
 
+    for i in range(8):
+        if main.inventory[i][0] != 0:
+            text = main.fnt_cons20.render(f"{main.inventory[i][1]}", True, (255, 255, 255))
+            surf.blit(main.item_data[main.inventory[i][0]]["Texture"], (712 + 64 * i, 1024))
+            surf.blit(text, (714 + 64 * i, 1055))
+
     for event in events:
         if event.type == pygame.MOUSEWHEEL:
             main.hotbar_slot -= event.y
@@ -73,7 +79,10 @@ def ui(events, surf, scale):
                 main.hotbar_slot = 7
             elif main.hotbar_slot > 7:
                 main.hotbar_slot = 0
-            main.block_in_hand = main.inventory[main.hotbar_slot][0]
+            if main.inventory[main.hotbar_slot][0] < 1000:
+                main.block_in_hand = main.inventory[main.hotbar_slot][0]
+            else:
+                main.block_in_hand = 0
 
     #Inventory
     if main.show_inv:
@@ -99,11 +108,17 @@ def ui(events, surf, scale):
         elif main.gamemode == 0:
             inv_x = 632
             inv_y = 600
+            slot = 8
             pygame.draw.rect(main.surface, (64, 64, 64), (inv_x, inv_y, 656, 336))
             for y in range(4):
                 for x in range(8):
                     if button(inv_x + (x*80)+16, inv_y + (y*80)+16, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "L", "T"):
                         pass
+                    if main.inventory[slot][0] != 0:
+                        text = main.fnt_cons20.render(f"{main.inventory[slot][1]}", True, (255, 255, 255))
+                        surf.blit(main.item_data[main.inventory[slot][0]]["Texture"], (inv_x + 80 * x + 24, inv_y + 80 * y + 24))
+                        surf.blit(text, (inv_x + 80 * x + 20, inv_y + 80 * y + 55))
+                    slot += 1
 
     #ui elements added by mods
     if main.mods_active:

@@ -8,7 +8,6 @@ from utils.item_ids import *
 from utils.cursor import *
 from scenes.menu import *
 from scenes.game import *
-#EVERYTHING IS SCALED BY 4
 pygame.init()
 
 #screen setup
@@ -61,6 +60,7 @@ os.makedirs(subdir, exist_ok=True)
 subdir = f"{GAMEPATH}/mods"
 os.makedirs(subdir, exist_ok=True)
 main_font = pygame.font.SysFont('impact', 30)
+fnt_cons20 =  pygame.font.SysFont('consolas', 20)
 OX = 0 #origin
 OY = 0
 SCALE = 4
@@ -69,7 +69,7 @@ world_name = "Err"
 #chunk = []
 loaded_chunks = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
 block_in_reach = False
-main.reach = 300
+reach = 300
 selected_block = (0, 0)
 block_in_hand = 1
 gamemode = 0
@@ -96,8 +96,6 @@ hotbar_slot = 0
 sky_color = (200, 250, 255)
 item_entities = []
 inventory = [[0,0] for _ in range(40)]
-inventory[0][0] = 1
-inventory[1][0] = 4
 
 #load settings
 if os.path.exists(f"{GAMEPATH}/settings.json"):
