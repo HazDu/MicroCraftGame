@@ -302,9 +302,7 @@ def scene_game(events):
 
         #save old chunks
         for i in [2, 5, 8]:
-            #main.chunk_buffer.append(main.loaded_chunks[i])
-            with open(f"{main.GAMEPATH}/saves/{main.world_name}/chunkdata/{main.loaded_chunks[i][1]}.chunk", "w") as file:
-                file.write(str(main.loaded_chunks[i][0]))
+            main.chunk_buffer.append(copy.deepcopy(main.loaded_chunks[i]))
 
         #move chunks
         for column in [2, 1]:
@@ -315,10 +313,15 @@ def scene_game(events):
         #load and or generate chunks
         for i in [0, 3, 6]:
             chunk_coords = [main.loaded_chunks[i + 1][1][0] - 1, main.loaded_chunks[i + 1][1][1]]
-            if os.path.exists(f"{main.GAMEPATH}/saves/{main.world_name}/chunkdata/{chunk_coords}.chunk"):
-                with open(f"{main.GAMEPATH}/saves/{main.world_name}/chunkdata/{chunk_coords}.chunk") as file:
-                    main.loaded_chunks[i][0] = ast.literal_eval(file.read())
-                    main.loaded_chunks[i][1] = chunk_coords
+            found = None
+            for index, data in enumerate(main.chunk_buffer):
+                if data[1] == chunk_coords:
+                    found = index
+                    break
+            if found is not None:
+                main.loaded_chunks[i] = main.chunk_buffer[found]
+                main.chunk_buffer.pop(found)
+
             else:
                 main.loaded_chunks[i][1][0] = main.loaded_chunks[i + 1][1][0]-1
                 generate_chunk_type(i, 0)
@@ -339,8 +342,7 @@ def scene_game(events):
                     main.chunk_render_queue.pop(index)
 
         for i in [0, 3, 6]:
-            with open(f"{main.GAMEPATH}/saves/{main.world_name}/chunkdata/{main.loaded_chunks[i][1]}.chunk", "w") as file:
-                file.write(str(main.loaded_chunks[i][0]))
+            main.chunk_buffer.append(copy.deepcopy(main.loaded_chunks[i]))
 
         for column in [0, 1]:
             for row in [0, 3, 6]:
@@ -349,10 +351,14 @@ def scene_game(events):
 
         for i in [2, 5, 8]:
             chunk_coords = [main.loaded_chunks[i - 1][1][0] + 1, main.loaded_chunks[i - 1][1][1]]
-            if os.path.exists(f"{main.GAMEPATH}/saves/{main.world_name}/chunkdata/{chunk_coords}.chunk"):
-                with open(f"{main.GAMEPATH}/saves/{main.world_name}/chunkdata/{chunk_coords}.chunk") as file:
-                    main.loaded_chunks[i][0] = ast.literal_eval(file.read())
-                    main.loaded_chunks[i][1] = chunk_coords
+            found = None
+            for index, data in enumerate(main.chunk_buffer):
+                if data[1] == chunk_coords:
+                    found = index
+                    break
+            if found is not None:
+                main.loaded_chunks[i] = main.chunk_buffer[found]
+                main.chunk_buffer.pop(found)
             else:
                 main.loaded_chunks[i][1][0] = main.loaded_chunks[i - 1][1][0] + 1
                 generate_chunk_type(i, 0)
@@ -373,9 +379,7 @@ def scene_game(events):
                     main.chunk_render_queue.pop(index)
 
         for i in [6, 7, 8]:
-            with open(f"{main.GAMEPATH}/saves/{main.world_name}/chunkdata/{main.loaded_chunks[i][1]}.chunk",
-                      "w") as file:
-                file.write(str(main.loaded_chunks[i][0]))
+            main.chunk_buffer.append(copy.deepcopy(main.loaded_chunks[i]))
 
         for row in [2, 1]:
             for col in [0, 1, 2]:
@@ -386,11 +390,14 @@ def scene_game(events):
 
         for i in [0, 1, 2]:
             chunk_coords = [main.loaded_chunks[i + 3][1][0], main.loaded_chunks[i + 3][1][1] - 1]
-            chunk_path = f"{main.GAMEPATH}/saves/{main.world_name}/chunkdata/{chunk_coords}.chunk"
-            if os.path.exists(chunk_path):
-                with open(chunk_path) as file:
-                    main.loaded_chunks[i][0] = ast.literal_eval(file.read())
-                    main.loaded_chunks[i][1] = chunk_coords
+            found = None
+            for index, data in enumerate(main.chunk_buffer):
+                if data[1] == chunk_coords:
+                    found = index
+                    break
+            if found is not None:
+                main.loaded_chunks[i] = main.chunk_buffer[found]
+                main.chunk_buffer.pop(found)
             else:
                 main.loaded_chunks[i][1][1] = main.loaded_chunks[i + 3][1][1] - 1
                 generate_chunk_type(i, 0)
@@ -411,9 +418,7 @@ def scene_game(events):
                     main.chunk_render_queue.pop(index)
 
         for i in [0, 1, 2]:
-            with open(f"{main.GAMEPATH}/saves/{main.world_name}/chunkdata/{main.loaded_chunks[i][1]}.chunk",
-                      "w") as file:
-                file.write(str(main.loaded_chunks[i][0]))
+            main.chunk_buffer.append(copy.deepcopy(main.loaded_chunks[i]))
 
         for row in [0, 1]:
             for col in [0, 1, 2]:
@@ -424,11 +429,14 @@ def scene_game(events):
 
         for i in [6, 7, 8]:
             chunk_coords = [main.loaded_chunks[i - 3][1][0], main.loaded_chunks[i - 3][1][1] + 1]
-            chunk_path = f"{main.GAMEPATH}/saves/{main.world_name}/chunkdata/{chunk_coords}.chunk"
-            if os.path.exists(chunk_path):
-                with open(chunk_path) as file:
-                    main.loaded_chunks[i][0] = ast.literal_eval(file.read())
-                    main.loaded_chunks[i][1] = chunk_coords
+            found = None
+            for index, data in enumerate(main.chunk_buffer):
+                if data[1] == chunk_coords:
+                    found = index
+                    break
+            if found is not None:
+                main.loaded_chunks[i] = main.chunk_buffer[found]
+                main.chunk_buffer.pop(found)
             else:
                 main.loaded_chunks[i][1][1] = main.loaded_chunks[i - 3][1][1] + 1
                 generate_chunk_type(i, 0)

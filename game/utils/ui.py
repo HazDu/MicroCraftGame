@@ -142,7 +142,8 @@ def ui(events, surf, scale):
                      f"MainChunk: {main.loaded_chunks[4][1]}\n"
                      f"Rendering Chunks: {len(main.chunk_render_queue) > 0} "
                      f"({', '.join(str(chunk) for chunk, *_ in main.chunk_render_queue)})\n"
-                     f"{f"Rendering Chunk: {main.chunk_render_queue[0][0]} - {((4096 - len(main.chunk_render_queue[0][1])) * 100) / 4096:.0f}%\n" if main.chunk_render_queue else ""}\n"
+                     f"{f"Rendering Chunk: {main.chunk_render_queue[0][0]} - {((4096 - len(main.chunk_render_queue[0][1])) * 100) / 4096:.0f}%\n" if main.chunk_render_queue else ""}"
+                     f"Buffered Chunks: {len(main.chunk_buffer)}\n"
                      )
         text_render_multiline(10, 10, main.main_font, debug_txt, True, (255, 255, 255), surf, "L", "T")
 
