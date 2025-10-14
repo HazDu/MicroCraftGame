@@ -3,6 +3,12 @@ import __main__ as main
 
 from utils.util_functs import *
 
+def generate_chunk_type(chunk, worldtype):
+    match worldtype:
+        case 0:
+            generate_chunk_2d_flat(chunk)
+        case _:
+            generate_chunk(chunk)
 
 def generate_trees(queue, chunk):
     blocks = [
@@ -30,15 +36,7 @@ def create_chunk():
     return [[0 for _ in range(64)] for _ in range(64)]
 
 def generate_chunk(chunk):
-    contents = []
-    for y in range(64):
-        row = []
-        for x in range(64):
-            if random.randint(0, 100) == 0:
-                main.tree_queue[chunk].append([x, y])
-            row.append(random.randint(2, 2))
-        contents.append(row)
-    main.loaded_chunks[chunk][0] = contents
+    main.loaded_chunks[chunk][0] = [[4 for _ in range(64)] for _ in range(64)]
 
 def generate_chunk_2d_flat(chunk):
     if main.loaded_chunks[chunk][1][1] == 0:

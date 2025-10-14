@@ -176,8 +176,7 @@ def scene_game_create():
     ]
 
     for chunk in range(9):
-        if main.menu_create_worldtype == 0:
-            generate_chunk_2d_flat(chunk)
+       generate_chunk_type(chunk, main.menu_create_worldtype)
 
     for chunk in range(9):
         generate_trees(main.tree_queue[chunk], chunk)
@@ -299,7 +298,7 @@ def scene_game(events):
                     main.loaded_chunks[i][0] = ast.literal_eval(file.read())
                     main.loaded_chunks[i][1] = chunk_coords
             else:
-                generate_chunk(i)
+                generate_chunk_type(i, 0)
                 main.loaded_chunks[i][1][0] = main.loaded_chunks[i + 1][1][0]-1
             render_chunk_clear(i)
             chunk_add_render_queue(i)
@@ -333,7 +332,7 @@ def scene_game(events):
                     main.loaded_chunks[i][0] = ast.literal_eval(file.read())
                     main.loaded_chunks[i][1] = chunk_coords
             else:
-                generate_chunk(i)
+                generate_chunk_type(i, 0)
                 main.loaded_chunks[i][1][0] = main.loaded_chunks[i - 1][1][0] + 1
             render_chunk_clear(i)
             chunk_add_render_queue(i)
@@ -371,7 +370,7 @@ def scene_game(events):
                     main.loaded_chunks[i][0] = ast.literal_eval(file.read())
                     main.loaded_chunks[i][1] = chunk_coords
             else:
-                generate_chunk(i)
+                generate_chunk_type(i, 0)
                 main.loaded_chunks[i][1][1] = main.loaded_chunks[i + 3][1][1] - 1
             render_chunk_clear(i)
             chunk_add_render_queue(i)
@@ -409,7 +408,7 @@ def scene_game(events):
                     main.loaded_chunks[i][0] = ast.literal_eval(file.read())
                     main.loaded_chunks[i][1] = chunk_coords
             else:
-                generate_chunk(i)
+                generate_chunk_type(i, 0)
                 main.loaded_chunks[i][1][1] = main.loaded_chunks[i - 3][1][1] + 1
             render_chunk_clear(i)
             chunk_add_render_queue(i)
