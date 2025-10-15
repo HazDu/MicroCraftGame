@@ -121,6 +121,9 @@ def ui(events, surf, scale):
                                 main.inv_mouse[1] -= 1
                                 if main.inv_mouse[1] <= 0:
                                     main.inv_mouse = [0, 0]
+                            elif main.inv_mouse == [0, 0] and main.workbench_storage[slot] != [0, 0]:
+                                main.inv_mouse = [main.workbench_storage[slot][0], math.ceil(main.workbench_storage[slot][1] /2)]
+                                main.workbench_storage[slot][1] = math.floor(main.workbench_storage[slot][1] / 2)
 
                         if main.workbench_storage[slot][0] != 0:
                             text = main.fnt_cons20.render(f"{main.workbench_storage[slot][1]}", True, (255, 255, 255))
@@ -199,9 +202,9 @@ def ui(events, surf, scale):
                     slot += 1
 
             if main.inv_mouse[1] <= 0:
-                main.inv_mouse = [0, 0]
+                main.inv_mouse[0] = 0
 
-            if main.inv_mouse != [0, 0]:
+            if main.inv_mouse[0] != 0:
                 text = main.fnt_cons20.render(f"{main.inv_mouse[1]}", True, (255, 255, 255))
                 surf.blit(main.item_data[main.inv_mouse[0]]["Texture"], (mouse[0]-24, mouse[1]-24))
                 surf.blit(text, (mouse[0]-22, mouse[1]+7))
