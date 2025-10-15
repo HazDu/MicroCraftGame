@@ -13,7 +13,7 @@ import subprocess
 from game.scenes.game import *
 from game.scenes.loading import *
 from game.utils.util_functs import *
-import __main__; main = __main__
+import __main__ as main
 
 world_name_input = ""
 

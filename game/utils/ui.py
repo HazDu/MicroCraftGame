@@ -108,17 +108,28 @@ def ui(events, surf, scale):
         elif main.gamemode == 0:
             inv_x = 632
             inv_y = 600
+
+            for i in range(8):
+                if button(704 + i*64, 1016, 64, 64, main.img_empty, (255, 255, 255, 50), 0, main.surface, events, "L", "T"):
+                    temp = main.inv_mouse
+                    main.inv_mouse = main.inventory[i]
+                    main.inventory[i] = temp
+
             slot = 8
             pygame.draw.rect(main.surface, (64, 64, 64), (inv_x, inv_y, 656, 336))
             for y in range(4):
                 for x in range(8):
                     if button(inv_x + (x*80)+16, inv_y + (y*80)+16, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "L", "T"):
-                        pass
+                        temp = main.inv_mouse
+                        main.inv_mouse = main.inventory[slot]
+                        main.inventory[slot] = temp
                     if main.inventory[slot][0] != 0:
                         text = main.fnt_cons20.render(f"{main.inventory[slot][1]}", True, (255, 255, 255))
                         surf.blit(main.item_data[main.inventory[slot][0]]["Texture"], (inv_x + 80 * x + 24, inv_y + 80 * y + 24))
                         surf.blit(text, (inv_x + 80 * x + 20, inv_y + 80 * y + 55))
                     slot += 1
+            if main.inv_mouse != [0, 0]:
+                surf.blit(main.item_data[main.inv_mouse[0]]["Texture"], (mouse[0]-24, mouse[1]-24))
 
     #ui elements added by mods
     if main.mods_active:

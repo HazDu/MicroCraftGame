@@ -1,5 +1,6 @@
 from tkinter import messagebox
 import pygame
+import zipfile
 from utils.ui import *
 import sys
 import platform
@@ -21,6 +22,7 @@ logo = pygame.image.load('game/assets/ui/Microcraft.png').convert_alpha()
 trashbin = pygame.image.load('game/assets/ui/trashbin.png').convert_alpha()
 explorer = pygame.image.load('game/assets/ui/explorer.png').convert_alpha()
 def_img = pygame.image.load("game/assets/ui/pack.png").convert_alpha()
+img_empty = pygame.Surface((1, 1), pygame.SRCALPHA, 32)
 img_mod_loaded = pygame.image.load("game/assets/ui/mod_loaded.png").convert_alpha()
 img_mod_unloaded = pygame.image.load("game/assets/ui/mod_unloaded.png").convert_alpha()
 img_hotbar = pygame.transform.scale(pygame.image.load("game/assets/ui/hotbar.png"), (512, 64)).convert_alpha()
@@ -96,6 +98,7 @@ hotbar_slot = 0
 sky_color = (200, 250, 255)
 item_entities = []
 inventory = [[0,0] for _ in range(40)]
+inv_mouse = [0, 0]
 chunk_buffer = []
 
 #load settings
@@ -127,6 +130,7 @@ else:
 
 if mods_active:
     for mod in loaded_mods:
+        print(MODPATH)
         with zipfile.ZipFile(f"{MODPATH}/{mod}", 'r') as zip_ref:
             if "scripts/init.py" in zip_ref.namelist():
                 with zip_ref.open("scripts/init.py") as file:
