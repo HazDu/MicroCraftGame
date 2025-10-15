@@ -81,10 +81,17 @@ def ui(events, surf, scale):
                 main.hotbar_slot = 7
             elif main.hotbar_slot > 7:
                 main.hotbar_slot = 0
+            main.action_title = [main.fnt_cons20.render(main.item_data[main.inventory[main.hotbar_slot][0]]["Name"], True, (230, 230, 230, clamp(main.action_title[1], 0, 255))), 700]
     if main.inventory[main.hotbar_slot][0] < 1000:
         main.block_in_hand = main.inventory[main.hotbar_slot][0]
     else:
         main.block_in_hand = 0
+
+    if main.action_title[1] >= 2:
+        text = main.action_title[0].copy()
+        text.set_alpha(main.action_title[1])
+        surf.blit(text, (surf.get_width() / 2 - main.action_title[0].get_width() / 2, 950))
+        main.action_title[1] -= 5
 
     #container ui's
     if main.container_open[0]:

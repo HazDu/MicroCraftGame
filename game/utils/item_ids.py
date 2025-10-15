@@ -2,7 +2,9 @@ import pygame
 
 def load_items():
     item_data = {
-        0: {},
+        0: {
+            "Name": ""
+        },
         1: {
             "Name": "Dirt",
             "filename": "dirt",

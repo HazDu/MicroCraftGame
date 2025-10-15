@@ -102,6 +102,7 @@ inventory = [[0,0] for _ in range(40)]
 inv_mouse = [0, 0]
 chunk_buffer = []
 container_open = [False, 0]
+action_title = [img_empty, 0]
 
 #load settings
 if os.path.exists(f"{GAMEPATH}/settings.json"):
