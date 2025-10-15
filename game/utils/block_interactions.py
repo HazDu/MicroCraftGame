@@ -32,4 +32,6 @@ def block_interact(block_id, x, y, chunk):
                         main.loaded_chunks[chunk_checked][0][_x][_y] = int(0)
                         changed_blocks.append([_x, _y])
                         render_blocks(changed_blocks, chunk_checked)
-
+        case 15:
+            main.container_open = [True, 15]
+            main.show_inv = True

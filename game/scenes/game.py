@@ -263,10 +263,10 @@ def scene_game(events):
 
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 3 and main.block_in_hand != 0:
+                if event.button == 3:
                     if main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Interactable"]:
                         block_interact(main.loaded_chunks[mouse_chunk][0][x][y], x, y, mouse_chunk)
-                    elif main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Replacable"]:
+                    elif main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Replacable"] and main.block_in_hand != 0:
                         main.loaded_chunks[mouse_chunk][0][x][y] = int(main.block_in_hand)
                         main.inventory[main.hotbar_slot][1] -= 1
                         render_blocks([[x, y]], mouse_chunk)

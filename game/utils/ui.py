@@ -12,9 +12,11 @@ def ui(events, surf, scale):
 
     for event in events:
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
+            if event.key == pygame.K_ESCAPE and not main.show_inv:
                 main.show_esc = not main.show_esc
-            elif event.key == pygame.K_e:
+            elif event.key == pygame.K_e and not main.show_esc:
+                if main.show_inv:
+                    main.container_open[0] = False
                 main.show_inv = not main.show_inv
             elif event.key == pygame.K_F1:
                 main.show_debug = not main.show_debug
@@ -84,10 +86,28 @@ def ui(events, surf, scale):
     else:
         main.block_in_hand = 0
 
+    #container ui's
+    if main.container_open[0]:
+        cont_x = 632
+        cont_y = 150
+        match main.container_open[1]:
+            case 15:
+                pygame.draw.rect(main.surface, (64, 64, 64), (cont_x, cont_y, 656, 336), 0, 12)
+                surf.blit(main.img_double_arrow, (cont_x+320, cont_y+120))
+                slot = 0
+                for x in range(3):
+                    for y in range(3):
+                        if button(cont_x+50+x*70, cont_y+50+y*70, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "L", "T"):
+                            pass
+                        slot += 1
+                if button(cont_x+444, cont_y+120, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "L", "T"):
+                    pass
+
+
     #Inventory
     if main.show_inv:
         if main.gamemode == 1:
-            pygame.draw.rect(main.surface, (64, 64, 64), (460, 190, 1000, 700))
+            pygame.draw.rect(main.surface, (64, 64, 64), (460, 190, 1000, 700), 0, 12)
             block_id = 0
             for y in range(5):
                 for x in range(10):
@@ -116,7 +136,7 @@ def ui(events, surf, scale):
                     main.inventory[i] = temp
 
             slot = 8
-            pygame.draw.rect(main.surface, (64, 64, 64), (inv_x, inv_y, 656, 336))
+            pygame.draw.rect(main.surface, (64, 64, 64), (inv_x, inv_y, 656, 336), 0, 12)
             for y in range(4):
                 for x in range(8):
                     if button(inv_x + (x*80)+16, inv_y + (y*80)+16, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "L", "T"):

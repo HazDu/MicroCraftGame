@@ -28,6 +28,7 @@ img_mod_unloaded = pygame.image.load("game/assets/ui/mod_unloaded.png").convert_
 img_hotbar = pygame.transform.scale(pygame.image.load("game/assets/ui/hotbar.png"), (512, 64)).convert_alpha()
 img_hotbar_sel = pygame.transform.scale(pygame.image.load("game/assets/ui/hotbar_selector.png"), (64, 64)).convert_alpha()
 img_slot = pygame.transform.scale(pygame.image.load("game/assets/ui/slot.png"), (64, 64)).convert_alpha()
+img_double_arrow = pygame.transform.scale(pygame.image.load("game/assets/ui/double_arrow.png"), (64, 64)).convert_alpha()
 
 #custom cursors
 cur_square = []
@@ -100,6 +101,7 @@ item_entities = []
 inventory = [[0,0] for _ in range(40)]
 inv_mouse = [0, 0]
 chunk_buffer = []
+container_open = [False, 0]
 
 #load settings
 if os.path.exists(f"{GAMEPATH}/settings.json"):
