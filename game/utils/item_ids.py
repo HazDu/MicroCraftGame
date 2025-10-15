@@ -1,9 +1,12 @@
 import pygame
+import __main__ as main
+
 
 def load_items():
     item_data = {
         0: {
-            "Name": ""
+            "Name": "",
+            "Texture": main.img_empty
         },
         1: {
             "Name": "Dirt",

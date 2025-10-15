@@ -81,7 +81,7 @@ def button(x, y, width, height, sprite, tint_col, text, surface, events, x_align
     if x <= mouse_pos[0] <= x+width and y <= mouse_pos[1] <= y+height:
         main.cur = main.cur_pointer
         for event in events:
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if event.type == pygame.MOUSEBUTTONDOWN:
                 btn_pressed = True
         tinted_image = tint_image(sprite, tint_col)
         surface.blit(tinted_image, (x, y))
@@ -96,6 +96,17 @@ def button(x, y, width, height, sprite, tint_col, text, surface, events, x_align
 
     #Return if the Button is pressed
     return btn_pressed
+
+def button_exact(x, y, width, height, sprite, tint_col, text, surface, events, x_align, y_align):
+    if button(x, y, width, height, sprite, tint_col, text, surface, events, x_align, y_align):
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    return "left"
+                elif event.button == 3:
+                    return "right"
+    return 0
+
 
 def background_fill_texture(sprite, scale, surface):
     import math

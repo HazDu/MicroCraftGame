@@ -2,9 +2,11 @@ import pygame
 import os
 import json
 import zipfile
+import math
 from pygame import SRCALPHA
 from game.utils.util_functs import *
 import __main__ as main
+
 
 
 def ui(events, surf, scale):
@@ -104,11 +106,31 @@ def ui(events, surf, scale):
                 slot = 0
                 for x in range(3):
                     for y in range(3):
-                        if button(cont_x+50+x*70, cont_y+50+y*70, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "L", "T"):
-                            pass
+                        btn = button_exact(cont_x+50+x*70, cont_y+50+y*70, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "L", "T")
+                        if btn == "left":
+                            if main.workbench_storage[slot][0] == main.inv_mouse[0]:
+                                main.workbench_storage[slot][1] += main.inv_mouse[1]
+                                main.inv_mouse = [0, 0]
+                            else:
+                                temp = main.inv_mouse
+                                main.inv_mouse = main.workbench_storage[slot]
+                                main.workbench_storage[slot] = temp
+                        elif btn == "right":
+                            if main.workbench_storage[slot][0] == 0 or main.workbench_storage[slot][0] == main.inv_mouse[0]:
+                                main.workbench_storage[slot] = [main.inv_mouse[0], main.workbench_storage[slot][1]+1]
+                                main.inv_mouse[1] -= 1
+                                if main.inv_mouse[1] <= 0:
+                                    main.inv_mouse = [0, 0]
+
+                        if main.workbench_storage[slot][0] != 0:
+                            text = main.fnt_cons20.render(f"{main.workbench_storage[slot][1]}", True, (255, 255, 255))
+                            surf.blit(main.item_data[main.workbench_storage[slot][0]]["Texture"], (cont_x + x*70+58, cont_y + y*70+58))
+                            surf.blit(text, (cont_x + x*70+60, cont_y + y*70+89))
+
                         slot += 1
-                if button(cont_x+444, cont_y+120, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "L", "T"):
-                    pass
+                btn = button_exact(cont_x+444, cont_y+120, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "L", "T")
+
+
 
 
     #Inventory
@@ -146,17 +168,43 @@ def ui(events, surf, scale):
             pygame.draw.rect(main.surface, (64, 64, 64), (inv_x, inv_y, 656, 336), 0, 12)
             for y in range(4):
                 for x in range(8):
-                    if button(inv_x + (x*80)+16, inv_y + (y*80)+16, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "L", "T"):
-                        temp = main.inv_mouse
-                        main.inv_mouse = main.inventory[slot]
-                        main.inventory[slot] = temp
+                    btn = button_exact(inv_x + (x*80)+16, inv_y + (y*80)+16, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "L", "T")
+                    if btn == "left":
+                        if main.inv_mouse[0] == main.inventory[slot][0]:
+                            if main.inventory[slot][1] + main.inv_mouse[1] <= 256:
+                                main.inventory[slot][1] += main.inv_mouse[1]
+                                main.inv_mouse = [0, 0]
+                            else:
+                                main.inv_mouse[1] -= 256 - main.inventory[slot][1]
+                                main.inventory[slot][1] = 256
+                        else:
+                            temp = main.inv_mouse
+                            main.inv_mouse = main.inventory[slot]
+                            main.inventory[slot] = temp
+                    elif btn == "right":
+                        if main.inv_mouse == [0, 0] and main.inventory[slot] != [0, 0]:
+                            main.inv_mouse = [main.inventory[slot][0], math.ceil(main.inventory[slot][1] /2)]
+                            main.inventory[slot][1] = math.floor(main.inventory[slot][1] / 2)
+                        else:
+                            if main.inventory[slot] == [0, 0] or main.inventory[slot][0] == main.inv_mouse[0]:
+                                if main.inventory[slot][1] + 1 <= 256:
+                                    main.inventory[slot][0] = main.inv_mouse[0]
+                                    main.inventory[slot][1] += 1
+                                    main.inv_mouse[1] -= 1
+
                     if main.inventory[slot][0] != 0:
                         text = main.fnt_cons20.render(f"{main.inventory[slot][1]}", True, (255, 255, 255))
                         surf.blit(main.item_data[main.inventory[slot][0]]["Texture"], (inv_x + 80 * x + 24, inv_y + 80 * y + 24))
-                        surf.blit(text, (inv_x + 80 * x + 20, inv_y + 80 * y + 55))
+                        surf.blit(text, (inv_x + 80 * x + 26, inv_y + 80 * y + 55))
                     slot += 1
+
+            if main.inv_mouse[1] <= 0:
+                main.inv_mouse = [0, 0]
+
             if main.inv_mouse != [0, 0]:
+                text = main.fnt_cons20.render(f"{main.inv_mouse[1]}", True, (255, 255, 255))
                 surf.blit(main.item_data[main.inv_mouse[0]]["Texture"], (mouse[0]-24, mouse[1]-24))
+                surf.blit(text, (mouse[0]-22, mouse[1]+7))
 
     #ui elements added by mods
     if main.mods_active:
