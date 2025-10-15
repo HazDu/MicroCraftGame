@@ -9,6 +9,7 @@ from utils.item_ids import *
 from utils.cursor import *
 from scenes.menu import *
 from scenes.game import *
+from utils.recipes import *
 pygame.init()
 
 #screen setup
@@ -43,6 +44,7 @@ cur = cur_square
 #load block and item data
 block_data = load_blocks()
 item_data = load_items()
+recipe_data = load_recipes()
 pygame.display.set_icon(block_data[18]["Texture"])
 
 #Variables
@@ -103,7 +105,7 @@ inv_mouse = [0, 0]
 chunk_buffer = []
 container_open = [False, 0]
 action_title = [img_empty, 0]
-workbench_storage = [[0,0] for _ in range(9)]
+workbench_storage = [[0,0] for _ in range(10)]
 
 #load settings
 if os.path.exists(f"{GAMEPATH}/settings.json"):

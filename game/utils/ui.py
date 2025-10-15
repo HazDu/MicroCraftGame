@@ -103,9 +103,10 @@ def ui(events, surf, scale):
             case 15:
                 pygame.draw.rect(main.surface, (64, 64, 64), (cont_x, cont_y, 656, 336), 0, 12)
                 surf.blit(main.img_double_arrow, (cont_x+320, cont_y+120))
+                recipe = []
                 slot = 0
-                for x in range(3):
-                    for y in range(3):
+                for y in range(3):
+                    for x in range(3):
                         btn = button_exact(cont_x+50+x*70, cont_y+50+y*70, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "L", "T")
                         if btn == "left":
                             if main.workbench_storage[slot][0] == main.inv_mouse[0]:
@@ -130,8 +131,25 @@ def ui(events, surf, scale):
                             surf.blit(main.item_data[main.workbench_storage[slot][0]]["Texture"], (cont_x + x*70+58, cont_y + y*70+58))
                             surf.blit(text, (cont_x + x*70+60, cont_y + y*70+89))
 
+                        recipe.append(main.workbench_storage[slot][0])
+
                         slot += 1
+                main.workbench_storage[9] = [0, 0]
+                for rec in main.recipe_data:
+                    if rec[0] == recipe:
+                        main.workbench_storage[9] = [rec[1],rec[2]]
                 btn = button_exact(cont_x+444, cont_y+120, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "L", "T")
+                if btn == "left" and (main.inv_mouse[0] == 0 or main.inv_mouse[0] == main.workbench_storage[9][0]) and main.workbench_storage[9][0] != 0:
+                    main.inv_mouse = [main.workbench_storage[9][0], main.inv_mouse[1]+main.workbench_storage[9][1]]
+                    for i in range(9):
+                        main.workbench_storage[i][1] -= 1
+                        if main.workbench_storage[i][1] <= 0:
+                            main.workbench_storage[i] = [0, 0]
+                if main.workbench_storage[9][0] != 0:
+                    text = main.fnt_cons20.render(f"{main.workbench_storage[9][1]}", True, (255, 255, 255))
+                    surf.blit(main.item_data[main.workbench_storage[9 ][0]]["Texture"], (cont_x + 452, cont_y + 128))
+                    surf.blit(text, (cont_x + 454, cont_y + 159))
+
 
 
 
