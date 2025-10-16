@@ -30,6 +30,7 @@ img_hotbar = pygame.transform.scale(pygame.image.load("game/assets/ui/hotbar.png
 img_hotbar_sel = pygame.transform.scale(pygame.image.load("game/assets/ui/hotbar_selector.png"), (64, 64)).convert_alpha()
 img_slot = pygame.transform.scale(pygame.image.load("game/assets/ui/slot.png"), (64, 64)).convert_alpha()
 img_double_arrow = pygame.transform.scale(pygame.image.load("game/assets/ui/double_arrow.png"), (64, 64)).convert_alpha()
+img_button = pygame.image.load("game/assets/ui/button.png").convert_alpha()
 
 #custom cursors
 cur_square = []

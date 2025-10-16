@@ -209,9 +209,9 @@ def load_items():
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/deepslate_emerald_ore.png').convert_alpha(), (48, 48)),
         },
         41: {
-            "Name": "Sand",
-            "filename": "sand",
-            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/sand.png').convert_alpha(), (48, 48)),
+            "Name": "Smooth Stone",
+            "filename": "smooth_stone",
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/smooth_stone.png').convert_alpha(), (48, 48)),
         },
         1001: {
             "Name": "Iron Ingot",

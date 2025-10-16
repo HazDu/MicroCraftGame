@@ -55,13 +55,13 @@ def ui(events, surf, scale):
     if main.show_esc:
         pygame.draw.rect(surf, (68, 41, 31), (460, 190, 1000, 700))
 
-        if button(960, 250, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), "Resume", main.surface, events, "M", "T"):
+        if button(960, 250, 400, 50, main.img_button, (37, 124, 211, 100), "Resume", main.surface, events, "M", "T"):
             main.show_esc = False
-        if button(960, 350, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), "Save", main.surface, events, "M", "T"):
+        if button(960, 350, 400, 50, main.img_button, (37, 124, 211, 100), "Save", main.surface, events, "M", "T"):
             save_world()
             main.show_esc = False
             main.img_save_timeout = 5
-        if button(960, 450, 400, 50, main.block_data[4]["Texture"], (37, 124, 211, 100), "Save & Quit", main.surface, events, "M", "T"):
+        if button(960, 450, 400, 50, main.img_button, (37, 124, 211, 100), "Save & Quit", main.surface, events, "M", "T"):
             save_world()
             main.show_esc = False
             main.img_save_timeout = 1

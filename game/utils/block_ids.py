@@ -456,6 +456,17 @@ def load_blocks():
             "Hardness": 60,
             "Drop": [1004, 1]
         },
+        41: {
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/smooth_stone.png').convert_alpha(), (64, 64)),
+            "Collidable": True,
+            "Minable": True,
+            "Replacable": False,
+            "Interactable": False,
+            "InvShow": True,
+            "filename": "smooth_stone",
+            "Hardness": 60,
+            "Drop": [1004, 1]
+        },
     }
 
     return block_data
