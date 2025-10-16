@@ -230,6 +230,7 @@ def save_world():
     read_data["CurrentChunk"] = main.loaded_chunks[4][1]
     read_data["Inventory"] = main.inventory
     read_data["Gamemode"] = main.gamemode
+    read_data["Saplings"] = main.growing_saplings
     with open(f"{path}/infos.json", "w") as file:
         json.dump(read_data, file, indent=2)
 

@@ -10,7 +10,7 @@ def generate_chunk_type(chunk, worldtype):
         case _:
             generate_chunk(chunk)
 
-def generate_trees(queue, chunk):
+def generate_tree(x, y, chunk):
     blocks = [
         [[-1, -4], 11], [[0, -4], 11], [[1, -4], 11],
         [[-2, -3], 11], [[-1, -3], 11], [[0, -3], 10], [[1, -3], 11], [[2, -3], 11],
@@ -18,19 +18,19 @@ def generate_trees(queue, chunk):
         [[0, -1], 10],
         [[0, 0], 10],
     ]
-    for coords in queue:
-        for block in blocks:
-            _x = coords[0] + block[0][0]
-            _y = coords[1] + block[0][1]
+    for block in blocks:
+        _x = x + block[0][0]
+        _y = y + block[0][1]
 
-            chunk_checked = change_block_over_border(chunk, _x, _y)
-            _x = chunk_checked[1]
-            _y = chunk_checked[2]
-            chunk_checked = chunk_checked[0]
+        chunk_checked = change_block_over_border(chunk, _x, _y)
+        _x = chunk_checked[1]
+        _y = chunk_checked[2]
+        chunk_checked = chunk_checked[0]
 
-            if chunk_checked != -1:
-                if (block[1] == 11 and main.loaded_chunks[chunk_checked][0][_x][_y] == 0) or block[1] == 10:
-                    main.loaded_chunks[chunk_checked][0][_x][_y] = block[1]
+        if chunk_checked != -1:
+            if main.block_data[main.loaded_chunks[chunk_checked][0][_x][_y]]["Replacable"]:
+                main.loaded_chunks[chunk_checked][0][_x][_y] = block[1]
+                render_blocks([[_x, _y]], chunk_checked)
 
 def create_chunk():
     return [[0 for _ in range(64)] for _ in range(64)]

@@ -135,7 +135,7 @@ def load_blocks():
             "InvShow": True,
             "filename": "oak_leaves",
             "Hardness": 5,
-            "Drop": [1008, [0, 2]]
+            "Drop": [[1008, 42], [0, 1]]
         },
         12: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/bedrock.png').convert_alpha(), (64, 64)),
@@ -377,7 +377,7 @@ def load_blocks():
             "InvShow": True,
             "filename": "emerald_ore",
             "Hardness": 50,
-            "Drop": [1004, [0, 1]]
+            "Drop": [[1004, 5], 1]
         },
         34: {
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/ladder.png').convert_alpha(), (64, 64)),
@@ -466,6 +466,17 @@ def load_blocks():
             "filename": "smooth_stone",
             "Hardness": 60,
             "Drop": [1004, 1]
+        },
+        42: {
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/oak_sapling.png').convert_alpha(), (64, 64)),
+            "Collidable": False,
+            "Minable": True,
+            "Replacable": True,
+            "Interactable": True,
+            "InvShow": True,
+            "filename": "oak_sapling",
+            "Hardness": 5,
+            "Drop": [42, 1]
         },
     }
 

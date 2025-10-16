@@ -213,6 +213,11 @@ def load_items():
             "filename": "smooth_stone",
             "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/smooth_stone.png').convert_alpha(), (48, 48)),
         },
+        42: {
+            "Name": "Sapling",
+            "filename": "oak_sapling",
+            "Texture": pygame.transform.scale(pygame.image.load('game/assets/blocks/oak_sapling.png').convert_alpha(),(48, 48)),
+        },
         1001: {
             "Name": "Iron Ingot",
             "filename": "iron_ingot",

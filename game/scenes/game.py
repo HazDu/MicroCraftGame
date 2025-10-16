@@ -188,7 +188,7 @@ def scene_game_create():
        generate_chunk_type(chunk, main.menu_create_worldtype)
 
     for chunk in range(9):
-        generate_trees(main.tree_queue[chunk], chunk)
+        pass#generate_trees(main.tree_queue[chunk], chunk)
 
     for chunk in range(9):
         render_blocks(0, chunk)
@@ -205,6 +205,7 @@ def scene_game_load(path):
     main.OY = read["PlayerY"]
     main.gamemode = read["GameMode"]
     main.inventory = read["Inventory"]
+    main.growing_saplings = read["Saplings"]
 
     i = 0
     for y in range(main_chunk[1] -1, main_chunk[1] +2):
@@ -248,9 +249,14 @@ def scene_game(events):
                         amount = main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][1]
                     else:
                         amount = random.randint(main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][1][0], main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][1][1])
+                    if isinstance(main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][0], int):
+                        item_id = main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][0]
+                    else:
+                        item_id = random.choice(main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][0])
+
                     if amount > 0:
                         new_item = Item()
-                        new_item.item_id = main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][0]
+                        new_item.item_id = item_id
                         new_item.x = mouse[0] - main.OX
                         new_item.y = mouse[1] - main.OY
                         new_item.amount = amount
@@ -268,8 +274,11 @@ def scene_game(events):
                         block_interact(main.loaded_chunks[mouse_chunk][0][x][y], x, y, mouse_chunk)
                     elif main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Replacable"] and main.block_in_hand != 0:
                         main.loaded_chunks[mouse_chunk][0][x][y] = int(main.block_in_hand)
-                        main.inventory[main.hotbar_slot][1] -= 1
+                        if main.gamemode == 0:
+                            main.inventory[main.hotbar_slot][1] -= 1
                         render_blocks([[x, y]], mouse_chunk)
+                        if int(main.block_in_hand) == 42:
+                            main.growing_saplings.append([x, y, main.loaded_chunks[4][1], random.randint(180, 250)])
                 main.break_progress = 0
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 main.break_progress = 0
@@ -448,6 +457,14 @@ def scene_game(events):
         item.item_default()
         if item.lifetime > 1800:
             main.item_entities.remove(item)
+
+    for sapling in main.growing_saplings:
+        if sapling[3] > 0:
+            sapling[3] -= 1
+
+        if sapling[2] == main.loaded_chunks[4][1] and sapling[3] <= 0:
+            generate_tree(sapling[0], sapling[1], sapling[2])
+            main.growing_saplings.remove(sapling)
 
     if main.mods_active:
         for mod in main.loaded_mods:
