@@ -120,7 +120,7 @@ def load_blocks():
             "Collidable": True,
             "Minable": True,
             "Replacable": False,
-            "Interactable": False,
+            "Interactable": True,
             "InvShow": True,
             "filename": "oak_log",
             "Hardness": 20,

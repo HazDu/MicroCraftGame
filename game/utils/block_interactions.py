@@ -35,3 +35,6 @@ def block_interact(block_id, x, y, chunk):
         case 15:
             main.container_open = [True, 15]
             main.show_inv = True
+        case 10:
+            main.loaded_chunks[chunk][0][x][y] = 15
+            render_blocks([[x, y]], chunk)

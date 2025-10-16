@@ -318,40 +318,36 @@ def get_coordinates_from_chunk(chunk):
 
 
 def change_block_over_border(chunk, _x, _y):
-    chunk_checked = get_coordinates_from_chunk(chunk)
+    chunk_checked = 4
     if _x < 0:
         _x = 64 + _x
         if _y < 0:
             _y = 64 + _y
-            chunk_checked[0] = chunk_checked[0] - 1
-            chunk_checked[1] = chunk_checked[1] - 1
+            chunk_checked = chunk - 4
         elif _y > 63:
             _y = _y - 64
-            chunk_checked[0] = chunk_checked[0] - 1
-            chunk_checked[1] = chunk_checked[1] + 1
+            chunk_checked = chunk + 2
         else:
-            chunk_checked[0] = chunk_checked[0] - 1
+            chunk_checked = chunk - 1
     elif _x > 63:
         _x = _x - 64
         if _y < 0:
             _y = 64 + _y
-            chunk_checked[0] = chunk_checked[0] + 1
-            chunk_checked[1] = chunk_checked[1] - 1
+            chunk_checked = chunk - 2
         elif _y > 63:
             _y = _y - 64
-            chunk_checked[0] = chunk_checked[0] + 1
-            chunk_checked[1] = chunk_checked[1] + 1
+            chunk_checked = chunk + 4
         else:
-            chunk_checked[0] = chunk_checked[0] + 1
+            chunk_checked = chunk + 1
     else:
         if _y < 0:
             _y = 64 + _y
-            chunk_checked[1] = chunk_checked[1] - 1
+            chunk_checked = chunk - 3
         elif _y > 63:
             _y = _y - 64
-            chunk_checked[1] = chunk_checked[1] + 1
+            chunk_checked = chunk + 3
 
-    return [get_chunk_from_coordinates(chunk_checked[0], chunk_checked[1]), _x, _y]
+    return [chunk_checked, _x, _y]
 
 def world_coords_to_screen_coords(wx, wy):
     screen_curr_x = main.OX*-1
