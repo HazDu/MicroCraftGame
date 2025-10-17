@@ -55,6 +55,35 @@ def image_is_transparent(surface):
     alpha_array = pygame.surfarray.pixels_alpha(surface)
     return (alpha_array < 255).any()
 
+def lerp_color(c1, c2, factor):
+    return tuple(int(c1[i] + (c2[i] - c1[i]) * factor) for i in range(3))
+
+def current_skycolor(time, trans_length, day_length, night_length):
+    schedule_length = day_length + night_length + trans_length*2
+    if time > schedule_length:
+        time = 0
+
+    if time <= day_length:
+        return [time, main.sky_colors[0]]
+    elif day_length < time <= day_length + trans_length/2:
+        factor = (time - day_length) / ((day_length + trans_length/2) - day_length)
+        col = lerp_color(main.sky_colors[0], main.sky_colors[2], factor)
+        return [time, col]
+    elif day_length + trans_length/2 < time <= day_length + trans_length:
+        factor = (time - (day_length + trans_length/2)) / ((day_length + trans_length) - (day_length + trans_length/2))
+        col = lerp_color(main.sky_colors[2], main.sky_colors[1], factor)
+        return [time, col]
+    elif day_length + trans_length < time <= day_length + trans_length + night_length:
+        return [time, main.sky_colors[1]]
+    elif day_length + trans_length + night_length < time <= day_length + trans_length + night_length + trans_length/2:
+        factor = (time - (day_length + trans_length + night_length)) / ((day_length + trans_length + night_length + trans_length/2) - (day_length + trans_length + night_length))
+        col = lerp_color(main.sky_colors[1], main.sky_colors[2], factor)
+        return [time, col]
+    else:
+        factor = (time - (day_length + trans_length + night_length + trans_length/2)) / ((day_length + trans_length*2 + night_length) - (day_length + trans_length + night_length + trans_length/2))
+        col = lerp_color(main.sky_colors[2], main.sky_colors[0], factor)
+        return [time, col]
+
 def button(x, y, width, height, sprite, tint_col, text, surface, events, x_align, y_align):
     btn_pressed = False
     mouse_pos = pygame.mouse.get_pos()
@@ -144,7 +173,7 @@ def text_render_multiline(x, y, font, text, antialiasing, color, surface, x_alig
 
 def render_blocks(changed_blocks, chunk):
     if changed_blocks == 0:
-        main.block_surface[chunk].fill((200, 250, 255))
+        main.block_surface[chunk].fill((0, 0, 0, 0))
         for y in range(64):
             for x in range(64):
                 coords = [(x * 64), (y * 64)]
@@ -231,6 +260,7 @@ def save_world():
     read_data["Inventory"] = main.inventory
     read_data["Gamemode"] = main.gamemode
     read_data["Saplings"] = main.growing_saplings
+    read_data["DayTime"] = main.daylight_time
     with open(f"{path}/infos.json", "w") as file:
         json.dump(read_data, file, indent=2)
 

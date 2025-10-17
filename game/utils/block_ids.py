@@ -2,7 +2,7 @@ import pygame
 
 def load_blocks():
     air_block = pygame.Surface((64, 64), pygame.SRCALPHA)
-    air_block.fill((200, 250, 255))
+    air_block.fill((0, 0, 0, 0))
 
     block_data = {
         0: {

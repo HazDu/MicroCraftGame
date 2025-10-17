@@ -207,6 +207,7 @@ def scene_game_load(path):
     main.gamemode = read["GameMode"]
     main.inventory = read["Inventory"]
     main.growing_saplings = read["Saplings"]
+    main.daylight_time = read["DayTime"]
 
     i = 0
     for y in range(main_chunk[1] -1, main_chunk[1] +2):
@@ -279,7 +280,7 @@ def scene_game(events):
                             main.inventory[main.hotbar_slot][1] -= 1
                         render_blocks([[x, y]], mouse_chunk)
                         if int(main.block_in_hand) == 42:
-                            main.growing_saplings.append([x, y, main.loaded_chunks[mouse_chunk][1], random.randint(50, 80)])
+                            main.growing_saplings.append([x, y, main.loaded_chunks[mouse_chunk][1], random.randint(5000, 8000)])
                 main.break_progress = 0
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 main.break_progress = 0
@@ -466,6 +467,11 @@ def scene_game(events):
         if sapling[2] == main.loaded_chunks[4][1] and sapling[3] <= 0:
             generate_tree(sapling[0], sapling[1], 4)
             main.growing_saplings.remove(sapling)
+
+    main.daylight_time += 1
+    sky_result = current_skycolor(main.daylight_time, main.daytime_values[2], main.daytime_values[0], main.daytime_values[1])
+    main.daylight_time = sky_result[0]
+    main.sky_color = sky_result[1]
 
     if main.mods_active:
         for mod in main.loaded_mods:
