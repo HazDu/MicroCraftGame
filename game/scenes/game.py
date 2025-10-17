@@ -99,8 +99,9 @@ class Player:
                 main.OX -= moving_space
 
         #movement jump
-        if main.loaded_chunks[4][0][standing_x][standing_y] == 34 and keys[pygame.K_SPACE] and not is_collidable["North"]  :
-            main.OY += self.speed
+        if main.loaded_chunks[4][0][standing_x][standing_y] == 34 and keys[pygame.K_SPACE] and not is_collidable["North"]:
+            if main.loaded_chunks[4][0][standing_x][standing_y-1] == 34 or (self.y*-1 - standing_y*64) > 35:
+                main.OY += self.speed
         else:
             for event in main.EVENTS:
                 if event.type == pygame.KEYDOWN:
