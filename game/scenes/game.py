@@ -190,11 +190,14 @@ def scene_game_create():
     for chunk in range(9):
        generate_chunk_type(chunk, main.menu_create_worldtype)
 
-    for chunk in range(9):
-        pass#generate_trees(main.tree_queue[chunk], chunk)
+    for chunk in [3, 4, 5]:
+        for tree in main.tree_queue[chunk]:
+            generate_tree(tree[0], tree[1], chunk)
+
 
     for chunk in range(9):
         render_blocks(0, chunk)
+
 
     main.OX = -1120
     main.OY = -1476
@@ -338,6 +341,8 @@ def scene_game(events):
             else:
                 main.loaded_chunks[i][1][0] = main.loaded_chunks[i + 1][1][0]-1
                 generate_chunk_type(i, 0)
+                for tree in main.tree_queue[i]:
+                    generate_tree(tree[0], tree[1], i)
             render_chunk_clear(i)
             chunk_add_render_queue(i)
 
@@ -375,6 +380,8 @@ def scene_game(events):
             else:
                 main.loaded_chunks[i][1][0] = main.loaded_chunks[i - 1][1][0] + 1
                 generate_chunk_type(i, 0)
+                for tree in main.tree_queue[i]:
+                    generate_tree(tree[0], tree[1], i)
             render_chunk_clear(i)
             chunk_add_render_queue(i)
 

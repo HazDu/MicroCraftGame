@@ -348,7 +348,7 @@ def get_coordinates_from_chunk(chunk):
 
 
 def change_block_over_border(chunk, _x, _y):
-    chunk_checked = 4
+    chunk_checked = chunk
     if _x < 0:
         _x = 64 + _x
         if _y < 0:
