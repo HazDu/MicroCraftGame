@@ -54,5 +54,12 @@ Depending on the exact code state, common dependencies might include:
 - `numpy`  
 - `json`  
 - `os`, `sys`  
+- `zipfile`  
+- `platform`  
+- `math`  
+- `random`  
+- `io`  
+- `copy`
+- `ast`  
 
 _This text was written by ai and just roughly inspected by me._
