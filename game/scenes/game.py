@@ -201,6 +201,10 @@ def scene_game_create():
 
     main.OX = -1120
     main.OY = -1476
+    if main.gamemode == 0:
+        main.break_speed = 1
+    else:
+        main.break_speed = 99999
     main.current_scene = 4
 
 def scene_game_load(path):
@@ -225,6 +229,11 @@ def scene_game_load(path):
     for a in range(9):
         main.block_surface[a].fill((200, 250, 255))
         render_blocks(0, a)
+
+    if main.gamemode == 0:
+        main.break_speed = 1
+    else:
+        main.break_speed = 99999
 
     main.current_scene = 4
 
@@ -285,7 +294,7 @@ def scene_game(events):
                             main.inventory[main.hotbar_slot][1] -= 1
                         render_blocks([[x, y]], mouse_chunk)
                         if int(main.block_in_hand) == 42:
-                            main.growing_saplings.append([x, y, main.loaded_chunks[mouse_chunk][1], random.randint(500, 800)])
+                            main.growing_saplings.append([x, y, main.loaded_chunks[mouse_chunk][1], random.randint(5000, 8000)])
                 main.break_progress = 0
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 main.break_progress = 0
