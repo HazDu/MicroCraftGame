@@ -28,107 +28,108 @@ class Player:
         }
 
     def player_default(self):
-        keys = pygame.key.get_pressed()
+        if not main.show_inv and not main.show_esc:
+            keys = pygame.key.get_pressed()
 
-        self.x = main.OX - (main.surface.get_width() / 2)
-        self.y = main.OY - (main.surface.get_height() / 2)
+            self.x = main.OX - (main.surface.get_width() / 2)
+            self.y = main.OY - (main.surface.get_height() / 2)
 
-        standing_x = clamp(int((self.x // 64) * -1) -1 , 0, 63)
-        standing_y = clamp(int((self.y // 64) * -1) -1 , 0, 63)
-        # text_render_multiline(500, 10, main.main_font, f"{standing_x}, {standing_y}", True, (255, 255, 255), main.surface, "x", "x")
+            standing_x = clamp(int((self.x // 64) * -1) -1 , 0, 63)
+            standing_y = clamp(int((self.y // 64) * -1) -1 , 0, 63)
+            # text_render_multiline(500, 10, main.main_font, f"{standing_x}, {standing_y}", True, (255, 255, 255), main.surface, "x", "x")
 
-        #collision check
-        is_collidable = {
-            "North": False,
-            "South": False,
-            "East": False,
-            "West": False,
-        }
+            #collision check
+            is_collidable = {
+                "North": False,
+                "South": False,
+                "East": False,
+                "West": False,
+            }
 
-        if standing_x - 1 < 0:
-            check_chunk = 3
-            standing_xx = 63
-        else:
-            check_chunk = 4
-            standing_xx = standing_x - 1
-        if main.block_data[main.loaded_chunks[check_chunk][0][standing_xx][standing_y]]["Collidable"]:
-            is_collidable["West"] = True
+            if standing_x - 1 < 0:
+                check_chunk = 3
+                standing_xx = 63
+            else:
+                check_chunk = 4
+                standing_xx = standing_x - 1
+            if main.block_data[main.loaded_chunks[check_chunk][0][standing_xx][standing_y]]["Collidable"]:
+                is_collidable["West"] = True
 
-        if standing_x + 1 > 63:
-            check_chunk = 5
-            standing_xx = 0
-        else:
-            check_chunk = 4
-            standing_xx = standing_x + 1
-        if main.block_data[main.loaded_chunks[check_chunk][0][standing_xx][standing_y]]["Collidable"]:
-            is_collidable["East"] = True
+            if standing_x + 1 > 63:
+                check_chunk = 5
+                standing_xx = 0
+            else:
+                check_chunk = 4
+                standing_xx = standing_x + 1
+            if main.block_data[main.loaded_chunks[check_chunk][0][standing_xx][standing_y]]["Collidable"]:
+                is_collidable["East"] = True
 
-        if standing_y - 1 < 0:
-            check_chunk = 1
-            standing_yy = 63
-        else:
-            check_chunk = 4
-            standing_yy = standing_y - 1
-        if main.block_data[main.loaded_chunks[check_chunk][0][standing_x][standing_yy]]["Collidable"]:
-            is_collidable["North"] = True
+            if standing_y - 1 < 0:
+                check_chunk = 1
+                standing_yy = 63
+            else:
+                check_chunk = 4
+                standing_yy = standing_y - 1
+            if main.block_data[main.loaded_chunks[check_chunk][0][standing_x][standing_yy]]["Collidable"]:
+                is_collidable["North"] = True
 
-        if standing_y + 1 > 63:
-            check_chunk = 7
-            standing_yy = 0
-        else:
-            check_chunk = 4
-            standing_yy = standing_y + 1
-        if main.block_data[main.loaded_chunks[check_chunk][0][standing_x][standing_yy]]["Collidable"]:
-            is_collidable["South"] = True
+            if standing_y + 1 > 63:
+                check_chunk = 7
+                standing_yy = 0
+            else:
+                check_chunk = 4
+                standing_yy = standing_y + 1
+            if main.block_data[main.loaded_chunks[check_chunk][0][standing_x][standing_yy]]["Collidable"]:
+                is_collidable["South"] = True
 
-       # text_render_multiline(500, 50, main.main_font, f"N: {is_collidable["North"]}\ns: {is_collidable["South"]}\nE: {is_collidable["East"]}\nW: {is_collidable["West"]}\n", True, (255, 255, 255), main.surface, "x", "x")
+           # text_render_multiline(500, 50, main.main_font, f"N: {is_collidable["North"]}\ns: {is_collidable["South"]}\nE: {is_collidable["East"]}\nW: {is_collidable["West"]}\n", True, (255, 255, 255), main.surface, "x", "x")
 
-        #movement left/right
-        if keys[pygame.K_a]:
-            moving_space = (self.x + self.hitbox["left"])*-1 - standing_x*64
-            if not is_collidable["West"] or moving_space >= self.speed:
-                main.OX += self.speed
-            elif moving_space > 0:
-                main.OX += moving_space
-        if keys[pygame.K_d]:
-            moving_space = (standing_x+1)*64 + (self.x + self.hitbox["right"])
-            if not is_collidable["East"] or moving_space >= self.speed:
-                main.OX -= self.speed
-            elif moving_space > 0:
-                main.OX -= moving_space
+            #movement left/right
+            if keys[pygame.K_a]:
+                moving_space = (self.x + self.hitbox["left"])*-1 - standing_x*64
+                if not is_collidable["West"] or moving_space >= self.speed:
+                    main.OX += self.speed
+                elif moving_space > 0:
+                    main.OX += moving_space
+            if keys[pygame.K_d]:
+                moving_space = (standing_x+1)*64 + (self.x + self.hitbox["right"])
+                if not is_collidable["East"] or moving_space >= self.speed:
+                    main.OX -= self.speed
+                elif moving_space > 0:
+                    main.OX -= moving_space
 
-        #movement jump
-        if main.loaded_chunks[4][0][standing_x][standing_y] == 34 and keys[pygame.K_SPACE] and not is_collidable["North"]:
-            chunk = 4
-            if standing_y-1 < 0:
-                chunk = 1
-            if main.loaded_chunks[chunk][0][standing_x][standing_y-1] == 34 or (self.y*-1 - standing_y*64) > 35:
-                main.OY += self.speed
-        else:
-            for event in main.EVENTS:
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        self.jump_vel = 10
-            if self.jump_vel > 1:
-                main.OY += self.jump_vel
-                self.jump_vel = self.jump_vel / 1.2
-            if -1 < self.jump_vel < 1:
-                self.jump_vel = -1
+            #movement jump
+            if main.loaded_chunks[4][0][standing_x][standing_y] == 34 and keys[pygame.K_SPACE] and not is_collidable["North"]:
+                chunk = 4
+                if standing_y-1 < 0:
+                    chunk = 1
+                if main.loaded_chunks[chunk][0][standing_x][standing_y-1] == 34 or (self.y*-1 - standing_y*64) > 35:
+                    main.OY += self.speed
+            else:
+                for event in main.EVENTS:
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_SPACE:
+                            self.jump_vel = 10
+                if self.jump_vel > 1:
+                    main.OY += self.jump_vel
+                    self.jump_vel = self.jump_vel / 1.2
+                if -1 < self.jump_vel < 1:
+                    self.jump_vel = -1
 
-            moving_space = (standing_y + 1)*64 + (self.y + self.hitbox["bottom"])
-            if not is_collidable["South"] or moving_space >= self.jump_vel*-1:
-                main.OY += self.jump_vel
-                if self.jump_max_vel < self.jump_vel < 0:
-                    self.jump_vel = self.jump_vel * 1.2
-            elif moving_space > 0:
-                main.OY += moving_space*-1
-            if moving_space == 0 and self.jump_vel <= 0:
-                self.jump_vel = 0
+                moving_space = (standing_y + 1)*64 + (self.y + self.hitbox["bottom"])
+                if not is_collidable["South"] or moving_space >= self.jump_vel*-1:
+                    main.OY += self.jump_vel
+                    if self.jump_max_vel < self.jump_vel < 0:
+                        self.jump_vel = self.jump_vel * 1.2
+                elif moving_space > 0:
+                    main.OY += moving_space*-1
+                if moving_space == 0 and self.jump_vel <= 0:
+                    self.jump_vel = 0
 
-            moving_space = (self.y + self.hitbox["top"])*-1 - standing_y*64
-            if is_collidable["North"] and self.jump_vel > 1 and moving_space < self.jump_vel:
-                main.OY += moving_space
-                self.jump_vel = 0
+                moving_space = (self.y + self.hitbox["top"])*-1 - standing_y*64
+                if is_collidable["North"] and self.jump_vel > 1 and moving_space < self.jump_vel:
+                    main.OY += moving_space
+                    self.jump_vel = 0
 
         main.surface.blit(self.sprite, (main.surface.get_width() / 2 - 32, main.surface.get_height() / 2 - 32))
 
