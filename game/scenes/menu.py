@@ -24,20 +24,20 @@ def scene_menu(events):
     logo_x = main.surface.get_width() / 2 - main.logo.get_width() / 2
     main.surface.blit(main.logo, (logo_x, 180))
 
-    if button(main.surface.get_width() / 2, 500, 400, 50, main.img_button, (37, 124, 211, 100), "Play", main.surface, events, "M", "T"):
+    if button_exact(main.surface.get_width() / 2, 500, 400, 50, main.img_button, (37, 124, 211, 100), "Play", main.surface, events, "M", "T") == "left":
         main.current_scene = 1
         main.menu_scroll = 0
         world_name_input = ""
 
-    if button(main.surface.get_width() / 2, 600, 400, 50, main.img_button, (37, 124, 211, 100), "Texturepacks", main.surface, events, "M", "T"):
+    if button_exact(main.surface.get_width() / 2, 600, 400, 50, main.img_button, (37, 124, 211, 100), "Texturepacks", main.surface, events, "M", "T") == "left":
         main.current_scene = 5
         main.menu_scroll = 0
 
-    if button(main.surface.get_width() / 2, 700, 400, 50, main.img_button, (37, 124, 211, 100), "Mods", main.surface, events, "M", "T"):
+    if button_exact(main.surface.get_width() / 2, 700, 400, 50, main.img_button, (37, 124, 211, 100), "Mods", main.surface, events, "M", "T") == "left":
         main.current_scene = 7
         main.menu_scroll = 0
 
-    if button(main.surface.get_width() / 2, 800, 400, 50, main.img_button, (37, 124, 211, 100), "Exit", main.surface, events, "M", "T"):
+    if button_exact(main.surface.get_width() / 2, 800, 400, 50, main.img_button, (37, 124, 211, 100), "Exit", main.surface, events, "M", "T") == "left":
         main.RUNNING = False
 
 def scene_menu_select(events):
@@ -52,13 +52,13 @@ def scene_menu_select(events):
             elif event.key == pygame.K_BACKSPACE:
                 world_name_input = world_name_input[:-1]
 
-    if button(660, 100, 400, 50, main.img_button, (37, 124, 211, 100), f"Create World", main.surface, events, "M","T"):
+    if button_exact(660, 100, 400, 50, main.img_button, (37, 124, 211, 100), f"Create World", main.surface, events, "M","T") == "left":
         main.current_scene = 8
         inventory = [[0,0] for _ in range(40)]
-    if button(1260, 100, 400, 50, main.img_button, (37, 124, 211, 100), "Main Menu", main.surface, events, "M", "T"):
+    if button_exact(1260, 100, 400, 50, main.img_button, (37, 124, 211, 100), "Main Menu", main.surface, events, "M", "T") == "left":
         main.current_scene = 0
 
-    if button(380, 90, 64, 64, main.explorer, (255, 255, 255, 100), 0, main.surface, events,"M", "T"):
+    if button_exact(380, 90, 64, 64, main.explorer, (255, 255, 255, 100), 0, main.surface, events,"M", "T") == "left":
         if main.SYSTEM == "Windows":
             os.startfile(f"{main.GAMEPATH}/saves")
         else:
@@ -71,7 +71,7 @@ def scene_menu_select(events):
     texture.fill((20, 20, 20, 150))
     for i in dirs:
         if -30 <= y < 1100:
-            if button(200, 200 + y, 1250, 128, texture, (160, 160, 160, 100), 0, main.surface, events, "L", "T"):
+            if button_exact(200, 200 + y, 1250, 128, texture, (160, 160, 160, 100), 0, main.surface, events, "L", "T") == "left":
                 if os.path.exists(f"{main.GAMEPATH}/saves/{i}/infos.json"):
                     main.world_name = i
                     main.OX = 0
@@ -81,7 +81,7 @@ def scene_menu_select(events):
                     main.loading_info = [os.path.join(main.GAMEPATH, "saves", i), "load"]
 
 
-            if button(1500, 232 + y, 64, 64, main.trashbin, (255, 255, 255, 60), 0, main.surface, events, "L", "T"):
+            if button_exact(1500, 232 + y, 64, 64, main.trashbin, (255, 255, 255, 60), 0, main.surface, events, "L", "T") == "left":
                 shutil.rmtree(os.path.join(main.GAMEPATH, "saves", i))
 
             if os.path.exists(f"{main.GAMEPATH}/saves/{i}/icon.png"):
@@ -118,7 +118,7 @@ def scene_menu_select(events):
 def scene_menu_create():
     background_fill_texture(main.block_data[1]["Texture"], 2, main.surface)
 
-    if button(660, 100, 400, 50, main.img_button, (37, 124, 211, 100), f"{"Enter Name..." if not main.menu_create_worldname_input else ""}{main.menu_create_worldname_input}", main.surface, main.EVENTS, "L", "T"):
+    if button_exact(660, 100, 400, 50, main.img_button, (37, 124, 211, 100), f"{"Enter Name..." if not main.menu_create_worldname_input else ""}{main.menu_create_worldname_input}", main.surface, main.EVENTS, "L", "T"):
         main.menu_create_input_box[0] = 1
         main.menu_create_input_box[1] = ""
 
@@ -134,21 +134,21 @@ def scene_menu_create():
     elif main.menu_create_input_box[0] == 2:
         main.menu_create_seed_input = main.menu_create_input_box[1]
 
-    if button(660, 200, 400, 50, main.img_button, (37, 124, 211, 100), f"Gamemode: {main.gamemode} (in progress)", main.surface, main.EVENTS, "L", "T"):
+    if button_exact(660, 200, 400, 50, main.img_button, (37, 124, 211, 100), f"Gamemode: {main.gamemode} (in progress)", main.surface, main.EVENTS, "L", "T") == "left":
         main.gamemode += 1
         if main.gamemode >= 2:
             main.gamemode = 0
 
-    if button(660, 300, 400, 50, main.img_button, (37, 124, 211, 100), f"{"Enter Seed..." if not main.menu_create_seed_input else ""}{main.menu_create_seed_input}", main.surface, main.EVENTS, "L", "T"):
+    if button_exact(660, 300, 400, 50, main.img_button, (37, 124, 211, 100), f"{"Enter Seed..." if not main.menu_create_seed_input else ""}{main.menu_create_seed_input}", main.surface, main.EVENTS, "L", "T") == "left":
         main.menu_create_input_box[0] = 2
         main.menu_create_input_box[1] = ""
 
-    if button(660, 400, 400, 50, main.img_button, (37, 124, 211, 100), f"Worldtype: {main.menu_create_worldtype} (in progress)", main.surface, main.EVENTS, "L", "T"):
+    if button_exact(660, 400, 400, 50, main.img_button, (37, 124, 211, 100), f"Worldtype: {main.menu_create_worldtype} (in progress)", main.surface, main.EVENTS, "L", "T") == "left":
         main.menu_create_worldtype += 1
         if main.menu_create_worldtype >= 2:
             main.menu_create_worldtype = 0
 
-    if button(660, 500, 400, 50, main.img_button, (37, 124, 211, 100), "Create World", main.surface, main.EVENTS, "L", "T"):
+    if button_exact(660, 500, 400, 50, main.img_button, (37, 124, 211, 100), "Create World", main.surface, main.EVENTS, "L", "T") == "left":
         if main.menu_create_worldname_input != "":
             path = os.path.join(main.GAMEPATH,"saves", main.menu_create_worldname_input)
             os.makedirs(path, exist_ok=True)
@@ -178,7 +178,7 @@ def scene_menu_create():
 
 def scene_menu_texturepacks(events):
     background_fill_texture(main.block_data[1]["Texture"], 2, main.surface)
-    if button(660, 100, 400, 50, main.img_button, (37, 124, 211, 100), "Clear Texturepack", main.surface, events, "M", "T"):
+    if button_exact(660, 100, 400, 50, main.img_button, (37, 124, 211, 100), "Clear Texturepack", main.surface, events, "M", "T") == "left":
         main.block_data = load_blocks()
         with open(f"{main.GAMEPATH}/settings.json", "r") as file:
             read_data = json.load(file)
@@ -186,11 +186,11 @@ def scene_menu_texturepacks(events):
         with open(f"{main.GAMEPATH}/settings.json", "w") as file:
             json.dump(read_data, file, indent=2)
 
-    if button(1260, 100, 400, 50, main.img_button, (37, 124, 211, 100), "Main Menu", main.surface, events, "M", "T"):
+    if button_exact(1260, 100, 400, 50, main.img_button, (37, 124, 211, 100), "Main Menu", main.surface, events, "M", "T") == "left":
         main.current_scene = 0
 
     texturepack_folder = f"{os.getenv('APPDATA')}/.minecraft/resourcepacks"
-    if button(380, 90, 64, 64, main.explorer, (255, 255, 255, 100), 0, main.surface, events,"M", "T"):
+    if button_exact(380, 90, 64, 64, main.explorer, (255, 255, 255, 100), 0, main.surface, events,"M", "T") == "left":
         if main.SYSTEM == "Windows":
             os.startfile(texturepack_folder)
         else:
@@ -202,7 +202,7 @@ def scene_menu_texturepacks(events):
     texture.fill((20, 20, 20, 150))
     for i in dirs:
         if -30 <= y < 1100:
-            if button(200, 200 + y, 1200, 128, texture, (160, 160, 160, 100), 0, main.surface, events, "L", "T"):
+            if button_exact(200, 200 + y, 1200, 128, texture, (160, 160, 160, 100), 0, main.surface, events, "L", "T") == "left":
                 texturepack_load(f"{texturepack_folder}/{i}")
 
             if os.path.exists(f"{texturepack_folder}/{i}/pack.png"):
@@ -224,10 +224,10 @@ def scene_menu_texturepacks(events):
 def scene_menu_mods(events):
     background_fill_texture(main.block_data[1]["Texture"], 2, main.surface)
 
-    if button(1260, 100, 400, 50, main.img_button, (37, 124, 211, 100), "Main Menu", main.surface, events, "M", "T"):
+    if button_exact(1260, 100, 400, 50, main.img_button, (37, 124, 211, 100), "Main Menu", main.surface, events, "M", "T") == "left":
         main.current_scene = 0
 
-    if button(380, 90, 64, 64, main.explorer, (255, 255, 255, 100), 0, main.surface, events, "M", "T"):
+    if button_exact(380, 90, 64, 64, main.explorer, (255, 255, 255, 100), 0, main.surface, events, "M", "T") == "left":
         if main.SYSTEM == "Windows":
             os.startfile(main.MODPATH)
         else:
@@ -240,7 +240,7 @@ def scene_menu_mods(events):
     texture.fill((20, 20, 20, 150))
     for i in dirs:
         if -30 <= y < 1100:
-            if button(200, 200 + y, 1200, 128, texture, (160, 160, 160, 100), 0, main.surface, events, "L", "T"):
+            if button_exact(200, 200 + y, 1200, 128, texture, (160, 160, 160, 100), 0, main.surface, events, "L", "T") == "left":
                 if str(i) in main.loaded_mods:
                     main.loaded_mods.remove(str(i))
                 else:

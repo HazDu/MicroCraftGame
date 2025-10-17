@@ -1,4 +1,3 @@
-import os.path
 import zipfile
 import pygame
 import random
