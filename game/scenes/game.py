@@ -285,7 +285,7 @@ def scene_game(events):
                             main.inventory[main.hotbar_slot][1] -= 1
                         render_blocks([[x, y]], mouse_chunk)
                         if int(main.block_in_hand) == 42:
-                            main.growing_saplings.append([x, y, main.loaded_chunks[mouse_chunk][1], random.randint(5000, 8000)])
+                            main.growing_saplings.append([x, y, main.loaded_chunks[mouse_chunk][1], random.randint(500, 800)])
                 main.break_progress = 0
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 main.break_progress = 0
@@ -474,7 +474,8 @@ def scene_game(events):
             sapling[3] -= 1
 
         if sapling[2] == main.loaded_chunks[4][1] and sapling[3] <= 0:
-            generate_tree(sapling[0], sapling[1], 4)
+            if main.loaded_chunks[4][0][sapling[0]][sapling[1]] == 42:
+                generate_tree(sapling[0], sapling[1], 4)
             main.growing_saplings.remove(sapling)
 
     main.daylight_time += 1
