@@ -38,3 +38,19 @@ def block_interact(block_id, x, y, chunk):
         case 10:
             main.loaded_chunks[chunk][0][x][y] = 15
             render_blocks([[x, y]], chunk)
+        case 17:
+            coords = get_coordinates_from_chunk(chunk)
+            data_found = False
+            for chunk in main.container_savedata:
+                [chx, chy], bl_data_list = chunk
+                if chx == coords[0] and chy == coords[1]:
+                    for bl_data in bl_data_list:
+                        [blx, bly], data = bl_data
+                        if blx == x and bly == y:
+                            data_found = True
+                            main.container_current = data
+            if not data_found:
+                main.container_current = [[0,0] for _ in range(32)]
+
+            main.container_open = [True, 17]
+            main.show_inv = True

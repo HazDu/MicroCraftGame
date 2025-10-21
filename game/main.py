@@ -111,6 +111,8 @@ container_open = [False, 0]
 action_title = [img_empty, 0]
 workbench_storage = [[0,0] for _ in range(10)]
 growing_saplings = []
+container_savedata = []
+container_current = []
 
 #load settings
 if os.path.exists(f"{GAMEPATH}/settings.json"):

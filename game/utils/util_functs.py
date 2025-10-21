@@ -294,6 +294,7 @@ def save_world_icon():
     pygame.image.save(sv_img, f"{main.GAMEPATH}/saves/{main.world_name}/icon.png")
 
 def get_chunk_from_coordinates(x, y):
+    #DEPRICATED
     chunk = -1
 
     if x < 0:
@@ -321,27 +322,25 @@ def get_chunk_from_coordinates(x, y):
     return chunk
 
 def get_coordinates_from_chunk(chunk):
-    coords = []
+    coords = main.loaded_chunks[4][1]
 
     match chunk:
         case 0:
-            coords = [-1, -1]
+            coords = [main.loaded_chunks[4][1][0] -1, main.loaded_chunks[4][1][1] -1]
         case 1:
-            coords = [0, -1]
+            coords = [main.loaded_chunks[4][1][0], main.loaded_chunks[4][1][1] -1]
         case 2:
-            coords = [1, -1]
+            coords = [main.loaded_chunks[4][1][0] +1, main.loaded_chunks[4][1][1] -1]
         case 3:
-            coords = [-1, 0]
-        case 4:
-            coords = [0, 0]
+            coords = [main.loaded_chunks[4][1][0] -1, main.loaded_chunks[4][1][1]]
         case 5:
-            coords = [1, 0]
+            coords = [main.loaded_chunks[4][1][0] +1, main.loaded_chunks[4][1][1]]
         case 6:
-            coords = [-1, 1]
+            coords = [main.loaded_chunks[4][1][0] -1, main.loaded_chunks[4][1][1] +1]
         case 7:
-            coords = [0, 1]
+            coords = [main.loaded_chunks[4][1][0], main.loaded_chunks[4][1][1] +1]
         case 8:
-            coords = [1, 1]
+            coords = [main.loaded_chunks[4][1][0] +1, main.loaded_chunks[4][1][1] +1]
 
     return coords
 

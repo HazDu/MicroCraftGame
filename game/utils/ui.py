@@ -149,10 +149,14 @@ def ui(events, surf, scale):
                     text = main.fnt_cons20.render(f"{main.workbench_storage[9][1]}", True, (255, 255, 255))
                     surf.blit(main.item_data[main.workbench_storage[9 ][0]]["Texture"], (cont_x + 452, cont_y + 128))
                     surf.blit(text, (cont_x + 454, cont_y + 159))
+            case 17:
+                pygame.draw.rect(main.surface, (64, 64, 64), (cont_x, cont_y, 656, 336), 0, 12)
 
-
-
-
+                for y in range(4):
+                    for x in range(8):
+                        btn = button_exact(cont_x + (x * 80) + 16, cont_y + (y * 80) + 16, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "L", "T")
+                        if btn == "left":
+                            pass
 
     #Inventory
     if main.show_inv:
