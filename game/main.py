@@ -111,8 +111,9 @@ container_open = [False, 0]
 action_title = [img_empty, 0]
 workbench_storage = [[0,0] for _ in range(10)]
 growing_saplings = []
-container_savedata = []
+container_savedata = {"Chunks": []}
 container_current = []
+container_coords = [[0, 0], [0, 0]]
 
 #load settings
 if os.path.exists(f"{GAMEPATH}/settings.json"):

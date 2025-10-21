@@ -167,7 +167,7 @@ def scene_menu_create():
                     "PlayerY": main.OY,
                     "CurrentChunk": [0, 0],
                     "Saplings": [],
-                    "ContainerData":[]
+                    "ContainerData": {"Chunks": []}
                 }
                 file.write(json.dumps(infos))
 

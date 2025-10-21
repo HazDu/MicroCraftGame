@@ -261,6 +261,7 @@ def save_world():
     read_data["Gamemode"] = main.gamemode
     read_data["Saplings"] = main.growing_saplings
     read_data["DayTime"] = main.daylight_time
+    read_data["ContainerData"] = main.container_savedata
     with open(f"{path}/infos.json", "w") as file:
         json.dump(read_data, file, indent=2)
 

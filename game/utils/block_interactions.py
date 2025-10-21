@@ -41,16 +41,17 @@ def block_interact(block_id, x, y, chunk):
         case 17:
             coords = get_coordinates_from_chunk(chunk)
             data_found = False
-            for chunk in main.container_savedata:
-                [chx, chy], bl_data_list = chunk
-                if chx == coords[0] and chy == coords[1]:
-                    for bl_data in bl_data_list:
-                        [blx, bly], data = bl_data
-                        if blx == x and bly == y:
+            for chunk in main.container_savedata["Chunks"]:
+                if chunk["Coordinates"][0] == coords[0] and chunk["Coordinates"][1] == coords[1]:
+                    for block in chunk["Blocks"]:
+                        if block["Coordinates"][0] == x and block["Coordinates"][1] == y:
                             data_found = True
-                            main.container_current = data
+                            main.container_current = block["Data"]
             if not data_found:
                 main.container_current = [[0,0] for _ in range(32)]
+
+            main.container_coords = [coords, [x, y]]
+            print(coords)
 
             main.container_open = [True, 17]
             main.show_inv = True

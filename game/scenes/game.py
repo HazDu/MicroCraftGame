@@ -218,6 +218,7 @@ def scene_game_load(path):
     main.inventory = read["Inventory"]
     main.growing_saplings = read["Saplings"]
     main.daylight_time = read["DayTime"]
+    main.container_savedata = read["ContainerData"]
 
     i = 0
     for y in range(main_chunk[1] -1, main_chunk[1] +2):
@@ -478,6 +479,26 @@ def scene_game(events):
         item.item_default()
         if item.lifetime > 1800:
             main.item_entities.remove(item)
+
+    if main.container_current != [] and main.container_open[0] == False:
+        data_found = False
+        chunk_found = False
+        for chunk in main.container_savedata["Chunks"]:
+            if chunk["Coordinates"][0] == main.container_coords[0][0] and chunk["Coordinates"][1] == main.container_coords[0][1]:
+                chunk_found = True
+                for block in chunk["Blocks"]:
+                    if block["Coordinates"][0] == main.container_coords[1][0] and block["Coordinates"][1] == main.container_coords[1][1]:
+                        data_found = True
+                        block["Data"] = main.container_current
+                        main.container_current = []
+                        break
+                if not data_found:
+                    chunk["Blocks"].append({"Coordinates": main.container_coords[1], "Data": main.container_current})
+                    main.container_current = []
+                    break
+        if not chunk_found:
+            main.container_savedata["Chunks"].append({"Coordinates": main.container_coords[0], "Blocks": [{"Coordinates": main.container_coords[1], "Data": main.container_current}]})
+            main.container_current = []
 
     for sapling in main.growing_saplings:
         if sapling[3] > 0:
