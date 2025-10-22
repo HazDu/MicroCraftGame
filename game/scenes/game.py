@@ -279,6 +279,13 @@ def scene_game(events):
                         new_item.y = mouse[1] - main.OY
                         new_item.amount = amount
                         main.item_entities.append(new_item)
+                if main.loaded_chunks[mouse_chunk][0][x][y] in [16, 17]:
+                    coords = get_coordinates_from_chunk(mouse_chunk)
+                    for chunk in main.container_savedata["Chunks"]:
+                        if chunk["Coordinates"][0] == coords[0] and chunk["Coordinates"][1] == coords[1]:
+                            for block in chunk["Blocks"]:
+                                if block["Coordinates"][0] == x and block["Coordinates"][1] == y:
+                                    chunk["Blocks"].remove(block)
                 main.loaded_chunks[mouse_chunk][0][x][y] = int(0)
                 render_blocks([[x, y]], mouse_chunk)
                 main.break_progress = 0

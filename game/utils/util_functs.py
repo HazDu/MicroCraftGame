@@ -263,7 +263,7 @@ def save_world():
     read_data["DayTime"] = main.daylight_time
     read_data["ContainerData"] = main.container_savedata
     with open(f"{path}/infos.json", "w") as file:
-        json.dump(read_data, file, indent=2)
+        json.dump(read_data, file)
 
 def texturepack_load(path):
     blocks_path = f"{path}/assets/minecraft/textures/block"
