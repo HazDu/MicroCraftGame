@@ -3,11 +3,10 @@ import os
 import json
 import zipfile
 import math
+import random
 from pygame import SRCALPHA
 from game.utils.util_functs import *
 import __main__ as main
-
-
 
 def ui(events, surf, scale):
     surface = pygame.Surface((1920, 1080), SRCALPHA)
@@ -151,6 +150,46 @@ def ui(events, surf, scale):
                     text = main.fnt_cons20.render(f"{main.workbench_storage[9][1]}", True, (255, 255, 255))
                     surf.blit(main.item_data[main.workbench_storage[9 ][0]]["Texture"], (cont_x + 452, cont_y + 128))
                     surf.blit(text, (cont_x + 454, cont_y + 159))
+            case 16:
+                pygame.draw.rect(main.surface, (64, 64, 64), (cont_x, cont_y, 656, 336), 0, 12)
+                pygame.draw.rect(main.surface, (64, 64, 64), (cont_x + 258, cont_y - 40, 140, 50), 0, 12)
+                button(cont_x + 178, cont_y - 40, 300, 50, main.img_empty, (0, 0, 0, 0), "Furnace", main.surface, events, "L", "T")
+                surf.blit(main.img_double_arrow, (cont_x + 296, cont_y + 136))
+                temp = main.img_fur_flame.copy()
+                temp.set_alpha(main.furnace_timings[0])
+                surf.blit(temp, (cont_x + 196, cont_y + 136))
+                if main.daylight_time % 20 == 0:
+                    main.furnace_timings[0] = random.randint(200, 255)
+
+                if button_exact(cont_x + 228, cont_y + 98, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "M", "M") == "left":
+                    if main.container_current[0][0] == main.inv_mouse[0]:
+                        main.container_current[0][1] += main.inv_mouse[1]
+                        main.inv_mouse = [0, 0]
+                    elif main.container_current[0][0] == 0:
+                        main.container_current[0] = main.inv_mouse
+                        main.inv_mouse = [0, 0]
+                    elif main.inv_mouse[0] == 0:
+                        main.inv_mouse = main.container_current[0]
+                        main.container_current[0] = [0, 0]
+                if button_exact(cont_x + 228, cont_y + 248, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "M", "M") == "left":
+                    if main.container_current[1][0] == main.inv_mouse[0]:
+                        main.container_current[1][1] += main.inv_mouse[1]
+                        main.inv_mouse = [0, 0]
+                    elif main.container_current[1][0] == 0 and main.inv_mouse[0] in [1005, 34, 22, 17, 15, 10, 9]:
+                        main.container_current[1] = main.inv_mouse
+                        main.inv_mouse = [0, 0]
+                    elif main.inv_mouse[0] == 0:
+                        main.inv_mouse = main.container_current[1]
+                        main.container_current[1] = [0, 0]
+                if button_exact(cont_x + 428, cont_y + 168, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "M", "M") == "left":
+                    if main.inv_mouse[0] in [0, main.container_current[0][0]]:
+                        main.inv_mouse[0] = main.container_current[2][0]
+                        main.inv_mouse[1] += main.container_current[2][1]
+                        main.container_current[2] = [0, 0]
+                surf.blit(main.item_data[main.container_current[0][0]]["Texture"], (cont_x + 204, cont_y + 74))
+                surf.blit(main.item_data[main.container_current[1][0]]["Texture"], (cont_x + 204, cont_y + 224))
+                surf.blit(main.item_data[main.container_current[2][0]]["Texture"], (cont_x + 404, cont_y + 144))
+
             case 17:
                 pygame.draw.rect(main.surface, (64, 64, 64), (cont_x, cont_y, 656, 336), 0, 12)
                 pygame.draw.rect(main.surface, (64, 64, 64), (cont_x + 268, cont_y - 40, 120, 50), 0, 12)
@@ -196,8 +235,7 @@ def ui(events, surf, scale):
         inv_y = 600
 
         for i in range(8):
-            if button(704 + i * 64, 1016, 64, 64, main.img_empty, (255, 255, 255, 50), 0, main.surface, events, "L",
-                      "T"):
+            if button(704 + i * 64, 1016, 64, 64, main.img_empty, (255, 255, 255, 50), 0, main.surface, events, "L", "T"):
                 temp = main.inv_mouse
                 main.inv_mouse = main.inventory[i]
                 main.inventory[i] = temp

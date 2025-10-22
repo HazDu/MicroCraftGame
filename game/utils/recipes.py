@@ -1,6 +1,7 @@
 
 def load_recipes():
     recipe_data = [
+        #workbench recipes
         [
             [0, 0, 0,
              0, 10, 0,
@@ -66,5 +67,7 @@ def load_recipes():
              0, 0, 0,
              0, 0, 0, ], 0, 1
         ],
+        #furnace recipes
+        [0, 0],
     ]
     return recipe_data
