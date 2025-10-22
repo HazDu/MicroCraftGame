@@ -102,6 +102,8 @@ def ui(events, surf, scale):
         match main.container_open[1]:
             case 15:
                 pygame.draw.rect(main.surface, (64, 64, 64), (cont_x, cont_y, 656, 336), 0, 12)
+                pygame.draw.rect(main.surface, (64, 64, 64), (cont_x + 228, cont_y - 40, 200, 50), 0, 12)
+                button(cont_x + 178, cont_y - 40, 300, 50, main.img_empty, (0, 0, 0, 0), "Workbench", main.surface, events, "L", "T")
                 surf.blit(main.img_double_arrow, (cont_x+320, cont_y+120))
                 recipe = []
                 slot = 0
@@ -151,6 +153,8 @@ def ui(events, surf, scale):
                     surf.blit(text, (cont_x + 454, cont_y + 159))
             case 17:
                 pygame.draw.rect(main.surface, (64, 64, 64), (cont_x, cont_y, 656, 336), 0, 12)
+                pygame.draw.rect(main.surface, (64, 64, 64), (cont_x + 268, cont_y - 40, 120, 50), 0, 12)
+                button(cont_x + 178, cont_y - 40, 300, 50, main.img_empty, (0, 0, 0, 0), "Chest", main.surface, events, "L", "T")
 
                 slot = 0
                 for y in range(4):
@@ -200,6 +204,8 @@ def ui(events, surf, scale):
 
         slot = 8
         pygame.draw.rect(main.surface, (64, 64, 64), (inv_x, inv_y, 656, 336), 0, 12)
+        pygame.draw.rect(main.surface, (64, 64, 64), (inv_x + 238, inv_y - 40, 180, 50), 0, 12)
+        button(inv_x + 178, inv_y - 40, 300, 50, main.img_empty, (0, 0, 0, 0), "Inventory", main.surface, events, "L", "T")
         for y in range(4):
             for x in range(8):
                 btn = button_exact(inv_x + (x * 80) + 16, inv_y + (y * 80) + 16, 64, 64, main.img_slot,
@@ -306,6 +312,7 @@ def ui(events, surf, scale):
                      f"({', '.join(str(chunk) for chunk, *_ in main.chunk_render_queue)})\n"
                      f"{f"Rendering Chunk: {main.chunk_render_queue[0][0]} - {((4096 - len(main.chunk_render_queue[0][1])) * 100) / 4096:.0f}%\n" if main.chunk_render_queue else ""}"
                      f"Buffered Chunks: {len(main.chunk_buffer)}\n"
+                     f"Daytime: {main.daylight_time}\n"
                      )
         text_render_multiline(10, 10, main.main_font, debug_txt, True, (255, 255, 255), surf, "L", "T")
 
