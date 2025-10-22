@@ -51,7 +51,6 @@ def block_interact(block_id, x, y, chunk):
                 main.container_current = [[0,0] for _ in range(32)]
 
             main.container_coords = [coords, [x, y]]
-            print(coords)
 
             main.container_open = [True, 17]
             main.show_inv = True

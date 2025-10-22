@@ -114,6 +114,7 @@ growing_saplings = []
 container_savedata = {"Chunks": []}
 container_current = []
 container_coords = [[0, 0], [0, 0]]
+creative_menu_category = 0
 
 #load settings
 if os.path.exists(f"{GAMEPATH}/settings.json"):

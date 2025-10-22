@@ -110,7 +110,7 @@ def button(x, y, width, height, sprite, tint_col, text, surface, events, x_align
     if x <= mouse_pos[0] <= x+width and y <= mouse_pos[1] <= y+height:
         main.cur = main.cur_pointer
         for event in events:
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button in [1, 2, 3]:
                 btn_pressed = True
         tinted_image = tint_image(sprite, tint_col)
         surface.blit(tinted_image, (x, y))
