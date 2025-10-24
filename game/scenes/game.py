@@ -119,7 +119,12 @@ class Player:
                 moving_space = (standing_y + 1)*64 + (self.y + self.hitbox["bottom"])
                 if not is_collidable["South"] or moving_space >= self.jump_vel*-1:
                     main.OY += self.jump_vel
-                    if self.jump_max_vel < self.jump_vel < 0:
+                    if standing_y+1 > 63:
+                        chunk = 7
+                    else:
+                        chunk = 4
+
+                    if self.jump_max_vel < self.jump_vel < 0 and (main.loaded_chunks[chunk][0][standing_x][standing_y+1] != 34 or self.jump_vel > -6 ):
                         self.jump_vel = self.jump_vel * 1.2
                 elif moving_space > 0:
                     main.OY += moving_space*-1

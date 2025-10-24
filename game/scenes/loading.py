@@ -30,5 +30,3 @@ def scene_loading(path, typee):
             scene_game_create()
         elif typee == "load":
             scene_game_load(path)
-
-
