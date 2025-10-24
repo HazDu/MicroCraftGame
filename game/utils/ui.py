@@ -161,6 +161,9 @@ def ui(events, surf, scale):
                 pygame.draw.rect(main.surface, (64, 64, 64), (cont_x + 258, cont_y - 40, 140, 50), 0, 12)
                 button(cont_x + 178, cont_y - 40, 300, 50, main.img_empty, (0, 0, 0, 0), "Furnace", main.surface, events, "L", "T")
                 surf.blit(main.img_double_arrow, (cont_x + 296, cont_y + 136))
+                if main.container_current[0][0] != 0:
+                    width = math.floor(main.container_current[4] * 64) / 100
+                    pygame.draw.rect(main.surface, (64, 64, 64), (cont_x + 296 + width, cont_y + 136, 65-width, 64))
                 temp = main.img_fur_flame.copy()
                 temp.set_alpha(main.furnace_timings[0])
                 surf.blit(temp, (cont_x + 196, cont_y + 136))
@@ -208,6 +211,8 @@ def ui(events, surf, scale):
                     text = main.fnt_cons20.render(f"{main.container_current[2][1]}", True, (255, 255, 255))
                     surf.blit(text, (cont_x + 406, cont_y + 175))
 
+                if main.container_current[0][1] <= 0:
+                    main.container_current[0][0] = 0
                 if main.container_current[1][1] <= 0:
                     main.container_current[1][0] = 0
 

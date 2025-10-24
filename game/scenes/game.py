@@ -509,7 +509,7 @@ def scene_game(events):
 
     for chunk in main.container_savedata["Chunks"]:
         for block in chunk["Blocks"]:
-            if block["Data"][1][0] != 0 or block["Data"][3] > 0:
+            if len(block["Data"]) == 7 and (block["Data"][1][0] != 0 or block["Data"][3] > 0):
                 if block["Data"][3] == 0:
                     block["Data"][1][1] -=1
 
@@ -537,6 +537,7 @@ def scene_game(events):
                             if block["Data"][4] >= 100:
                                 block["Data"][2][0] = recipe[1]
                                 block["Data"][2][1] += 1
+                                block["Data"][0][1] -= 1
                                 block["Data"][4] = 0
 
 
