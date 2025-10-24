@@ -48,7 +48,7 @@ def block_interact(block_id, x, y, chunk):
                             data_found = True
                             main.container_current = block["Data"]
             if not data_found:
-                main.container_current = [[0, 0] for _ in range(3)]
+                main.container_current = [[0, 0], [0, 0], [0, 0], 0, 0, [coords[0], coords[1], x, y], 0]
 
             main.container_coords = [coords, [x, y]]
 

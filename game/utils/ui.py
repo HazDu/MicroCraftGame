@@ -151,6 +151,12 @@ def ui(events, surf, scale):
                     surf.blit(main.item_data[main.workbench_storage[9 ][0]]["Texture"], (cont_x + 452, cont_y + 128))
                     surf.blit(text, (cont_x + 454, cont_y + 159))
             case 16:
+                for chunk in main.container_savedata["Chunks"]:
+                    if chunk["Coordinates"][0] == main.container_current[5][0] and chunk["Coordinates"][1] == main.container_current[5][1]:
+                        for block in chunk["Blocks"]:
+                            if block ["Coordinates"][0] == main.container_current[5][2] and block ["Coordinates"][0] == main.container_current[5][2]:
+                                main.container_current = block["Data"]
+
                 pygame.draw.rect(main.surface, (64, 64, 64), (cont_x, cont_y, 656, 336), 0, 12)
                 pygame.draw.rect(main.surface, (64, 64, 64), (cont_x + 258, cont_y - 40, 140, 50), 0, 12)
                 button(cont_x + 178, cont_y - 40, 300, 50, main.img_empty, (0, 0, 0, 0), "Furnace", main.surface, events, "L", "T")
@@ -158,6 +164,7 @@ def ui(events, surf, scale):
                 temp = main.img_fur_flame.copy()
                 temp.set_alpha(main.furnace_timings[0])
                 surf.blit(temp, (cont_x + 196, cont_y + 136))
+                pygame.draw.rect(main.surface, (64, 64, 64), (cont_x + 196, cont_y + 136, 64, math.floor((main.container_current[3] * 64) / 1000)))
                 if main.daylight_time % 20 == 0:
                     main.furnace_timings[0] = random.randint(200, 255)
 
@@ -175,20 +182,40 @@ def ui(events, surf, scale):
                     if main.container_current[1][0] == main.inv_mouse[0]:
                         main.container_current[1][1] += main.inv_mouse[1]
                         main.inv_mouse = [0, 0]
-                    elif main.container_current[1][0] == 0 and main.inv_mouse[0] in [1005, 34, 22, 17, 15, 10, 9]:
+                    elif main.container_current[1][0] == 0 and main.inv_mouse[0] in [1005, 34, 22, 28, 17, 15, 10, 9]:
                         main.container_current[1] = main.inv_mouse
                         main.inv_mouse = [0, 0]
                     elif main.inv_mouse[0] == 0:
                         main.inv_mouse = main.container_current[1]
                         main.container_current[1] = [0, 0]
                 if button_exact(cont_x + 428, cont_y + 168, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "M", "M") == "left":
-                    if main.inv_mouse[0] in [0, main.container_current[0][0]]:
+                    if main.inv_mouse[0] in [0, main.container_current[2][0]]:
                         main.inv_mouse[0] = main.container_current[2][0]
                         main.inv_mouse[1] += main.container_current[2][1]
                         main.container_current[2] = [0, 0]
-                surf.blit(main.item_data[main.container_current[0][0]]["Texture"], (cont_x + 204, cont_y + 74))
-                surf.blit(main.item_data[main.container_current[1][0]]["Texture"], (cont_x + 204, cont_y + 224))
-                surf.blit(main.item_data[main.container_current[2][0]]["Texture"], (cont_x + 404, cont_y + 144))
+
+                if main.container_current[0][0] != 0:
+                    surf.blit(main.item_data[main.container_current[0][0]]["Texture"], (cont_x + 204, cont_y + 74))
+                    text = main.fnt_cons20.render(f"{main.container_current[0][1]}", True, (255, 255, 255))
+                    surf.blit(text, (cont_x + 206, cont_y + 105))
+                if main.container_current[1][0] != 0:
+                    main.container_current[6] = main.container_current[1][0]
+                    surf.blit(main.item_data[main.container_current[1][0]]["Texture"], (cont_x + 204, cont_y + 224))
+                    text = main.fnt_cons20.render(f"{main.container_current[1][1]}", True, (255, 255, 255))
+                    surf.blit(text, (cont_x + 206, cont_y + 255))
+                if main.container_current[2][0] != 0:
+                    surf.blit(main.item_data[main.container_current[2][0]]["Texture"], (cont_x + 404, cont_y + 144))
+                    text = main.fnt_cons20.render(f"{main.container_current[2][1]}", True, (255, 255, 255))
+                    surf.blit(text, (cont_x + 406, cont_y + 175))
+
+                if main.container_current[1][1] <= 0:
+                    main.container_current[1][0] = 0
+
+                for chunk in main.container_savedata["Chunks"]:
+                    if chunk["Coordinates"][0] == main.container_current[5][0] and chunk["Coordinates"][1] == main.container_current[5][1]:
+                        for block in chunk["Blocks"]:
+                            if block["Coordinates"][0] == main.container_current[5][2] and block["Coordinates"][0] == main.container_current[5][2]:
+                                block["Data"] = main.container_current
 
             case 17:
                 pygame.draw.rect(main.surface, (64, 64, 64), (cont_x, cont_y, 656, 336), 0, 12)

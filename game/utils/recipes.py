@@ -68,6 +68,6 @@ def load_recipes():
              0, 0, 0, ], 0, 1
         ],
         #furnace recipes
-        [0, 0],
+        [5, 4],
     ]
     return recipe_data

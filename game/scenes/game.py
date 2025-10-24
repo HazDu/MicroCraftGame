@@ -507,6 +507,40 @@ def scene_game(events):
             main.container_savedata["Chunks"].append({"Coordinates": main.container_coords[0], "Blocks": [{"Coordinates": main.container_coords[1], "Data": main.container_current}]})
             main.container_current = []
 
+    for chunk in main.container_savedata["Chunks"]:
+        for block in chunk["Blocks"]:
+            if block["Data"][1][0] != 0 or block["Data"][3] > 0:
+                if block["Data"][3] == 0:
+                    block["Data"][1][1] -=1
+
+                if block["Data"][1][0] != 0:
+                    fuel = block["Data"][1][0]
+                else:
+                    fuel = block["Data"][6]
+
+                match fuel:
+                    case [9, 10, 15, 17]:
+                        block["Data"][3] += 2
+                    case [22, 34]:
+                        block["Data"][3] += 6
+                    case 1005:
+                        block["Data"][3] += 1
+                    case 28:
+                        block["Data"][3] += 0.1
+
+                if block["Data"][3] >= 1000:
+                    block["Data"][3] = 0
+                print(block["Data"][3])
+                if block["Data"][0][0] != 0:
+                    for recipe in main.recipe_data:
+                        if recipe[0] == block["Data"][0][0]:
+                            block["Data"][4] += 1
+                            if block["Data"][4] >= 100:
+                                block["Data"][2][0] = recipe[1]
+                                block["Data"][2][1] += 1
+                                block["Data"][4] = 0
+
+
     for sapling in main.growing_saplings:
         if sapling[3] > 0:
             sapling[3] -= 1
