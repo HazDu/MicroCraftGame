@@ -519,9 +519,9 @@ def scene_game(events):
                     fuel = block["Data"][6]
 
                 match fuel:
-                    case [9, 10, 15, 17]:
+                    case 9 | 10 | 15 | 17:
                         block["Data"][3] += 2
-                    case [22, 34]:
+                    case 22 | 34:
                         block["Data"][3] += 6
                     case 1005:
                         block["Data"][3] += 1
@@ -530,7 +530,6 @@ def scene_game(events):
 
                 if block["Data"][3] >= 1000:
                     block["Data"][3] = 0
-                print(block["Data"][3])
                 if block["Data"][0][0] != 0:
                     for recipe in main.recipe_data:
                         if recipe[0] == block["Data"][0][0]:
