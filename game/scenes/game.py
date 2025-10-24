@@ -198,14 +198,6 @@ def scene_game_create():
 
     for chunk in range(9):
         render_blocks(0, chunk)
-
-
-    main.OX = -1120
-    main.OY = -1476
-    if main.gamemode == 0:
-        main.break_speed = 1
-    else:
-        main.break_speed = 99999
     main.current_scene = 4
 
 def scene_game_load(path):
