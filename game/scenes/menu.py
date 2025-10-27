@@ -7,7 +7,7 @@ import math
 import os
 import glob
 import shutil
-from utils.block_ids import *
+from game.utils.block_ids import *
 import datetime
 import subprocess
 from game.scenes.game import *

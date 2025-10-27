@@ -1,7 +1,7 @@
 import random
 import __main__ as main
 
-from utils.util_functs import *
+from game.utils.util_functs import *
 
 def generate_chunk_type(chunk, worldtype):
     match worldtype:

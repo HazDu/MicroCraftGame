@@ -1,15 +1,16 @@
 from tkinter import messagebox
 import pygame
 import zipfile
-from utils.ui import *
+from game.utils.ui import *
 import sys
 import platform
-from utils.block_ids import *
-from utils.item_ids import *
-from utils.cursor import *
-from scenes.menu import *
-from scenes.game import *
-from utils.recipes import *
+from game.utils.block_ids import *
+from game.utils.item_ids import *
+from game.utils.cursor import *
+from game.scenes.menu import *
+from game.scenes.game import *
+from game.utils.recipes import *
+from game.utils.util_functs import resource_path
 pygame.init()
 
 #screen setup
@@ -19,19 +20,19 @@ sys.setrecursionlimit(100000)
 pygame.display.set_icon(surface)
 
 #load images
-logo = pygame.image.load('game/assets/ui/Microcraft.png').convert_alpha()
-trashbin = pygame.image.load('game/assets/ui/trashbin.png').convert_alpha()
-explorer = pygame.image.load('game/assets/ui/explorer.png').convert_alpha()
-def_img = pygame.image.load("game/assets/ui/pack.png").convert_alpha()
+logo = pygame.image.load(resource_path('game/assets/ui/Microcraft.png')).convert_alpha()
+trashbin = pygame.image.load(resource_path('game/assets/ui/trashbin.png')).convert_alpha()
+explorer = pygame.image.load(resource_path('game/assets/ui/explorer.png')).convert_alpha()
+def_img = pygame.image.load(resource_path("game/assets/ui/pack.png")).convert_alpha()
 img_empty = pygame.Surface((1, 1), pygame.SRCALPHA, 32)
-img_mod_loaded = pygame.image.load("game/assets/ui/mod_loaded.png").convert_alpha()
-img_mod_unloaded = pygame.image.load("game/assets/ui/mod_unloaded.png").convert_alpha()
-img_hotbar = pygame.transform.scale(pygame.image.load("game/assets/ui/hotbar.png"), (512, 64)).convert_alpha()
-img_hotbar_sel = pygame.transform.scale(pygame.image.load("game/assets/ui/hotbar_selector.png"), (64, 64)).convert_alpha()
-img_slot = pygame.transform.scale(pygame.image.load("game/assets/ui/slot.png"), (64, 64)).convert_alpha()
-img_double_arrow = pygame.transform.scale(pygame.image.load("game/assets/ui/double_arrow.png"), (64, 64)).convert_alpha()
-img_button = pygame.image.load("game/assets/ui/button.png").convert_alpha()
-img_fur_flame = pygame.transform.scale(pygame.image.load("game/assets/ui/furnace_flame.png"), (64, 64)).convert_alpha()
+img_mod_loaded = pygame.image.load(resource_path("game/assets/ui/mod_loaded.png")).convert_alpha()
+img_mod_unloaded = pygame.image.load(resource_path("game/assets/ui/mod_unloaded.png")).convert_alpha()
+img_hotbar = pygame.transform.scale(pygame.image.load(resource_path("game/assets/ui/hotbar.png")), (512, 64)).convert_alpha()
+img_hotbar_sel = pygame.transform.scale(pygame.image.load(resource_path("game/assets/ui/hotbar_selector.png")), (64, 64)).convert_alpha()
+img_slot = pygame.transform.scale(pygame.image.load(resource_path("game/assets/ui/slot.png")), (64, 64)).convert_alpha()
+img_double_arrow = pygame.transform.scale(pygame.image.load(resource_path("game/assets/ui/double_arrow.png")), (64, 64)).convert_alpha()
+img_button = pygame.image.load(resource_path("game/assets/ui/button.png")).convert_alpha()
+img_fur_flame = pygame.transform.scale(pygame.image.load(resource_path("game/assets/ui/furnace_flame.png")), (64, 64)).convert_alpha()
 
 #custom cursors
 cur_square = []
