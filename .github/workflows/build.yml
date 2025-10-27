@@ -25,7 +25,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.12'
     
     - name: Install dependencies
       run: |
@@ -33,9 +33,18 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
     
-    - name: Build with PyInstaller
+    - name: Build with PyInstaller (Linux)
+      if: matrix.os == 'ubuntu-latest'
       run: |
+        export PYTHONPATH=$PYTHONPATH:$(pwd)
         pyinstaller MicroCraftGame.spec
+    
+    - name: Build with PyInstaller (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        set PYTHONPATH=%PYTHONPATH%;%CD%
+        pyinstaller MicroCraftGame.spec
+      shell: cmd
     
     - name: Rename executable (Windows)
       if: matrix.os == 'windows-latest'
