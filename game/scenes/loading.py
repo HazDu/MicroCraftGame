@@ -1,6 +1,6 @@
 import pygame
 import __main__ as main
-from scenes.game import *
+from game.scenes.game import *
 
 
 def scene_loading(path, typee):

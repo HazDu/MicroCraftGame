@@ -5,10 +5,10 @@ import math
 import numpy as np
 import copy
 import ast
-from utils.ui import *
-from utils.block_interactions import *
-from utils.util_functs import *
-from utils.generator import *
+from game.utils.ui import *
+from game.utils.block_interactions import *
+from game.utils.util_functs import *
+from game.utils.generator import *
 import __main__ as main
 
 #classes
@@ -19,7 +19,7 @@ class Player:
         self.y = 0
         self.jump_vel = -0.5
         self.jump_max_vel = -25
-        self.sprite = pygame.transform.scale(pygame.image.load("game/assets/entities/T-Player.png"), (64, 64))
+        self.sprite = pygame.transform.scale(pygame.image.load(resource_path("game/assets/entities/T-Player.png")), (64, 64))
         self.hitbox = {
             "top": 32,
             "left": 12,
