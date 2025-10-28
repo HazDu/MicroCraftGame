@@ -121,6 +121,7 @@ class Player:
                     main.OY += self.jump_vel
                     if standing_y+1 > 63:
                         chunk = 7
+                        standing_y = -1
                     else:
                         chunk = 4
 
