@@ -108,7 +108,7 @@ class Player:
             else:
                 for event in main.EVENTS:
                     if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_SPACE:
+                        if event.key == pygame.K_SPACE and (self.jump_vel == 0 or main.gamemode == 1):
                             self.jump_vel = 10
                 if self.jump_vel > 1:
                     main.OY += self.jump_vel
