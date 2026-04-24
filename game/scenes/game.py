@@ -17,15 +17,140 @@ class Player:
         self.speed = 6
         self.x = 0
         self.y = 0
-        self.jump_vel = -0.5
-        self.jump_max_vel = -25
+        self.jump_vel = 0.0
+        self.jump_strength = 14.0
+        self.gravity = 1
+        self.max_fall_speed = 26.0
         self.sprite = pygame.transform.scale(pygame.image.load(resource_path("game/assets/entities/T-Player.png")), (64, 64))
         self.hitbox = {
             "top": 32,
-            "left": 12,
+            "left": 17,
             "bottom": -32,
-            "right": -12,
+            "right": -17,
         }
+
+    def _get_player_rect_world(self):
+        sprite_half_w = self.sprite.get_width() / 2
+        sprite_half_h = self.sprite.get_height() / 2
+
+        center_x = main.surface.get_width() / 2
+        center_y = main.surface.get_height() / 2
+
+        screen_left = center_x - sprite_half_w + self.hitbox["left"]
+        screen_right = center_x + sprite_half_w + self.hitbox["right"]
+        screen_top = center_y - sprite_half_h + 4
+        screen_bottom = center_y + sprite_half_h - 2
+
+        world_left = round(screen_left - main.OX)
+        world_right = round(screen_right - main.OX)
+        world_top = round(screen_top - main.OY)
+        world_bottom = round(screen_bottom - main.OY)
+
+        return pygame.Rect(world_left, world_top, world_right - world_left, world_bottom - world_top)
+
+    def _get_block_id(self, tile_x, tile_y):
+        chunk_x = math.floor(tile_x / 64)
+        chunk_y = math.floor(tile_y / 64)
+
+        if not (-1 <= chunk_x <= 1 and -1 <= chunk_y <= 1):
+            return 0
+
+        local_x = tile_x % 64
+        local_y = tile_y % 64
+        chunk = (chunk_y + 1) * 3 + (chunk_x + 1)
+
+        return main.loaded_chunks[chunk][0][local_x][local_y]
+
+    def _is_collidable_tile(self, tile_x, tile_y):
+        block_id = self._get_block_id(tile_x, tile_y)
+        return main.block_data[block_id]["Collidable"]
+
+    def _move_rect_x(self, rect, dx):
+        if dx == 0:
+            return rect, 0
+
+        moved = rect.move(dx, 0)
+        left_tile = moved.left // 64
+        right_tile = (moved.right - 1) // 64
+        top_tile = moved.top // 64
+        bottom_tile = (moved.bottom - 1) // 64
+
+        x_range = range(left_tile, right_tile + 1)
+        if dx < 0:
+            x_range = range(right_tile, left_tile - 1, -1)
+
+        for tile_x in x_range:
+            for tile_y in range(top_tile, bottom_tile + 1):
+                if not self._is_collidable_tile(tile_x, tile_y):
+                    continue
+
+                tile_rect = pygame.Rect(tile_x * 64, tile_y * 64, 64, 64)
+                if moved.colliderect(tile_rect):
+                    if dx > 0:
+                        moved.right = min(moved.right, tile_rect.left)
+                    else:
+                        moved.left = max(moved.left, tile_rect.right)
+
+        return moved, moved.x - rect.x
+
+    def _move_rect_y(self, rect, dy):
+        if dy == 0:
+            return rect, 0
+
+        moved = rect.move(0, dy)
+        left_tile = moved.left // 64
+        right_tile = (moved.right - 1) // 64
+        top_tile = moved.top // 64
+        bottom_tile = (moved.bottom - 1) // 64
+
+        y_range = range(top_tile, bottom_tile + 1)
+        if dy < 0:
+            y_range = range(bottom_tile, top_tile - 1, -1)
+
+        for tile_y in y_range:
+            for tile_x in range(left_tile, right_tile + 1):
+                if not self._is_collidable_tile(tile_x, tile_y):
+                    continue
+
+                tile_rect = pygame.Rect(tile_x * 64, tile_y * 64, 64, 64)
+                if moved.colliderect(tile_rect):
+                    if dy > 0:
+                        moved.bottom = min(moved.bottom, tile_rect.top)
+                    else:
+                        moved.top = max(moved.top, tile_rect.bottom)
+
+        return moved, moved.y - rect.y
+
+    def _is_on_ground(self, rect):
+        check_rect = rect.move(0, 1)
+        left_tile = check_rect.left // 64
+        right_tile = (check_rect.right - 1) // 64
+        top_tile = check_rect.top // 64
+        bottom_tile = (check_rect.bottom - 1) // 64
+
+        for tile_y in range(top_tile, bottom_tile + 1):
+            for tile_x in range(left_tile, right_tile + 1):
+                if not self._is_collidable_tile(tile_x, tile_y):
+                    continue
+                tile_rect = pygame.Rect(tile_x * 64, tile_y * 64, 64, 64)
+                if check_rect.colliderect(tile_rect):
+                    return True
+        return False
+
+    def _inside_block(self, rect, block_id):
+        left_tile = rect.left // 64
+        right_tile = (rect.right - 1) // 64
+        top_tile = rect.top // 64
+        bottom_tile = (rect.bottom - 1) // 64
+
+        for tile_y in range(top_tile, bottom_tile + 1):
+            for tile_x in range(left_tile, right_tile + 1):
+                if self._get_block_id(tile_x, tile_y) != block_id:
+                    continue
+                tile_rect = pygame.Rect(tile_x * 64, tile_y * 64, 64, 64)
+                if rect.colliderect(tile_rect):
+                    return True
+        return False
 
     def player_default(self):
         if not main.show_inv and not main.show_esc:
@@ -33,109 +158,52 @@ class Player:
 
             self.x = main.OX - (main.surface.get_width() / 2)
             self.y = main.OY - (main.surface.get_height() / 2)
+            player_rect = self._get_player_rect_world()
 
-            standing_x = clamp(int((self.x // 64) * -1) -1 , 0, 63)
-            standing_y = clamp(int((self.y // 64) * -1) -1 , 0, 63)
-            # text_render_multiline(500, 10, main.main_font, f"{standing_x}, {standing_y}", True, (255, 255, 255), main.surface, "x", "x")
-
-            #collision check
-            is_collidable = {
-                "North": False,
-                "South": False,
-                "East": False,
-                "West": False,
-            }
-
-            if standing_x - 1 < 0:
-                check_chunk = 3
-                standing_xx = 63
-            else:
-                check_chunk = 4
-                standing_xx = standing_x - 1
-            if main.block_data[main.loaded_chunks[check_chunk][0][standing_xx][standing_y]]["Collidable"]:
-                is_collidable["West"] = True
-
-            if standing_x + 1 > 63:
-                check_chunk = 5
-                standing_xx = 0
-            else:
-                check_chunk = 4
-                standing_xx = standing_x + 1
-            if main.block_data[main.loaded_chunks[check_chunk][0][standing_xx][standing_y]]["Collidable"]:
-                is_collidable["East"] = True
-
-            if standing_y - 1 < 0:
-                check_chunk = 1
-                standing_yy = 63
-            else:
-                check_chunk = 4
-                standing_yy = standing_y - 1
-            if main.block_data[main.loaded_chunks[check_chunk][0][standing_x][standing_yy]]["Collidable"]:
-                is_collidable["North"] = True
-
-            if standing_y + 1 > 63:
-                check_chunk = 7
-                standing_yy = 0
-            else:
-                check_chunk = 4
-                standing_yy = standing_y + 1
-            if main.block_data[main.loaded_chunks[check_chunk][0][standing_x][standing_yy]]["Collidable"]:
-                is_collidable["South"] = True
-
-           # text_render_multiline(500, 50, main.main_font, f"N: {is_collidable["North"]}\ns: {is_collidable["South"]}\nE: {is_collidable["East"]}\nW: {is_collidable["West"]}\n", True, (255, 255, 255), main.surface, "x", "x")
-
-            #movement left/right
+            move_x = 0
             if keys[pygame.K_a]:
-                moving_space = (self.x + self.hitbox["left"])*-1 - standing_x*64
-                if not is_collidable["West"] or moving_space >= self.speed:
-                    main.OX += self.speed
-                elif moving_space > 0:
-                    main.OX += moving_space
+                move_x -= self.speed
             if keys[pygame.K_d]:
-                moving_space = (standing_x+1)*64 + (self.x + self.hitbox["right"])
-                if not is_collidable["East"] or moving_space >= self.speed:
-                    main.OX -= self.speed
-                elif moving_space > 0:
-                    main.OX -= moving_space
+                move_x += self.speed
 
-            #movement jump
-            if main.loaded_chunks[4][0][standing_x][standing_y] == 34 and keys[pygame.K_SPACE] and not is_collidable["North"]:
-                chunk = 4
-                if standing_y-1 < 0:
-                    chunk = 1
-                if main.loaded_chunks[chunk][0][standing_x][standing_y-1] == 34 or (self.y*-1 - standing_y*64) > 35:
-                    main.OY += self.speed
+            if move_x != 0:
+                player_rect, moved_x = self._move_rect_x(player_rect, move_x)
+                main.OX -= moved_x
+
+            inside_ladder = self._inside_block(player_rect, 34)
+            on_ground = self._is_on_ground(player_rect)
+
+            if inside_ladder and keys[pygame.K_SPACE]:
+                player_rect, moved_y = self._move_rect_y(player_rect, -self.speed)
+                main.OY -= moved_y
+                if moved_y == 0:
+                    self.jump_vel = 0
             else:
+                jump_pressed = False
                 for event in main.EVENTS:
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_SPACE and (self.jump_vel == 0 or main.gamemode == 1):
-                            self.jump_vel = 10
-                if self.jump_vel > 1:
-                    main.OY += self.jump_vel
-                    self.jump_vel = self.jump_vel / 1.2
-                if -1 < self.jump_vel < 1:
-                    self.jump_vel = -1
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                        jump_pressed = True
+                        break
 
-                moving_space = (standing_y + 1)*64 + (self.y + self.hitbox["bottom"])
-                if not is_collidable["South"] or moving_space >= self.jump_vel*-1:
-                    main.OY += self.jump_vel
-                    if standing_y+1 > 63:
-                        chunk = 7
-                        standing_y = -1
-                    else:
-                        chunk = 4
+                if jump_pressed and (on_ground or main.gamemode == 1):
+                    self.jump_vel = -self.jump_strength
 
-                    if self.jump_max_vel < self.jump_vel < 0 and (main.loaded_chunks[chunk][0][standing_x][standing_y+1] != 34 or self.jump_vel > -6 ):
-                        self.jump_vel = self.jump_vel * 1.2
-                elif moving_space > 0:
-                    main.OY += moving_space*-1
-                if moving_space == 0 and self.jump_vel <= 0:
+                self.jump_vel = min(self.jump_vel + self.gravity, self.max_fall_speed)
+                wanted_move_y = int(round(self.jump_vel))
+
+                if wanted_move_y != 0:
+                    player_rect, moved_y = self._move_rect_y(player_rect, wanted_move_y)
+                    main.OY -= moved_y
+                else:
+                    moved_y = 0
+
+                if moved_y != wanted_move_y:
+                    self.jump_vel = 0
+                elif self._is_on_ground(player_rect) and self.jump_vel > 0:
                     self.jump_vel = 0
 
-                moving_space = (self.y + self.hitbox["top"])*-1 - standing_y*64
-                if is_collidable["North"] and self.jump_vel > 1 and moving_space < self.jump_vel:
-                    main.OY += moving_space
-                    self.jump_vel = 0
+            self.x = main.OX - (main.surface.get_width() / 2)
+            self.y = main.OY - (main.surface.get_height() / 2)
 
         main.surface.blit(self.sprite, (main.surface.get_width() / 2 - 32, main.surface.get_height() / 2 - 32))
 
