@@ -248,8 +248,287 @@ class Item:
                         item_stored = True
                         break
 
+class Pig:
+    def __init__(self, x, y):
+        self.x = float(x)
+        self.y = float(y)
+        self.width = 64
+        self.height = 64
+        self.hitbox = {
+            "left": 8,
+            "right": -8,
+            "top": 6,
+            "bottom": -2,
+        }
+        self.speed = 1
+        self.vx = 0
+        self.vy = 0
+        self.gravity = 0.7
+        self.max_fall_speed = 16
+        self.direction = random.choice([-1, 1])
+        self.walk_timer = random.randint(60, 180)
+        self.idle_timer = random.randint(0, 45)
+        self.jump_strength = 12
+        self.jump_cooldown = random.randint(50, 150)
+        self.health = 5
+        self.flash_timer = 0
+        self.max_flash_timer = 8
+        self._sprite_right = None
+        self._sprite_left = None
+        self._sprite_source = None
+
+    def _refresh_sprite_cache(self):
+        source_texture = pygame.image.load(resource_path('game/assets/entities/pig.png')).convert_alpha()
+        if self._sprite_source is source_texture and self._sprite_right is not None:
+            return
+        self._sprite_source = source_texture
+        self._sprite_right = pygame.transform.scale(source_texture, (self.width, self.height))
+        self._sprite_left = pygame.transform.flip(self._sprite_right, True, False)
+
+    def _get_sprite(self):
+        self._refresh_sprite_cache()
+        if self.direction > 0:
+            return self._sprite_left
+        return self._sprite_right
+
+    def _get_rect(self):
+        return pygame.Rect(
+            int(self.x + self.hitbox["left"]),
+            int(self.y + self.hitbox["top"]),
+            self.width + self.hitbox["right"] - self.hitbox["left"],
+            self.height + self.hitbox["bottom"] - self.hitbox["top"],
+        )
+
+    def _get_center(self):
+        return self.x + (self.width / 2), self.y + (self.height / 2)
+
+    def try_hit(self):
+        self.health -= 1
+        self.flash_timer = self.max_flash_timer
+        return self.health <= 0
+
+    def _get_block_id(self, tile_x, tile_y):
+        chunk_x = math.floor(tile_x / 64)
+        chunk_y = math.floor(tile_y / 64)
+        if not (-1 <= chunk_x <= 1 and -1 <= chunk_y <= 1):
+            return 0
+
+        local_x = tile_x % 64
+        local_y = tile_y % 64
+        chunk = (chunk_y + 1) * 3 + (chunk_x + 1)
+        return main.loaded_chunks[chunk][0][local_x][local_y]
+
+    def _is_collidable_tile(self, tile_x, tile_y):
+        block_id = self._get_block_id(tile_x, tile_y)
+        return main.block_data[block_id]["Collidable"]
+
+    def _move_rect_x(self, rect, dx):
+        if dx == 0:
+            return rect, 0
+
+        moved = rect.move(dx, 0)
+        left_tile = moved.left // 64
+        right_tile = (moved.right - 1) // 64
+        top_tile = moved.top // 64
+        bottom_tile = (moved.bottom - 1) // 64
+
+        x_range = range(left_tile, right_tile + 1)
+        if dx < 0:
+            x_range = range(right_tile, left_tile - 1, -1)
+
+        for tile_x in x_range:
+            for tile_y in range(top_tile, bottom_tile + 1):
+                if not self._is_collidable_tile(tile_x, tile_y):
+                    continue
+                tile_rect = pygame.Rect(tile_x * 64, tile_y * 64, 64, 64)
+                if moved.colliderect(tile_rect):
+                    if dx > 0:
+                        moved.right = min(moved.right, tile_rect.left)
+                    else:
+                        moved.left = max(moved.left, tile_rect.right)
+
+        return moved, moved.x - rect.x
+
+    def _move_rect_y(self, rect, dy):
+        if dy == 0:
+            return rect, 0
+
+        moved = rect.move(0, dy)
+        left_tile = moved.left // 64
+        right_tile = (moved.right - 1) // 64
+        top_tile = moved.top // 64
+        bottom_tile = (moved.bottom - 1) // 64
+
+        y_range = range(top_tile, bottom_tile + 1)
+        if dy < 0:
+            y_range = range(bottom_tile, top_tile - 1, -1)
+
+        for tile_y in y_range:
+            for tile_x in range(left_tile, right_tile + 1):
+                if not self._is_collidable_tile(tile_x, tile_y):
+                    continue
+                tile_rect = pygame.Rect(tile_x * 64, tile_y * 64, 64, 64)
+                if moved.colliderect(tile_rect):
+                    if dy > 0:
+                        moved.bottom = min(moved.bottom, tile_rect.top)
+                    else:
+                        moved.top = max(moved.top, tile_rect.bottom)
+
+        return moved, moved.y - rect.y
+
+    def _is_on_ground(self, rect):
+        check_rect = rect.move(0, 1)
+        left_tile = check_rect.left // 64
+        right_tile = (check_rect.right - 1) // 64
+        top_tile = check_rect.top // 64
+        bottom_tile = (check_rect.bottom - 1) // 64
+
+        for tile_y in range(top_tile, bottom_tile + 1):
+            for tile_x in range(left_tile, right_tile + 1):
+                if not self._is_collidable_tile(tile_x, tile_y):
+                    continue
+                tile_rect = pygame.Rect(tile_x * 64, tile_y * 64, 64, 64)
+                if check_rect.colliderect(tile_rect):
+                    return True
+        return False
+
+    def pig_default(self, active=True):
+        if active:
+            rect = self._get_rect()
+            on_ground = self._is_on_ground(rect)
+
+            if self.idle_timer > 0:
+                self.idle_timer -= 1
+                self.vx = 0
+            else:
+                self.vx = self.direction * self.speed
+                self.walk_timer -= 1
+
+                # Randomly turn around while walking, even with free path.
+                if random.randint(1, 220) == 1:
+                    self.direction *= -1
+                    self.vx = self.direction * self.speed
+
+                if self.walk_timer <= 0:
+                    if random.randint(1, 100) <= 45:
+                        self.idle_timer = random.randint(100, 500)
+                        self.walk_timer = random.randint(100, 500)
+                        self.vx = 0
+                    else:
+                        if random.randint(1, 100) <= 40:
+                            self.direction *= -1
+                        self.walk_timer = random.randint(90, 220)
+                        self.vx = self.direction * self.speed
+
+            if self.jump_cooldown > 0:
+                self.jump_cooldown -= 1
+
+            if on_ground and self.jump_cooldown <= 0 and random.randint(1, 180) == 1:
+                self.vy = -self.jump_strength
+                self.jump_cooldown = random.randint(90, 220)
+
+            rect, moved_x = self._move_rect_x(rect, int(self.vx))
+            if self.vx != 0 and moved_x == 0:
+                self.walk_timer = random.randint(45, 130)
+                # On wall collision, jump forward instead of turning around.
+                if on_ground and self.jump_cooldown <= 0:
+                    self.vy = -self.jump_strength
+                    self.jump_cooldown = random.randint(90, 220)
+                else:
+                    self.vx = 0
+
+            self.vy = min(self.vy + self.gravity, self.max_fall_speed)
+            wanted_move_y = int(round(self.vy))
+            rect, moved_y = self._move_rect_y(rect, wanted_move_y)
+            if moved_y != wanted_move_y:
+                self.vy = 0
+            elif self._is_on_ground(rect) and self.vy > 0:
+                self.vy = 0
+
+            self.x = rect.x - self.hitbox["left"]
+            self.y = rect.y - self.hitbox["top"]
+
+        if self.flash_timer > 0:
+            self.flash_timer -= 1
+
+        draw_coords = world_coords_to_screen_coords(self.x, self.y)
+        if -self.width < draw_coords[0] < main.surface.get_width() and -self.height < draw_coords[1] < main.surface.get_height():
+            sprite = self._get_sprite()
+            if self.flash_timer > 0:
+                sprite = tint_image(sprite, (255, 0, 0, 140))
+            main.surface.blit(sprite, draw_coords)
+
+
+def pig_in_loaded_chunks(pig):
+    pig_chunk_x = math.floor(pig.x / 4096)
+    pig_chunk_y = math.floor(pig.y / 4096)
+    return -1 <= pig_chunk_x <= 1 and -1 <= pig_chunk_y <= 1
+
+
+def remove_unloaded_pigs():
+    main.pig_entities = [pig for pig in main.pig_entities if pig_in_loaded_chunks(pig)]
+
+
+def is_cursor_in_interact_range(mouse_pos):
+    if main.show_inv or main.show_esc or main.paused:
+        return False
+    player_center = (main.surface.get_width() / 2, main.surface.get_height() / 2)
+    return point_distance(player_center, mouse_pos) < main.reach
+
+
+def find_clicked_pig(mouse_world_pos):
+    clicked = []
+    for pig in main.pig_entities:
+        if pig._get_rect().collidepoint(mouse_world_pos):
+            pig_center = pig._get_center()
+            clicked.append((point_distance(mouse_world_pos, pig_center), pig))
+
+    if len(clicked) == 0:
+        return None
+
+    clicked.sort(key=lambda entry: entry[0])
+    return clicked[0][1]
+
+
+def find_chunk_spawn_position(chunk_index):
+    chunk_blocks = main.loaded_chunks[chunk_index][0]
+    spawn_candidates = []
+    for x in range(64):
+        for y in range(1, 63):
+            if main.block_data[chunk_blocks[x][y]]["Collidable"]:
+                continue
+            if main.block_data[chunk_blocks[x][y + 1]]["Collidable"]:
+                spawn_candidates.append((x, y))
+                break
+    if len(spawn_candidates) == 0:
+        return None
+    return random.choice(spawn_candidates)
+
+
+def try_spawn_pig_in_chunk(chunk_index, force=False):
+    if len(main.pig_entities) >= 8:
+        return False
+    if chunk_index == 4:
+        return False
+    if not force and random.randint(1, 100) > 80:
+        return False
+
+    spawn_pos = find_chunk_spawn_position(chunk_index)
+    if spawn_pos is None:
+        return False
+
+    main_chunk_coords = main.loaded_chunks[4][1]
+    chunk_coords = main.loaded_chunks[chunk_index][1]
+    rel_chunk_x = chunk_coords[0] - main_chunk_coords[0]
+    rel_chunk_y = chunk_coords[1] - main_chunk_coords[1]
+    pig_world_x = rel_chunk_x * 4096 + spawn_pos[0] * 64
+    pig_world_y = rel_chunk_y * 4096 + spawn_pos[1] * 64
+    main.pig_entities.append(Pig(pig_world_x, pig_world_y))
+    return True
+
 
 def scene_game_create():
+    main.pig_entities = []
     main.loaded_chunks = [
                             [create_chunk(), [-1, -1]],
                             [create_chunk(), [0, -1]],
@@ -269,6 +548,8 @@ def scene_game_create():
         for tree in main.tree_queue[chunk]:
             generate_tree(tree[0], tree[1], chunk)
 
+    for chunk in [1, 3, 5, 7]:
+        try_spawn_pig_in_chunk(chunk)
 
     for chunk in range(9):
         render_blocks(0, chunk)
@@ -297,6 +578,9 @@ def scene_game_load(path):
     for a in range(9):
         main.block_surface[a].fill((200, 250, 255))
         render_blocks(0, a)
+    main.pig_entities = []
+    for chunk in [1, 3, 5, 7]:
+        try_spawn_pig_in_chunk(chunk)
 
     if main.gamemode == 0:
         main.break_speed = 1
@@ -317,8 +601,27 @@ def scene_game(events):
 
     #block interacting
     mouse = pygame.mouse.get_pos()
+    mouse_world = (mouse[0] - main.OX, mouse[1] - main.OY)
     mouse_buttons = pygame.mouse.get_pressed()
     mouse_chunk = mouse_get_chunk()
+
+    for event in events:
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if not is_cursor_in_interact_range(mouse):
+                continue
+            clicked_pig = find_clicked_pig(mouse_world)
+            if clicked_pig is None:
+                continue
+
+            pig_died = clicked_pig.try_hit()
+            if pig_died:
+                if clicked_pig in main.pig_entities:
+                    main.pig_entities.remove(clicked_pig)
+                dropped_item = Item()
+                dropped_item.item_id = 35
+                dropped_item.amount = 1
+                dropped_item.x, dropped_item.y = clicked_pig._get_center()
+                main.item_entities.append(dropped_item)
 
     if main.block_in_reach and not main.paused:
         x = int(((mouse[0] - main.OX) % 4096) // 64)
@@ -390,6 +693,8 @@ def scene_game(events):
         main.OX = int(-4095 + main.surface.get_width() / 2)
         for item in main.item_entities:
             item.x += 4095
+        for pig in main.pig_entities:
+            pig.x += 4095
 
         #add chunks to render queue
         if len(main.chunk_render_queue) > 0:
@@ -427,6 +732,7 @@ def scene_game(events):
                 generate_chunk_type(i, 0)
                 for tree in main.tree_queue[i]:
                     generate_tree(tree[0], tree[1], i)
+            try_spawn_pig_in_chunk(i)
             render_chunk_clear(i)
             chunk_add_render_queue(i)
 
@@ -434,6 +740,8 @@ def scene_game(events):
         main.OX = int(main.surface.get_width() / 2)
         for item in main.item_entities:
             item.x -= 4095
+        for pig in main.pig_entities:
+            pig.x -= 4095
 
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
@@ -466,6 +774,7 @@ def scene_game(events):
                 generate_chunk_type(i, 0)
                 for tree in main.tree_queue[i]:
                     generate_tree(tree[0], tree[1], i)
+            try_spawn_pig_in_chunk(i)
             render_chunk_clear(i)
             chunk_add_render_queue(i)
 
@@ -473,6 +782,8 @@ def scene_game(events):
         main.OY = int(-4095 + main.surface.get_height() / 2)
         for item in main.item_entities:
             item.y += 4095
+        for pig in main.pig_entities:
+            pig.y += 4095
 
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
@@ -505,6 +816,7 @@ def scene_game(events):
             else:
                 main.loaded_chunks[i][1][1] = main.loaded_chunks[i + 3][1][1] - 1
                 generate_chunk_type(i, 0)
+            try_spawn_pig_in_chunk(i)
             render_chunk_clear(i)
             chunk_add_render_queue(i)
 
@@ -512,6 +824,8 @@ def scene_game(events):
         main.OY = int(main.surface.get_height() / 2)
         for item in main.item_entities:
             item.y -= 4095
+        for pig in main.pig_entities:
+            pig.y -= 4095
 
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
@@ -544,8 +858,13 @@ def scene_game(events):
             else:
                 main.loaded_chunks[i][1][1] = main.loaded_chunks[i - 3][1][1] + 1
                 generate_chunk_type(i, 0)
+            try_spawn_pig_in_chunk(i)
             render_chunk_clear(i)
             chunk_add_render_queue(i)
+
+    remove_unloaded_pigs()
+    for pig in main.pig_entities:
+        pig.pig_default(active=not main.paused)
 
     player.player_default()
     for item in main.item_entities:

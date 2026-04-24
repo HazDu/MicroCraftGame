@@ -106,6 +106,7 @@ sky_colors = [(200, 250, 255), (18, 30, 50), (150, 65, 100)]
 daytime_values = [18000, 18000, 2048] #Daytime length, Nighttime length, Transition length
 daylight_time = 0
 item_entities = []
+pig_entities = []
 inventory = [[0,0] for _ in range(40)]
 inv_mouse = [0, 0]
 chunk_buffer = []

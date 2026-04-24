@@ -372,12 +372,26 @@ def ui(events, surf, scale):
         pygame.draw.rect(main.surface, (250, 1, 209), (main.OX, main.OY, 4096, 4096), 3)
         mx = int(((mouse[0] - main.OX) % 4096) // 64)
         my = int(((mouse[1] - main.OY) % 4096) // 64)
+        chunk_pigs = []
+        for pig in main.pig_entities:
+            pig_chunk_x = math.floor(pig.x / 4096)
+            pig_chunk_y = math.floor(pig.y / 4096)
+            if pig_chunk_x == 0 and pig_chunk_y == 0:
+                pig_tile_x = int((pig.x % 4096) // 64)
+                pig_tile_y = int((pig.y % 4096) // 64)
+                chunk_pigs.append(
+                    f"({int(pig.x)}, {int(pig.y)}) tile({pig_tile_x}, {pig_tile_y})"
+                )
+        pig_coords_debug = ", ".join(chunk_pigs) if chunk_pigs else "none"
         debug_txt = (f"FPS: {main.clock.get_fps():.2f}\n"
                      f"OriginX: {main.OX}, OriginX: {main.OY}\n"
                      f"MouseX: {mouse[0]}\nMoseY: {mouse[1]}\n"
                      f"MouseChunk: {mouse_get_chunk()}\n"
                      f"BlockHover ID: {main.loaded_chunks[mouse_get_chunk()][0][mx][my]},  X: {mx},  Y: {my}\n"
                      f"MainChunk: {main.loaded_chunks[4][1]}\n"
+                     f"Pig Entities Total: {len(main.pig_entities)}\n"
+                     f"Pig Entities In MainChunk: {len(chunk_pigs)}\n"
+                     f"Pig Coords In MainChunk: {pig_coords_debug}\n"
                      f"Rendering Chunks: {len(main.chunk_render_queue) > 0} "
                      f"({', '.join(str(chunk) for chunk, *_ in main.chunk_render_queue)})\n"
                      f"{f"Rendering Chunk: {main.chunk_render_queue[0][0]} - {((4096 - len(main.chunk_render_queue[0][1])) * 100) / 4096:.0f}%\n" if main.chunk_render_queue else ""}"
