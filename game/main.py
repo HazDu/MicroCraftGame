@@ -33,6 +33,8 @@ img_slot = pygame.transform.scale(pygame.image.load(resource_path("game/assets/u
 img_double_arrow = pygame.transform.scale(pygame.image.load(resource_path("game/assets/ui/double_arrow.png")), (64, 64)).convert_alpha()
 img_button = pygame.image.load(resource_path("game/assets/ui/button.png")).convert_alpha()
 img_fur_flame = pygame.transform.scale(pygame.image.load(resource_path("game/assets/ui/furnace_flame.png")), (64, 64)).convert_alpha()
+img_cow = pygame.image.load(resource_path("game/assets/entities/cow.png")).convert_alpha()
+img_sheep = pygame.image.load(resource_path("game/assets/entities/sheep.png")).convert_alpha()
 
 #custom cursors
 cur_square = []
@@ -107,6 +109,8 @@ daytime_values = [18000, 18000, 2048] #Daytime length, Nighttime length, Transit
 daylight_time = 0
 item_entities = []
 pig_entities = []
+cow_entities = []
+sheep_entities = []
 inventory = [[0,0] for _ in range(40)]
 inventory_durability = [0 for _ in range(40)]
 inv_mouse = [0, 0]

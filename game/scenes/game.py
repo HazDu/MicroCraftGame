@@ -518,6 +518,32 @@ class Pig:
             main.surface.blit(sprite, draw_coords)
 
 
+class Cow(Pig):
+    def _refresh_sprite_cache(self):
+        source_texture = main.img_cow
+        if self._sprite_source is source_texture and self._sprite_right is not None:
+            return
+        self._sprite_source = source_texture
+        self._sprite_right = pygame.transform.scale(source_texture, (self.width, self.height))
+        self._sprite_left = pygame.transform.flip(self._sprite_right, True, False)
+
+    def cow_default(self, active=True):
+        self.pig_default(active=active)
+
+
+class Sheep(Pig):
+    def _refresh_sprite_cache(self):
+        source_texture = main.img_sheep
+        if self._sprite_source is source_texture and self._sprite_right is not None:
+            return
+        self._sprite_source = source_texture
+        self._sprite_right = pygame.transform.scale(source_texture, (self.width, self.height))
+        self._sprite_left = pygame.transform.flip(self._sprite_right, True, False)
+
+    def sheep_default(self, active=True):
+        self.pig_default(active=active)
+
+
 def pig_in_loaded_chunks(pig):
     pig_chunk_x = math.floor(pig.x / 4096)
     pig_chunk_y = math.floor(pig.y / 4096)
@@ -526,6 +552,26 @@ def pig_in_loaded_chunks(pig):
 
 def remove_unloaded_pigs():
     main.pig_entities = [pig for pig in main.pig_entities if pig_in_loaded_chunks(pig)]
+
+
+def cow_in_loaded_chunks(cow):
+    cow_chunk_x = math.floor(cow.x / 4096)
+    cow_chunk_y = math.floor(cow.y / 4096)
+    return -1 <= cow_chunk_x <= 1 and -1 <= cow_chunk_y <= 1
+
+
+def remove_unloaded_cows():
+    main.cow_entities = [cow for cow in main.cow_entities if cow_in_loaded_chunks(cow)]
+
+
+def sheep_in_loaded_chunks(sheep):
+    sheep_chunk_x = math.floor(sheep.x / 4096)
+    sheep_chunk_y = math.floor(sheep.y / 4096)
+    return -1 <= sheep_chunk_x <= 1 and -1 <= sheep_chunk_y <= 1
+
+
+def remove_unloaded_sheep():
+    main.sheep_entities = [sheep for sheep in main.sheep_entities if sheep_in_loaded_chunks(sheep)]
 
 
 def is_cursor_in_interact_range(mouse_pos):
@@ -541,6 +587,34 @@ def find_clicked_pig(mouse_world_pos):
         if pig._get_rect().collidepoint(mouse_world_pos):
             pig_center = pig._get_center()
             clicked.append((point_distance(mouse_world_pos, pig_center), pig))
+
+    if len(clicked) == 0:
+        return None
+
+    clicked.sort(key=lambda entry: entry[0])
+    return clicked[0][1]
+
+
+def find_clicked_cow(mouse_world_pos):
+    clicked = []
+    for cow in main.cow_entities:
+        if cow._get_rect().collidepoint(mouse_world_pos):
+            cow_center = cow._get_center()
+            clicked.append((point_distance(mouse_world_pos, cow_center), cow))
+
+    if len(clicked) == 0:
+        return None
+
+    clicked.sort(key=lambda entry: entry[0])
+    return clicked[0][1]
+
+
+def find_clicked_sheep(mouse_world_pos):
+    clicked = []
+    for sheep in main.sheep_entities:
+        if sheep._get_rect().collidepoint(mouse_world_pos):
+            sheep_center = sheep._get_center()
+            clicked.append((point_distance(mouse_world_pos, sheep_center), sheep))
 
     if len(clicked) == 0:
         return None
@@ -586,8 +660,54 @@ def try_spawn_pig_in_chunk(chunk_index, force=False):
     return True
 
 
+def try_spawn_cow_in_chunk(chunk_index, force=False):
+    if len(main.cow_entities) >= 8:
+        return False
+    if chunk_index == 4:
+        return False
+    if not force and random.randint(1, 100) > 80:
+        return False
+
+    spawn_pos = find_chunk_spawn_position(chunk_index)
+    if spawn_pos is None:
+        return False
+
+    main_chunk_coords = main.loaded_chunks[4][1]
+    chunk_coords = main.loaded_chunks[chunk_index][1]
+    rel_chunk_x = chunk_coords[0] - main_chunk_coords[0]
+    rel_chunk_y = chunk_coords[1] - main_chunk_coords[1]
+    cow_world_x = rel_chunk_x * 4096 + spawn_pos[0] * 64
+    cow_world_y = rel_chunk_y * 4096 + spawn_pos[1] * 64
+    main.cow_entities.append(Cow(cow_world_x, cow_world_y))
+    return True
+
+
+def try_spawn_sheep_in_chunk(chunk_index, force=False):
+    if len(main.sheep_entities) >= 8:
+        return False
+    if chunk_index == 4:
+        return False
+    if not force and random.randint(1, 100) > 80:
+        return False
+
+    spawn_pos = find_chunk_spawn_position(chunk_index)
+    if spawn_pos is None:
+        return False
+
+    main_chunk_coords = main.loaded_chunks[4][1]
+    chunk_coords = main.loaded_chunks[chunk_index][1]
+    rel_chunk_x = chunk_coords[0] - main_chunk_coords[0]
+    rel_chunk_y = chunk_coords[1] - main_chunk_coords[1]
+    sheep_world_x = rel_chunk_x * 4096 + spawn_pos[0] * 64
+    sheep_world_y = rel_chunk_y * 4096 + spawn_pos[1] * 64
+    main.sheep_entities.append(Sheep(sheep_world_x, sheep_world_y))
+    return True
+
+
 def scene_game_create():
     main.pig_entities = []
+    main.cow_entities = []
+    main.sheep_entities = []
     main.loaded_chunks = [
                             [create_chunk(), [-1, -1]],
                             [create_chunk(), [0, -1]],
@@ -609,6 +729,8 @@ def scene_game_create():
 
     for chunk in [1, 3, 5, 7]:
         try_spawn_pig_in_chunk(chunk)
+        try_spawn_cow_in_chunk(chunk)
+        try_spawn_sheep_in_chunk(chunk)
 
     for chunk in range(9):
         render_blocks(0, chunk)
@@ -641,8 +763,12 @@ def scene_game_load(path):
         main.block_surface[a].fill((200, 250, 255))
         render_blocks(0, a)
     main.pig_entities = []
+    main.cow_entities = []
+    main.sheep_entities = []
     for chunk in [1, 3, 5, 7]:
         try_spawn_pig_in_chunk(chunk)
+        try_spawn_cow_in_chunk(chunk)
+        try_spawn_sheep_in_chunk(chunk)
 
     if main.gamemode == 0:
         main.break_speed = 1
@@ -672,17 +798,40 @@ def scene_game(events):
             if not is_cursor_in_interact_range(mouse):
                 continue
             clicked_pig = find_clicked_pig(mouse_world)
-            if clicked_pig is None:
-                continue
-
-            pig_died = clicked_pig.try_hit()
-            if pig_died:
-                if clicked_pig in main.pig_entities:
+            if clicked_pig is not None:
+                pig_died = clicked_pig.try_hit()
+                if pig_died and clicked_pig in main.pig_entities:
                     main.pig_entities.remove(clicked_pig)
                 dropped_item = Item()
                 dropped_item.item_id = 35
                 dropped_item.amount = 1
                 dropped_item.x, dropped_item.y = clicked_pig._get_center()
+                main.item_entities.append(dropped_item)
+                continue
+
+            clicked_cow = find_clicked_cow(mouse_world)
+            if clicked_cow is not None:
+                cow_died = clicked_cow.try_hit()
+                if cow_died and clicked_cow in main.cow_entities:
+                    main.cow_entities.remove(clicked_cow)
+                    dropped_item = Item()
+                    dropped_item.item_id = 35
+                    dropped_item.amount = 1
+                    dropped_item.x, dropped_item.y = clicked_cow._get_center()
+                    main.item_entities.append(dropped_item)
+                continue
+
+            clicked_sheep = find_clicked_sheep(mouse_world)
+            if clicked_sheep is None:
+                continue
+
+            sheep_died = clicked_sheep.try_hit()
+            if sheep_died and clicked_sheep in main.sheep_entities:
+                main.sheep_entities.remove(clicked_sheep)
+                dropped_item = Item()
+                dropped_item.item_id = 35
+                dropped_item.amount = 1
+                dropped_item.x, dropped_item.y = clicked_sheep._get_center()
                 main.item_entities.append(dropped_item)
 
     if main.block_in_reach and not main.paused:
@@ -762,6 +911,10 @@ def scene_game(events):
             item.x += 4095
         for pig in main.pig_entities:
             pig.x += 4095
+        for cow in main.cow_entities:
+            cow.x += 4095
+        for sheep in main.sheep_entities:
+            sheep.x += 4095
 
         #add chunks to render queue
         if len(main.chunk_render_queue) > 0:
@@ -800,6 +953,8 @@ def scene_game(events):
                 for tree in main.tree_queue[i]:
                     generate_tree(tree[0], tree[1], i)
             try_spawn_pig_in_chunk(i)
+            try_spawn_cow_in_chunk(i)
+            try_spawn_sheep_in_chunk(i)
             render_chunk_clear(i)
             chunk_add_render_queue(i)
 
@@ -809,6 +964,10 @@ def scene_game(events):
             item.x -= 4095
         for pig in main.pig_entities:
             pig.x -= 4095
+        for cow in main.cow_entities:
+            cow.x -= 4095
+        for sheep in main.sheep_entities:
+            sheep.x -= 4095
 
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
@@ -842,6 +1001,8 @@ def scene_game(events):
                 for tree in main.tree_queue[i]:
                     generate_tree(tree[0], tree[1], i)
             try_spawn_pig_in_chunk(i)
+            try_spawn_cow_in_chunk(i)
+            try_spawn_sheep_in_chunk(i)
             render_chunk_clear(i)
             chunk_add_render_queue(i)
 
@@ -851,6 +1012,10 @@ def scene_game(events):
             item.y += 4095
         for pig in main.pig_entities:
             pig.y += 4095
+        for cow in main.cow_entities:
+            cow.y += 4095
+        for sheep in main.sheep_entities:
+            sheep.y += 4095
 
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
@@ -884,6 +1049,8 @@ def scene_game(events):
                 main.loaded_chunks[i][1][1] = main.loaded_chunks[i + 3][1][1] - 1
                 generate_chunk_type(i, 0)
             try_spawn_pig_in_chunk(i)
+            try_spawn_cow_in_chunk(i)
+            try_spawn_sheep_in_chunk(i)
             render_chunk_clear(i)
             chunk_add_render_queue(i)
 
@@ -893,6 +1060,10 @@ def scene_game(events):
             item.y -= 4095
         for pig in main.pig_entities:
             pig.y -= 4095
+        for cow in main.cow_entities:
+            cow.y -= 4095
+        for sheep in main.sheep_entities:
+            sheep.y -= 4095
 
         if len(main.chunk_render_queue) > 0:
             for index in reversed(range(len(main.chunk_render_queue))):
@@ -926,12 +1097,20 @@ def scene_game(events):
                 main.loaded_chunks[i][1][1] = main.loaded_chunks[i - 3][1][1] + 1
                 generate_chunk_type(i, 0)
             try_spawn_pig_in_chunk(i)
+            try_spawn_cow_in_chunk(i)
+            try_spawn_sheep_in_chunk(i)
             render_chunk_clear(i)
             chunk_add_render_queue(i)
 
     remove_unloaded_pigs()
+    remove_unloaded_cows()
+    remove_unloaded_sheep()
     for pig in main.pig_entities:
         pig.pig_default(active=not main.paused)
+    for cow in main.cow_entities:
+        cow.cow_default(active=not main.paused)
+    for sheep in main.sheep_entities:
+        sheep.sheep_default(active=not main.paused)
 
     player.player_default()
     for item in main.item_entities:
