@@ -267,6 +267,7 @@ def save_world():
     read_data["PlayerY"] = main.OY
     read_data["CurrentChunk"] = main.loaded_chunks[4][1]
     read_data["Inventory"] = main.inventory
+    read_data["InventoryDurability"] = main.inventory_durability
     read_data["Gamemode"] = main.gamemode
     read_data["Saplings"] = main.growing_saplings
     read_data["DayTime"] = main.daylight_time

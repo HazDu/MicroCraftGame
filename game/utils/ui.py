@@ -8,6 +8,34 @@ from pygame import SRCALPHA
 from game.utils.util_functs import *
 import __main__ as main
 
+def is_tool_item(item_id):
+    return item_id in main.item_data and "ToolType" in main.item_data[item_id]
+
+
+def slot_stack_limit(item_id):
+    if item_id == 0:
+        return 256
+    return main.item_data[item_id].get("StackSize", 256)
+
+
+def draw_durability_bar(surface, x, y, slot_item_id, durability_used):
+    if slot_item_id == 0 or slot_item_id not in main.item_data:
+        return
+    item_data = main.item_data[slot_item_id]
+    max_dur = item_data.get("MaxDurability", 0)
+    if max_dur <= 0:
+        return
+
+    durability_left = max(max_dur - durability_used, 0)
+    ratio = durability_left / max_dur
+    bar_w = 48
+    bar_h = 6
+    bg_rect = pygame.Rect(x, y + 42, bar_w, bar_h)
+    fg_rect = pygame.Rect(x + 1, y + 43, max(int((bar_w - 2) * ratio), 1 if durability_left > 0 else 0), bar_h - 2)
+    pygame.draw.rect(surface, (25, 25, 25), bg_rect)
+    color = (220, 50, 40) if ratio < 0.33 else (230, 170, 40) if ratio < 0.66 else (70, 210, 80)
+    pygame.draw.rect(surface, color, fg_rect)
+
 def ui(events, surf, scale):
     surface = pygame.Surface((1920, 1080), SRCALPHA)
 
@@ -74,6 +102,7 @@ def ui(events, surf, scale):
             text = main.fnt_cons20.render(f"{main.inventory[i][1]}", True, (255, 255, 255))
             surf.blit(main.item_data[main.inventory[i][0]]["Texture"], (712 + 64 * i, 1024))
             surf.blit(text, (714 + 64 * i, 1055))
+            draw_durability_bar(surf, 712 + 64 * i, 1024, main.inventory[i][0], main.inventory_durability[i])
 
     for event in events:
         if event.type == pygame.MOUSEWHEEL:
@@ -113,19 +142,23 @@ def ui(events, surf, scale):
                             if main.workbench_storage[slot][0] == main.inv_mouse[0]:
                                 main.workbench_storage[slot][1] += main.inv_mouse[1]
                                 main.inv_mouse = [0, 0]
+                                main.inv_mouse_durability = 0
                             else:
                                 temp = main.inv_mouse
                                 main.inv_mouse = main.workbench_storage[slot]
                                 main.workbench_storage[slot] = temp
+                                main.inv_mouse_durability = 0
                         elif btn == "right":
                             if main.workbench_storage[slot][0] == 0 or main.workbench_storage[slot][0] == main.inv_mouse[0]:
                                 main.workbench_storage[slot] = [main.inv_mouse[0], main.workbench_storage[slot][1]+1]
                                 main.inv_mouse[1] -= 1
                                 if main.inv_mouse[1] <= 0:
                                     main.inv_mouse = [0, 0]
+                                    main.inv_mouse_durability = 0
                             elif main.inv_mouse == [0, 0] and main.workbench_storage[slot] != [0, 0]:
                                 main.inv_mouse = [main.workbench_storage[slot][0], math.ceil(main.workbench_storage[slot][1] /2)]
                                 main.workbench_storage[slot][1] = math.floor(main.workbench_storage[slot][1] / 2)
+                                main.inv_mouse_durability = 0
 
                         if main.workbench_storage[slot][0] != 0:
                             text = main.fnt_cons20.render(f"{main.workbench_storage[slot][1]}", True, (255, 255, 255))
@@ -140,12 +173,26 @@ def ui(events, surf, scale):
                     if rec[0] == recipe:
                         main.workbench_storage[9] = [rec[1],rec[2]]
                 btn = button_exact(cont_x+444, cont_y+120, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "L", "T")
-                if btn == "left" and (main.inv_mouse[0] == 0 or main.inv_mouse[0] == main.workbench_storage[9][0]) and main.workbench_storage[9][0] != 0:
-                    main.inv_mouse = [main.workbench_storage[9][0], main.inv_mouse[1]+main.workbench_storage[9][1]]
-                    for i in range(9):
-                        main.workbench_storage[i][1] -= 1
-                        if main.workbench_storage[i][1] <= 0:
-                            main.workbench_storage[i] = [0, 0]
+                if btn == "left" and main.workbench_storage[9][0] != 0:
+                    result_item = main.workbench_storage[9][0]
+                    result_amount = main.workbench_storage[9][1]
+                    if main.inv_mouse[0] == 0:
+                        main.inv_mouse = [result_item, result_amount]
+                        main.inv_mouse_durability = 0
+                    elif main.inv_mouse[0] == result_item:
+                        max_stack = slot_stack_limit(result_item)
+                        if main.inv_mouse[1] + result_amount <= max_stack:
+                            main.inv_mouse = [result_item, main.inv_mouse[1] + result_amount]
+                        else:
+                            result_item = 0
+                    else:
+                        result_item = 0
+
+                    if result_item != 0:
+                        for i in range(9):
+                            main.workbench_storage[i][1] -= 1
+                            if main.workbench_storage[i][1] <= 0:
+                                main.workbench_storage[i] = [0, 0]
                 if main.workbench_storage[9][0] != 0:
                     text = main.fnt_cons20.render(f"{main.workbench_storage[9][1]}", True, (255, 255, 255))
                     surf.blit(main.item_data[main.workbench_storage[9 ][0]]["Texture"], (cont_x + 452, cont_y + 128))
@@ -175,27 +222,34 @@ def ui(events, surf, scale):
                     if main.container_current[0][0] == main.inv_mouse[0]:
                         main.container_current[0][1] += main.inv_mouse[1]
                         main.inv_mouse = [0, 0]
+                        main.inv_mouse_durability = 0
                     elif main.container_current[0][0] == 0:
                         main.container_current[0] = main.inv_mouse
                         main.inv_mouse = [0, 0]
+                        main.inv_mouse_durability = 0
                     elif main.inv_mouse[0] == 0:
                         main.inv_mouse = main.container_current[0]
                         main.container_current[0] = [0, 0]
+                        main.inv_mouse_durability = 0
                 if button_exact(cont_x + 228, cont_y + 248, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "M", "M") == "left":
                     if main.container_current[1][0] == main.inv_mouse[0]:
                         main.container_current[1][1] += main.inv_mouse[1]
                         main.inv_mouse = [0, 0]
+                        main.inv_mouse_durability = 0
                     elif main.container_current[1][0] == 0 and main.inv_mouse[0] in [1005, 34, 22, 28, 17, 15, 10, 9]:
                         main.container_current[1] = main.inv_mouse
                         main.inv_mouse = [0, 0]
+                        main.inv_mouse_durability = 0
                     elif main.inv_mouse[0] == 0:
                         main.inv_mouse = main.container_current[1]
                         main.container_current[1] = [0, 0]
+                        main.inv_mouse_durability = 0
                 if button_exact(cont_x + 428, cont_y + 168, 64, 64, main.img_slot, (255, 255, 255, 50), 0, main.surface, events, "M", "M") == "left":
                     if main.inv_mouse[0] in [0, main.container_current[2][0]]:
                         main.inv_mouse[0] = main.container_current[2][0]
                         main.inv_mouse[1] += main.container_current[2][1]
                         main.container_current[2] = [0, 0]
+                        main.inv_mouse_durability = 0
 
                 if main.container_current[0][0] != 0:
                     surf.blit(main.item_data[main.container_current[0][0]]["Texture"], (cont_x + 204, cont_y + 74))
@@ -236,6 +290,7 @@ def ui(events, surf, scale):
                                 if main.container_current[slot][1] + main.inv_mouse[1] <= 256:
                                     main.container_current[slot][1] += main.inv_mouse[1]
                                     main.inv_mouse = [0, 0]
+                                    main.inv_mouse_durability = 0
                                 else:
                                     main.inv_mouse[1] -= 256 - main.container_current[slot][1]
                                     main.container_current[slot][1] = 256
@@ -243,10 +298,12 @@ def ui(events, surf, scale):
                                 temp = main.inv_mouse
                                 main.inv_mouse = main.container_current[slot]
                                 main.container_current[slot] = temp
+                                main.inv_mouse_durability = 0
                         elif btn == "right":
                             if main.inv_mouse == [0, 0] and main.container_current[slot] != [0, 0]:
                                 main.inv_mouse = [main.container_current[slot][0], math.ceil(main.container_current[slot][1] / 2)]
                                 main.container_current[slot][1] = math.floor(main.container_current[slot][1] / 2)
+                                main.inv_mouse_durability = 0
                             else:
                                 if main.container_current[slot] == [0, 0] or main.container_current[slot][0] == main.inv_mouse[0]:
                                     if main.container_current[slot][1] + 1 <= 256:
@@ -271,6 +328,9 @@ def ui(events, surf, scale):
                 temp = main.inv_mouse
                 main.inv_mouse = main.inventory[i]
                 main.inventory[i] = temp
+                temp_d = main.inv_mouse_durability
+                main.inv_mouse_durability = main.inventory_durability[i]
+                main.inventory_durability[i] = temp_d
 
         slot = 8
         pygame.draw.rect(main.surface, (64, 64, 64), (inv_x, inv_y, 656, 336), 0, 12)
@@ -282,32 +342,46 @@ def ui(events, surf, scale):
                                    (255, 255, 255, 50), 0, main.surface, events, "L", "T")
                 if btn == "left":
                     if main.inv_mouse[0] == main.inventory[slot][0]:
-                        if main.inventory[slot][1] + main.inv_mouse[1] <= 256:
-                            main.inventory[slot][1] += main.inv_mouse[1]
-                            main.inv_mouse = [0, 0]
+                        if main.inventory[slot][1] + main.inv_mouse[1] <= slot_stack_limit(main.inventory[slot][0]):
+                            if not is_tool_item(main.inv_mouse[0]):
+                                main.inventory[slot][1] += main.inv_mouse[1]
+                                main.inv_mouse = [0, 0]
+                                main.inv_mouse_durability = 0
                         else:
-                            main.inv_mouse[1] -= 256 - main.inventory[slot][1]
-                            main.inventory[slot][1] = 256
+                            if not is_tool_item(main.inv_mouse[0]):
+                                main.inv_mouse[1] -= slot_stack_limit(main.inventory[slot][0]) - main.inventory[slot][1]
+                                main.inventory[slot][1] = slot_stack_limit(main.inventory[slot][0])
                     else:
                         temp = main.inv_mouse
                         main.inv_mouse = main.inventory[slot]
                         main.inventory[slot] = temp
+                        temp_d = main.inv_mouse_durability
+                        main.inv_mouse_durability = main.inventory_durability[slot]
+                        main.inventory_durability[slot] = temp_d
                 elif btn == "right":
                     if main.inv_mouse == [0, 0] and main.inventory[slot] != [0, 0]:
                         main.inv_mouse = [main.inventory[slot][0], math.ceil(main.inventory[slot][1] / 2)]
                         main.inventory[slot][1] = math.floor(main.inventory[slot][1] / 2)
+                        if main.inv_mouse[1] > 0:
+                            main.inv_mouse_durability = main.inventory_durability[slot]
+                        if main.inventory[slot][1] <= 0:
+                            main.inventory_durability[slot] = 0
                     else:
                         if main.inventory[slot] == [0, 0] or main.inventory[slot][0] == main.inv_mouse[0]:
-                            if main.inventory[slot][1] + 1 <= 256:
-                                main.inventory[slot][0] = main.inv_mouse[0]
-                                main.inventory[slot][1] += 1
-                                main.inv_mouse[1] -= 1
+                            if main.inventory[slot][1] + 1 <= slot_stack_limit(main.inv_mouse[0]):
+                                if not (is_tool_item(main.inv_mouse[0]) and main.inventory[slot][1] > 0):
+                                    main.inventory[slot][0] = main.inv_mouse[0]
+                                    main.inventory[slot][1] += 1
+                                    main.inv_mouse[1] -= 1
+                                    if main.inventory[slot][1] == 1:
+                                        main.inventory_durability[slot] = main.inv_mouse_durability
 
                 if main.inventory[slot][0] != 0:
                     text = main.fnt_cons20.render(f"{main.inventory[slot][1]}", True, (255, 255, 255))
                     surf.blit(main.item_data[main.inventory[slot][0]]["Texture"],
                               (inv_x + 80 * x + 24, inv_y + 80 * y + 24))
                     surf.blit(text, (inv_x + 80 * x + 26, inv_y + 80 * y + 55))
+                    draw_durability_bar(surf, inv_x + 80 * x + 24, inv_y + 80 * y + 24, main.inventory[slot][0], main.inventory_durability[slot])
                 slot += 1
 
         if main.gamemode == 1:
@@ -337,26 +411,31 @@ def ui(events, surf, scale):
 
                         if btn == "left":
                             if main.inv_mouse[0] == item_id:
-                                if main.inv_mouse[1] < 256:
+                                if main.inv_mouse[1] < slot_stack_limit(item_id):
                                     main.inv_mouse[1] += 1
                             else:
                                 main.inv_mouse = [item_id, 1]
+                                main.inv_mouse_durability = 0
                         elif btn == "right":
                             main.inv_mouse = [item_id, 256]
+                            main.inv_mouse_durability = 0
 
             if button(cr_inv_x +420, cr_inv_y +920, 64, 64, main.trashbin, (255, 255, 255, 100), 0, surf, events, "L", "T"):
                 main.inv_mouse = [0, 0]
+                main.inv_mouse_durability = 0
 
         elif main.gamemode == 0:
             pass
 
         if main.inv_mouse[1] <= 0:
             main.inv_mouse[0] = 0
+            main.inv_mouse_durability = 0
 
         if main.inv_mouse[0] != 0:
             text = main.fnt_cons20.render(f"{main.inv_mouse[1]}", True, (255, 255, 255))
             surf.blit(main.item_data[main.inv_mouse[0]]["Texture"], (mouse[0]-24, mouse[1]-24))
             surf.blit(text, (mouse[0]-22, mouse[1]+7))
+            draw_durability_bar(surf, mouse[0]-24, mouse[1]-24, main.inv_mouse[0], main.inv_mouse_durability)
 
     #ui elements added by mods
     if main.mods_active:

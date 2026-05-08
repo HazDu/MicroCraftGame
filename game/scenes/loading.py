@@ -20,7 +20,9 @@ def scene_loading(path, typee):
     else:
         main.break_speed = 99999
     main.inventory = [[0, 0] for _ in range(40)]
+    main.inventory_durability = [0 for _ in range(40)]
     main.inv_mouse = [0, 0]
+    main.inv_mouse_durability = 0
     main.workbench_storage = [[0, 0] for _ in range(10)]
     main.growing_saplings = []
     main.container_savedata = {"Chunks": []}

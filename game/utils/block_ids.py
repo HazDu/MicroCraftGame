@@ -481,4 +481,16 @@ def load_blocks():
         },
     }
 
+    pickaxe_blocks = {
+        1, 2, 3, 4, 5, 6, 7, 16, 18, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 36, 37, 38, 39, 40, 41
+    }
+    axe_blocks = {9, 10, 15, 17, 22, 34}
+
+    for block_id, data in block_data.items():
+        data["BreakingTool"] = None
+        if block_id in pickaxe_blocks:
+            data["BreakingTool"] = "pickaxe"
+        elif block_id in axe_blocks:
+            data["BreakingTool"] = "axe"
+
     return block_data

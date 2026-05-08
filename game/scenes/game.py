@@ -11,6 +11,62 @@ from game.utils.util_functs import *
 from game.utils.generator import *
 import __main__ as main
 
+TOOL_TIER_SPEED = {
+    1: 1.6,  # stone
+    2: 2.2,  # iron
+    3: 2.8,  # gold
+    4: 3.4,  # diamond
+}
+HAND_BREAK_MULTIPLIER = 0.35
+WRONG_TOOL_MULTIPLIER = 0.2
+
+
+def is_tool_item(item_id):
+    return item_id in main.item_data and "ToolType" in main.item_data[item_id]
+
+
+def get_slot_tool_data(slot_index):
+    item_id = main.inventory[slot_index][0]
+    if item_id == 0 or item_id not in main.item_data:
+        return None
+    item = main.item_data[item_id]
+    if "ToolType" not in item:
+        return None
+    return item
+
+
+def calc_break_speed_multiplier(block_id, slot_index):
+    block_tool = main.block_data[block_id].get("BreakingTool")
+    tool_item = get_slot_tool_data(slot_index)
+
+    if tool_item is None:
+        return HAND_BREAK_MULTIPLIER
+
+    if block_tool is None:
+        return HAND_BREAK_MULTIPLIER
+
+    if tool_item["ToolType"] != block_tool:
+        return WRONG_TOOL_MULTIPLIER
+
+    return TOOL_TIER_SPEED.get(tool_item.get("Tier", 1), 1.0)
+
+
+def damage_tool_in_slot(slot_index):
+    tool_item = get_slot_tool_data(slot_index)
+    if tool_item is None:
+        return
+
+    max_dur = tool_item.get("MaxDurability", 0)
+    if max_dur <= 0:
+        return
+
+    main.inventory_durability[slot_index] += 1
+    if main.inventory_durability[slot_index] >= max_dur:
+        main.inventory[slot_index] = [0, 0]
+        main.inventory_durability[slot_index] = 0
+        if main.hotbar_slot == slot_index:
+            main.block_in_hand = 0
+
 #classes
 class Player:
     def __init__(self):
@@ -234,6 +290,8 @@ class Item:
         elif point_distance((self.x, self.y), (player.x*-1, player.y*-1)) <= 10:
             item_stored = False
             for i in range(len(main.inventory)):
+                if is_tool_item(self.item_id):
+                    continue
                 if main.inventory[i][0] == self.item_id and main.inventory[i][1]+self.amount <= 256:
                     main.inventory[i][1] += self.amount
                     self.lifetime = 99999
@@ -244,6 +302,7 @@ class Item:
                     if main.inventory[i][0] == 0:
                         main.inventory[i][0] = self.item_id
                         main.inventory[i][1] += self.amount
+                        main.inventory_durability[i] = 0
                         self.lifetime = 99999
                         item_stored = True
                         break
@@ -563,6 +622,9 @@ def scene_game_load(path):
     main.OY = read["PlayerY"]
     main.gamemode = read["GameMode"]
     main.inventory = read["Inventory"]
+    main.inventory_durability = read.get("InventoryDurability", [0 for _ in range(40)])
+    if len(main.inventory_durability) < len(main.inventory):
+        main.inventory_durability += [0 for _ in range(len(main.inventory) - len(main.inventory_durability))]
     main.growing_saplings = read["Saplings"]
     main.daylight_time = read["DayTime"]
     main.container_savedata = read["ContainerData"]
@@ -629,8 +691,12 @@ def scene_game(events):
         main.selected_block = (x, y)
 
         if mouse_buttons[0] and main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Hardness"] > 0:
-            main.break_progress += 100 / (main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Hardness"])* main.break_speed
+            current_block_id = main.loaded_chunks[mouse_chunk][0][x][y]
+            break_mult = calc_break_speed_multiplier(current_block_id, main.hotbar_slot)
+            main.break_progress += 100 / main.block_data[current_block_id]["Hardness"] * main.break_speed * break_mult
             if main.break_progress >= 100 and main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Minable"]:
+                if main.gamemode == 0:
+                    damage_tool_in_slot(main.hotbar_slot)
                 if main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][0] != -1 and main.gamemode == 0:
                     if isinstance(main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][1], int):
                         amount = main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][1]
@@ -681,10 +747,11 @@ def scene_game(events):
             if keys[pygame.K_F3] and keys[pygame.K_a]:
                 re_render_loaded_chunks()
 
-    for i in range(8):
+    for i in range(len(main.inventory)):
         if main.inventory[i][1] <= 0:
             main.inventory[i][0] = 0
-            if main.hotbar_slot == i:
+            main.inventory_durability[i] = 0
+            if main.hotbar_slot == i and i < 8:
                 main.block_in_hand = 0
 
     #Player chunk teleport
