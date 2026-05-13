@@ -186,12 +186,14 @@ def render_blocks(changed_blocks, chunk):
         for y in range(64):
             for x in range(64):
                 coords = [(x * 64), (y * 64)]
-                sprite = main.block_data[main.loaded_chunks[chunk][0][x][y]]["Texture"]
+                block_id = main.loaded_chunks[chunk][0][x][y]
+                sprite = main.block_data.get(block_id, main.block_data[0])["Texture"]
                 main.block_surface[chunk].blit(sprite, (coords[0], coords[1]))
     else:
         for block in changed_blocks:
             coords = [(block[0] * 64), (block[1] * 64)]
-            sprite = main.block_data[main.loaded_chunks[chunk][0][block[0]][block[1]]]["Texture"]
+            block_id = main.loaded_chunks[chunk][0][block[0]][block[1]]
+            sprite = main.block_data.get(block_id, main.block_data[0])["Texture"]
             if image_is_transparent(sprite):
                 clear = pygame.Surface((64, 64), pygame.SRCALPHA)
                 clear.fill((0, 0, 0, 0))
@@ -269,6 +271,8 @@ def save_world():
     read_data["Inventory"] = main.inventory
     read_data["InventoryDurability"] = main.inventory_durability
     read_data["Gamemode"] = main.gamemode
+    read_data["WorldType"] = main.menu_create_worldtype
+    read_data["Seed"] = getattr(main, "world_seed", "")
     read_data["Saplings"] = main.growing_saplings
     read_data["DayTime"] = main.daylight_time
     read_data["ContainerData"] = main.container_savedata

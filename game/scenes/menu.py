@@ -2,6 +2,8 @@ import random
 import json
 import zipfile
 import io
+from difflib import Match
+
 import pygame
 import math
 import os
@@ -143,9 +145,20 @@ def scene_menu_create():
         main.menu_create_input_box[0] = 2
         main.menu_create_input_box[1] = ""
 
-    if button_exact(660, 400, 400, 50, main.img_button, (37, 124, 211, 100), f"Worldtype: {main.menu_create_worldtype} (in progress)", main.surface, main.EVENTS, "L", "T") == "left":
+    world_type_description = ""
+    match main.menu_create_worldtype:
+        case 0:
+            world_type_description = "Surface Flat"
+        case 1:
+            world_type_description = "Surface Hills"
+        case 2:
+            world_type_description = "Chaos"
+        case 3:
+            world_type_description = "Just Stone"
+
+    if button_exact(660, 400, 400, 50, main.img_button, (37, 124, 211, 100), f"Worldtype: {world_type_description}", main.surface, main.EVENTS, "L", "T") == "left":
         main.menu_create_worldtype += 1
-        if main.menu_create_worldtype >= 2:
+        if main.menu_create_worldtype >= 4:
             main.menu_create_worldtype = 0
 
     if button_exact(660, 500, 400, 50, main.img_button, (37, 124, 211, 100), "Create World", main.surface, main.EVENTS, "L", "T") == "left":
@@ -161,6 +174,8 @@ def scene_menu_create():
                     "Name": main.menu_create_worldname_input,
                     "SaveDate": datetime.datetime.now().strftime("%d.%m.%Y %H:%M"),
                     "GameMode": main.gamemode,
+                    "WorldType": main.menu_create_worldtype,
+                    "Seed": main.menu_create_seed_input,
                     "Inventory": main.inventory,
                     "Daytime": main.daylight_time,
                     "PlayerX": main.OX,
@@ -175,7 +190,8 @@ def scene_menu_create():
             main.current_scene = 6
             main.loading_timeout = 0
             main.loading_info = ["", "create"]
-            random.seed(main.menu_create_seed_input)
+            main.world_seed = main.menu_create_seed_input
+            random.seed(main.world_seed)
 
 def scene_menu_texturepacks(events):
     background_fill_texture(main.block_data[1]["Texture"], 2, main.surface)

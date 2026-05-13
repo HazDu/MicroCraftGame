@@ -1,4 +1,5 @@
 import pygame
+import __main__ as main
 from game.utils.util_functs import resource_path
 
 def load_blocks():
@@ -492,5 +493,7 @@ def load_blocks():
             data["BreakingTool"] = "pickaxe"
         elif block_id in axe_blocks:
             data["BreakingTool"] = "axe"
+
+    main.block_count = len(block_data)
 
     return block_data

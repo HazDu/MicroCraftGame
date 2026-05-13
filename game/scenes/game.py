@@ -21,6 +21,13 @@ HAND_BREAK_MULTIPLIER = 0.35
 WRONG_TOOL_MULTIPLIER = 0.2
 
 
+def is_block_collidable(block_id, default=True):
+    block_info = main.block_data.get(block_id)
+    if block_info is None:
+        return default
+    return block_info.get("Collidable", default)
+
+
 def is_tool_item(item_id):
     return item_id in main.item_data and "ToolType" in main.item_data[item_id]
 
@@ -36,7 +43,7 @@ def get_slot_tool_data(slot_index):
 
 
 def calc_break_speed_multiplier(block_id, slot_index):
-    block_tool = main.block_data[block_id].get("BreakingTool")
+    block_tool = main.block_data.get(block_id, main.block_data[0]).get("BreakingTool")
     tool_item = get_slot_tool_data(slot_index)
 
     if tool_item is None:
@@ -119,7 +126,7 @@ class Player:
 
     def _is_collidable_tile(self, tile_x, tile_y):
         block_id = self._get_block_id(tile_x, tile_y)
-        return main.block_data[block_id]["Collidable"]
+        return is_block_collidable(block_id)
 
     def _move_rect_x(self, rect, dx):
         if dx == 0:
@@ -379,7 +386,7 @@ class Pig:
 
     def _is_collidable_tile(self, tile_x, tile_y):
         block_id = self._get_block_id(tile_x, tile_y)
-        return main.block_data[block_id]["Collidable"]
+        return is_block_collidable(block_id)
 
     def _move_rect_x(self, rect, dx):
         if dx == 0:
@@ -628,9 +635,9 @@ def find_chunk_spawn_position(chunk_index):
     spawn_candidates = []
     for x in range(64):
         for y in range(1, 63):
-            if main.block_data[chunk_blocks[x][y]]["Collidable"]:
+            if is_block_collidable(chunk_blocks[x][y]):
                 continue
-            if main.block_data[chunk_blocks[x][y + 1]]["Collidable"]:
+            if is_block_collidable(chunk_blocks[x][y + 1]):
                 spawn_candidates.append((x, y))
                 break
     if len(spawn_candidates) == 0:
@@ -739,6 +746,9 @@ def scene_game_create():
 def scene_game_load(path):
     with open(path + "/infos.json", "r") as file:
         read = json.load(file)
+    main.menu_create_worldtype = read.get("WorldType", main.menu_create_worldtype)
+    main.world_seed = read.get("Seed", read.get("Name", main.world_name))
+    random.seed(main.world_seed)
     main_chunk = read["CurrentChunk"]
     main.OX = read["PlayerX"]
     main.OY = read["PlayerY"]
@@ -802,11 +812,11 @@ def scene_game(events):
                 pig_died = clicked_pig.try_hit()
                 if pig_died and clicked_pig in main.pig_entities:
                     main.pig_entities.remove(clicked_pig)
-                dropped_item = Item()
-                dropped_item.item_id = 35
-                dropped_item.amount = 1
-                dropped_item.x, dropped_item.y = clicked_pig._get_center()
-                main.item_entities.append(dropped_item)
+                    dropped_item = Item()
+                    dropped_item.item_id = 35
+                    dropped_item.amount = 1
+                    dropped_item.x, dropped_item.y = clicked_pig._get_center()
+                    main.item_entities.append(dropped_item)
                 continue
 
             clicked_cow = find_clicked_cow(mouse_world)
@@ -838,23 +848,24 @@ def scene_game(events):
         x = int(((mouse[0] - main.OX) % 4096) // 64)
         y = int(((mouse[1] - main.OY) % 4096) // 64)
         main.selected_block = (x, y)
+        current_block_id = main.loaded_chunks[mouse_chunk][0][x][y]
+        current_block_info = main.block_data.get(current_block_id, main.block_data[0])
 
-        if mouse_buttons[0] and main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Hardness"] > 0:
-            current_block_id = main.loaded_chunks[mouse_chunk][0][x][y]
+        if mouse_buttons[0] and current_block_info["Hardness"] > 0:
             break_mult = calc_break_speed_multiplier(current_block_id, main.hotbar_slot)
-            main.break_progress += 100 / main.block_data[current_block_id]["Hardness"] * main.break_speed * break_mult
-            if main.break_progress >= 100 and main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Minable"]:
+            main.break_progress += 100 / current_block_info["Hardness"] * main.break_speed * break_mult
+            if main.break_progress >= 100 and current_block_info["Minable"]:
                 if main.gamemode == 0:
                     damage_tool_in_slot(main.hotbar_slot)
-                if main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][0] != -1 and main.gamemode == 0:
-                    if isinstance(main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][1], int):
-                        amount = main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][1]
+                if current_block_info["Drop"][0] != -1 and main.gamemode == 0:
+                    if isinstance(current_block_info["Drop"][1], int):
+                        amount = current_block_info["Drop"][1]
                     else:
-                        amount = random.randint(main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][1][0], main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][1][1])
-                    if isinstance(main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][0], int):
-                        item_id = main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][0]
+                        amount = random.randint(current_block_info["Drop"][1][0], current_block_info["Drop"][1][1])
+                    if isinstance(current_block_info["Drop"][0], int):
+                        item_id = current_block_info["Drop"][0]
                     else:
-                        item_id = random.choice(main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Drop"][0])
+                        item_id = random.choice(current_block_info["Drop"][0])
 
                     if amount > 0:
                         new_item = Item()
@@ -879,9 +890,9 @@ def scene_game(events):
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 3:
-                    if main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Interactable"]:
-                        block_interact(main.loaded_chunks[mouse_chunk][0][x][y], x, y, mouse_chunk)
-                    elif main.block_data[main.loaded_chunks[mouse_chunk][0][x][y]]["Replacable"] and main.block_in_hand != 0:
+                    if current_block_info["Interactable"]:
+                        block_interact(current_block_id, x, y, mouse_chunk)
+                    elif current_block_info["Replacable"] and main.block_in_hand != 0:
                         main.loaded_chunks[mouse_chunk][0][x][y] = int(main.block_in_hand)
                         if main.gamemode == 0:
                             main.inventory[main.hotbar_slot][1] -= 1
@@ -949,7 +960,7 @@ def scene_game(events):
 
             else:
                 main.loaded_chunks[i][1][0] = main.loaded_chunks[i + 1][1][0]-1
-                generate_chunk_type(i, 0)
+                generate_chunk_type(i, main.menu_create_worldtype)
                 for tree in main.tree_queue[i]:
                     generate_tree(tree[0], tree[1], i)
             try_spawn_pig_in_chunk(i)
@@ -997,7 +1008,7 @@ def scene_game(events):
                 main.chunk_buffer.pop(found)
             else:
                 main.loaded_chunks[i][1][0] = main.loaded_chunks[i - 1][1][0] + 1
-                generate_chunk_type(i, 0)
+                generate_chunk_type(i, main.menu_create_worldtype)
                 for tree in main.tree_queue[i]:
                     generate_tree(tree[0], tree[1], i)
             try_spawn_pig_in_chunk(i)
@@ -1047,7 +1058,7 @@ def scene_game(events):
                 main.chunk_buffer.pop(found)
             else:
                 main.loaded_chunks[i][1][1] = main.loaded_chunks[i + 3][1][1] - 1
-                generate_chunk_type(i, 0)
+                generate_chunk_type(i, main.menu_create_worldtype)
             try_spawn_pig_in_chunk(i)
             try_spawn_cow_in_chunk(i)
             try_spawn_sheep_in_chunk(i)
@@ -1095,7 +1106,7 @@ def scene_game(events):
                 main.chunk_buffer.pop(found)
             else:
                 main.loaded_chunks[i][1][1] = main.loaded_chunks[i - 3][1][1] + 1
-                generate_chunk_type(i, 0)
+                generate_chunk_type(i, main.menu_create_worldtype)
             try_spawn_pig_in_chunk(i)
             try_spawn_cow_in_chunk(i)
             try_spawn_sheep_in_chunk(i)

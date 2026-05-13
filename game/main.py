@@ -47,6 +47,7 @@ cursor_custom()
 cur = cur_square
 
 #load block and item data
+block_count = 0
 block_data = load_blocks()
 item_data = load_items()
 recipe_data = load_recipes()
@@ -89,7 +90,8 @@ show_debug = False
 menu_create_input_box = [0, ""]
 menu_create_worldname_input = ""
 menu_create_seed_input = ""
-menu_create_worldtype = 0
+menu_create_worldtype = 1
+world_seed = ""
 paused = False
 loaded_mods = []
 mods_active = False
